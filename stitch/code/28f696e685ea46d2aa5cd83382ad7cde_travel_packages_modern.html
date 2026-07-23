@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Travel Packages - Tampirkulon</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#ecefe9",
+                        "inverse-on-surface": "#eff1ec",
+                        "on-secondary-fixed": "#001e2f",
+                        "surface-variant": "#e1e3dd",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#8bd6b7",
+                        "surface-container-highest": "#e1e3dd",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#004666",
+                        "on-primary-fixed-variant": "#00513b",
+                        "inverse-surface": "#2e312e",
+                        "on-error": "#ffffff",
+                        "tertiary": "#5e3000",
+                        "on-surface-variant": "#3f4944",
+                        "surface-container-low": "#f2f4ee",
+                        "primary": "#004532",
+                        "inverse-primary": "#8bd6b6",
+                        "on-primary-fixed": "#002116",
+                        "on-background": "#191c19",
+                        "surface-container-high": "#e7e9e3",
+                        "tertiary-container": "#804300",
+                        "on-surface": "#191c19",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb77d",
+                        "on-tertiary-container": "#ffb87e",
+                        "background": "#f8faf4",
+                        "secondary-fixed": "#c9e6ff",
+                        "outline": "#6f7973",
+                        "surface": "#f8faf4",
+                        "secondary-container": "#39b8fd",
+                        "surface-tint": "#1b6b51",
+                        "surface-bright": "#f8faf4",
+                        "surface-dim": "#d8dbd5",
+                        "outline-variant": "#bec9c2",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#2f1500",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "secondary": "#006591",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ffdcc3",
+                        "primary-container": "#065f46",
+                        "primary-fixed": "#a6f2d1",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "secondary-fixed-dim": "#89ceff",
+                        "on-tertiary-fixed-variant": "#6e3900"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "stack-lg": "32px",
+                        "margin-mobile": "20px",
+                        "stack-xl": "64px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px",
+                        "stack-sm": "8px",
+                        "stack-md": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface/80 backdrop-blur-md dark:bg-surface-dim/80 docked full-width top-0 sticky border-b border-outline-variant/20 shadow-sm shadow-primary/5 z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+<a class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg tracking-tight text-primary dark:text-primary-fixed" href="#">Tampirkulon</a>
+<nav class="hidden md:flex gap-gutter items-center">
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-md text-label-md" href="#">Destinations</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-md text-label-md" href="#">Culture</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-md text-label-md" href="#">Sustainability</a>
+<a class="text-primary font-semibold border-b-2 border-primary pb-1 font-label-md text-label-md" href="#">Experiences</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-md text-label-md" href="#">About</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden md:block text-on-surface hover:bg-primary-container/10 transition-all duration-300 font-label-md text-label-md px-4 py-2 rounded-full">Sign In</button>
+<button class="bg-primary text-on-primary hover:bg-primary-container transition-all duration-300 scale-95 hover:scale-100 font-label-md text-label-md px-6 py-2 rounded-full flex items-center gap-2 shadow-sm shadow-primary/20">
+                    Book Now
+                </button>
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow">
+<!-- Hero Section -->
+<section class="relative h-[614px] min-h-[500px] flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 parallax-bg z-0" data-alt="A breathtaking, wide-angle shot of a lush, emerald green terraced rice field in Java at sunrise. The warm, golden light of the sun casts long shadows, highlighting the contours of the landscape. A pristine, clear blue sky provides a serene backdrop. The visual style is highly cinematic and premium, emphasizing the natural beauty and adventurous spirit of luxury rural tourism. Soft, ambient mist hangs low in the valleys." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCd2D4xrORxcW_LbFrIsbogLI6RWm0-LkPOnnCZhIMXa72jXdYOz1zs-GZFpbKQB3HsWkQEolRqd7p4pjpo2Fg_7myY_JQ1Q0TZpFQZ86Vxdl0EtwjeTpKqLetv-AQlFWA-6Xrrujl6f4Yba2F5JN5tA93GhkNpWyRXow48YHhzsrmkbWYxUm5Mirgm7Hbad61fH7GHVVfz65CaPZ35UXdh9CzZetAbkR-3uwkXWA9ydUc6OwP6QuGT8g')"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-surface z-10"></div>
+<div class="relative z-20 text-center px-margin-mobile md:px-margin-desktop max-w-3xl mx-auto mt-16">
+<span class="inline-block px-4 py-1.5 rounded-full glass-effect text-white font-label-sm text-label-sm mb-6 uppercase tracking-wider">Curated Experiences</span>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-white mb-6 drop-shadow-md">Discover the Soul of Java</h1>
+<p class="font-body-lg text-body-lg text-white/90 drop-shadow-sm mb-8">Immerse yourself in authentic cultural journeys and serene weekend retreats designed for the modern explorer.</p>
+</div>
+</section>
+<!-- Packages Grid -->
+<section class="py-stack-xl px-margin-mobile md:px-margin-desktop bg-surface">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-stack-lg">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">Signature Packages</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">Carefully crafted itineraries that balance raw adventure with premium comfort.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Package 1 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md shadow-primary/5 transition-all duration-300 border border-outline-variant/30 flex flex-col group">
+<div class="h-48 relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="A vibrant daytime shot of a traditional Javanese cultural performance in a lush village setting. Dancers in ornate, colorful costumes are performing gracefully. The lighting is bright and natural, casting soft shadows. The aesthetic is authentic and culturally rich, appealing to a high-end editorial travel style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAEj1w1VI6HXGGg6PDLocyRuHXwSx6YDvUjjzf_nFIh6nznYQItw-N3pNeiLz7LZy7VIITvw4LZOZ5dORHvfe7MXHv9d5Sh0Yg9k8YRRLgr5jiaaVo3XY0uQ_AYYrQV8qJH3FZqlJNdVevgrNA93ykpLaqaofmQBEO6RI-Zb6-3BP_fjOTud_jpoRiqw_-Jh0cuIUn9Es0mxUw-Mo8I3OOEwg1jAoYrLm7pwY_bIEGtjXvHevLB2vVVkQ')"></div>
+<div class="absolute top-4 right-4 bg-surface/90 backdrop-blur-sm px-3 py-1 rounded-full text-primary font-label-sm text-label-sm shadow-sm">1 Day</div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Warisan Sehari</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow">A full-day immersion into local crafts, traditional culinary arts, and village life.</p>
+<div class="space-y-3 mb-8">
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="restaurant">restaurant</span>
+<span>Authentic Local Lunch</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="palette">palette</span>
+<span>Batik Making Workshop</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="directions_walk">directions_walk</span>
+<span>Guided Village Walk</span>
+</div>
+</div>
+<div class="flex items-end justify-between mt-auto pt-6 border-t border-outline-variant/20">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Starting from</span>
+<span class="font-headline-md text-headline-md text-secondary">Rp 450k</span>
+</div>
+<button class="bg-primary-container text-on-primary-container hover:bg-primary transition-colors duration-300 font-label-md text-label-md px-6 py-2.5 rounded-lg flex items-center justify-center shadow-sm">
+                                    Reservasi Sekarang
+                                </button>
+</div>
+</div>
+</div>
+<!-- Package 2 (Featured) -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-md shadow-primary/10 transition-all duration-300 border-2 border-primary/20 flex flex-col group relative transform md:-translate-y-4">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 bg-primary text-on-primary font-label-sm text-label-sm px-4 py-1 rounded-b-lg z-10 shadow-sm">Most Popular</div>
+<div class="h-56 relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="A luxurious eco-lodge nestled amongst dense tropical foliage in Java. The architecture blends modern glass walls with traditional wooden structures. Soft, warm interior lighting glows invitingly against the cool twilight of the surrounding jungle. The image conveys a sense of premium, serene relaxation and upscale outdoor living." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAPUQiRQk5EPo7Wmp_3QPLJ3U9gyoKPRDzPbbGpyGyyP2Y5EyrHDSUxwQDOTulhUCa-b_hTS8jbvJW-7qeho3xZ2cRCRG_3Do7lDcdba0ReoOswCXOamDQSfeWPH1cv6DGNDTvJlJL-p8IfdkdcNHTnOfZ1Ve5DX7Z-WOcrc0RtKoxnHepIhRAwPNVudWyrww6Kf1S8f3yfABufu2NQj42blr0yAa9I1TqGEu0t8kiw22UrM_Rcwbvt2w')"></div>
+<div class="absolute top-4 right-4 bg-surface/90 backdrop-blur-sm px-3 py-1 rounded-full text-primary font-label-sm text-label-sm shadow-sm">2 Days / 1 Night</div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Retret Akhir Pekan</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow">Escape the city with a premium overnight stay featuring nature trails and wellness activities.</p>
+<div class="space-y-3 mb-8">
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="bed">bed</span>
+<span>Premium Eco-Lodge Stay</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="forest">forest</span>
+<span>Morning Nature Trek</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="spa">spa</span>
+<span>Traditional Massage</span>
+</div>
+</div>
+<div class="flex items-end justify-between mt-auto pt-6 border-t border-outline-variant/20">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Starting from</span>
+<span class="font-headline-md text-headline-md text-secondary">Rp 1.2M</span>
+</div>
+<button class="bg-primary text-on-primary hover:bg-primary/90 transition-colors duration-300 font-label-md text-label-md px-6 py-2.5 rounded-lg flex items-center justify-center shadow-md">
+                                    Reservasi Sekarang
+                                </button>
+</div>
+</div>
+</div>
+<!-- Package 3 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md shadow-primary/5 transition-all duration-300 border border-outline-variant/30 flex flex-col group">
+<div class="h-48 relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="A sprawling panoramic view of an ancient Javanese temple complex bathed in the soft, ethereal light of early morning. Mist weaves through the stone stupas. The aesthetic is deeply spiritual, historical, and grand, capturing the essence of a deep cultural journey in a modern, sophisticated photographic style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC7mjBEq8d_FtMsbReoi8RcSgfBNap98h4h9bqBanHE2mbogTnIVmDb7lsAmw0gU6hUFwWKZC1YVH6yK0VR8VswWoVb-bEam3tVBZk4hQkhHNrUO6JBclz7g5-ycwBkMOfB2A_8O_GYkkkS0cb7sNxnHMCGgSmZ8glPb5n9I5xXrlGhGCvAuT5xTiIduU4cDSE3Hw8-JQPcrmXp4cpLoRWWigPjwGfQ0mW8T2Z0zJ71nKw_N0_1Y68hgw')"></div>
+<div class="absolute top-4 right-4 bg-surface/90 backdrop-blur-sm px-3 py-1 rounded-full text-primary font-label-sm text-label-sm shadow-sm">3 Days / 2 Nights</div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Imersi Budaya</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow">The ultimate deep dive into Javanese heritage, community living, and historical exploration.</p>
+<div class="space-y-3 mb-8">
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="home_work">home_work</span>
+<span>Boutique Heritage Homestay</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="temple_buddhist">temple_buddhist</span>
+<span>Exclusive Temple Tour</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="music_note">music_note</span>
+<span>Gamelan Music Session</span>
+</div>
+</div>
+<div class="flex items-end justify-between mt-auto pt-6 border-t border-outline-variant/20">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Starting from</span>
+<span class="font-headline-md text-headline-md text-secondary">Rp 2.5M</span>
+</div>
+<button class="bg-primary-container text-on-primary-container hover:bg-primary transition-colors duration-300 font-label-md text-label-md px-6 py-2.5 rounded-lg flex items-center justify-center shadow-sm">
+                                    Reservasi Sekarang
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Village Amenities & Group Booking Bento Grid -->
+<section class="py-stack-xl px-margin-mobile md:px-margin-desktop bg-surface-container-low">
+<div class="max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter auto-rows-[300px]">
+<!-- Amenities Area -->
+<div class="md:col-span-8 bg-surface-container-lowest rounded-2xl p-8 shadow-sm border border-outline-variant/20 flex flex-col justify-between overflow-hidden relative group">
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23004532\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+<div class="relative z-10">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Village Amenities</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-lg mb-8">Enjoy modern comforts seamlessly integrated into the rustic charm of Tampirkulon.</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10 mt-auto">
+<div class="glass-effect rounded-xl p-4 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary text-3xl mb-2" data-icon="wifi">wifi</span>
+<span class="font-label-md text-label-md text-on-surface">High-Speed WiFi</span>
+</div>
+<div class="glass-effect rounded-xl p-4 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary text-3xl mb-2" data-icon="local_cafe">local_cafe</span>
+<span class="font-label-md text-label-md text-on-surface">Artisan Cafe</span>
+</div>
+<div class="glass-effect rounded-xl p-4 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary text-3xl mb-2" data-icon="storefront">storefront</span>
+<span class="font-label-md text-label-md text-on-surface">Local Market</span>
+</div>
+<div class="glass-effect rounded-xl p-4 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary text-3xl mb-2" data-icon="medical_services">medical_services</span>
+<span class="font-label-md text-label-md text-on-surface">24/7 Clinic</span>
+</div>
+</div>
+</div>
+<!-- Group Booking CTA -->
+<div class="md:col-span-4 bg-primary rounded-2xl p-8 shadow-md relative overflow-hidden flex flex-col justify-center items-center text-center group cursor-pointer transition-transform duration-300 hover:scale-[1.02]">
+<div class="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay transition-transform duration-700 group-hover:scale-110" data-alt="A lively, candid shot of a diverse group of friends laughing and trekking together through a bright, sunlit Javanese forest trail. The mood is energetic, communal, and joyful. High-quality outdoor lifestyle photography with natural, vibrant colors." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAhexNnMT5ljRYTNHgiEl3JU3_5r6n_U27RW5YKyV7lqjqz2e9S78FEUDFBddLKda8iqBYccbaa8Db5kbctGkW9WFM0tc_ZGS_lj-oBdmfEUJhWXL4O6AprpaUhGCSwjlVz3u3MmrXpcV_86eMrbE-RABQf0sZfIWZsMMjpKB3Qzyop9Ck9z7sLsyfk-p4c9gHVHApz70V_czHLtsPPkGmyrnzOpp7VnnzfTh2cZf4o6FXs5JfPbvGypw')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-primary/40"></div>
+<div class="relative z-10 w-full">
+<span class="material-symbols-outlined text-on-primary text-4xl mb-4" data-icon="groups">groups</span>
+<h3 class="font-headline-md text-headline-md text-on-primary mb-3">Planning a Group Trip?</h3>
+<p class="font-body-md text-body-md text-on-primary/80 mb-6">Special rates and customized itineraries available for groups of 10 or more.</p>
+<button class="w-full bg-white text-primary hover:bg-surface-container-lowest transition-colors duration-300 font-label-md text-label-md px-6 py-3 rounded-lg shadow-sm flex items-center justify-center gap-2">
+                                Contact Us <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-inverse-surface border-t border-outline-variant/30 full-width">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-mobile md:px-margin-desktop py-stack-xl max-w-container-max mx-auto">
+<div class="col-span-1 md:col-span-2">
+<a class="font-headline-md text-headline-md text-primary dark:text-primary-fixed block mb-4" href="#">Tampirkulon</a>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-sm mb-6">
+                    © 2024 Desa Wisata Tampirkulon. Preserving the soul of Java through sustainable tourism.
+                </p>
+<div class="flex gap-4">
+<!-- Social placeholders -->
+<a class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300 opacity-80 hover:opacity-100" href="#">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</a>
+</div>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-4 font-bold">Experiences</h4>
+<ul class="space-y-3">
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary hover:underline decoration-secondary transition-all opacity-80 hover:opacity-100" href="#">Heritage Tours</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary hover:underline decoration-secondary transition-all opacity-80 hover:opacity-100" href="#">Nature Trails</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary hover:underline decoration-secondary transition-all opacity-80 hover:opacity-100" href="#">Local Crafts</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-4 font-bold">Information</h4>
+<ul class="space-y-3">
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary hover:underline decoration-secondary transition-all opacity-80 hover:opacity-100" href="#">Sustainability Report</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary hover:underline decoration-secondary transition-all opacity-80 hover:opacity-100" href="#">Booking Policy</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary hover:underline decoration-secondary transition-all opacity-80 hover:opacity-100" href="#">Privacy Center</a></li>
+</ul>
+</div>
+</div>
+</footer>
+</body></html>

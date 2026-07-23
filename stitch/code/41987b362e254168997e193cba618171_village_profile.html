@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profil Desa - Desa Wisata Tampirkulon</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#2b2c29",
+                    "surface-container-highest": "#e4e2e1",
+                    "on-primary": "#ffffff",
+                    "surface-container-high": "#eae7e7",
+                    "primary-container": "#1b3022",
+                    "inverse-on-surface": "#f3f0ef",
+                    "surface-variant": "#e4e2e1",
+                    "secondary-fixed": "#ccebc7",
+                    "tertiary-fixed": "#e4e2dd",
+                    "on-secondary-fixed-variant": "#334d33",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#b0cfad",
+                    "inverse-primary": "#b4cdb8",
+                    "primary-fixed": "#d0e9d4",
+                    "outline": "#737973",
+                    "on-secondary-container": "#506b4f",
+                    "on-primary-fixed": "#0b2013",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "outline-variant": "#c3c8c1",
+                    "on-secondary-fixed": "#07200b",
+                    "on-tertiary-fixed": "#1b1c19",
+                    "on-background": "#1b1c1c",
+                    "secondary-container": "#ccebc7",
+                    "primary-fixed-dim": "#b4cdb8",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "surface-dim": "#dcd9d9",
+                    "surface-tint": "#4d6453",
+                    "secondary": "#4a6549",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f6f3f2",
+                    "surface-container": "#f0eded",
+                    "surface": "#fcf9f8",
+                    "on-surface": "#1b1c1c",
+                    "on-primary-container": "#819986",
+                    "inverse-surface": "#303030",
+                    "on-tertiary-container": "#94938f",
+                    "on-primary-fixed-variant": "#364c3c",
+                    "tertiary": "#171815",
+                    "on-surface-variant": "#434843",
+                    "on-error-container": "#93000a",
+                    "background": "#fcf9f8",
+                    "surface-bright": "#fcf9f8",
+                    "primary": "#061b0e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "section-gap": "120px",
+                    "base": "8px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Libre Caslon Text"],
+                    "label-sm": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "label-lg": ["Hanken Grotesk"],
+                    "display-lg-mobile": ["Libre Caslon Text"],
+                    "headline-md": ["Libre Caslon Text"],
+                    "body-lg": ["Hanken Grotesk"],
+                    "display-lg": ["Libre Caslon Text"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "48px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.01em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hero-gradient {
+            background: linear-gradient(to bottom, rgba(6, 27, 14, 0.4), rgba(6, 27, 14, 0.2));
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md border-b border-secondary/20 shadow-sm z-50">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md text-primary dark:text-primary-fixed tracking-tight">Tampirkulon</div>
+<div class="hidden md:flex gap-8">
+<a class="font-label-lg text-label-lg uppercase tracking-widest text-primary dark:text-primary-fixed border-b-2 border-primary pb-1 transition-colors duration-300" href="#">DESTINATIONS</a>
+<a class="font-label-lg text-label-lg uppercase tracking-widest text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-300" href="#">EXPERIENCES</a>
+<a class="font-label-lg text-label-lg uppercase tracking-widest text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-300" href="#">PLAN YOUR TRIP</a>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 font-label-lg text-label-lg tracking-widest hover:scale-95 duration-200 uppercase">
+                BOOK NOW
+            </button>
+</div>
+</nav>
+<!-- Hero Section -->
+<header class="relative h-screen flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-[10000ms] hover:scale-110" data-alt="A breathtaking landscape of Desa Tampirkulon at dawn. Rolling green hills and lush rice terraces are shrouded in soft, ethereal mist. The rising sun casts a warm, golden glow across the verdant valley of Candimulyo, Magelang. Ancient tropical trees frame the edges of the composition, creating a serene and timeless atmosphere in a premium travel photography style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCCobQs8woSpHe-8PANxA5RY8ZSaez8T35wjKGvp6k8eY8tEpIS020dsBCKmQ-DtujSYO9CsMG2bFDsw6EpOfgPp1u8xSZ8JEP3dfzfWw1zUYmf2lOp9WqfzTrTsYBcK0otcHh0hVNE5qdcGnz560T7L2_-Y12sLiYE0HiFiilhDE9xI8g7Jwq1-UkSbzOuXlKba9fxye5_KYj2TWFVtzHcZ4WARWHik8HWShGxEvsAt-FjoiPTOLJzTQ')">
+</div>
+<div class="absolute inset-0 hero-gradient"></div>
+</div>
+<div class="relative z-10 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full">
+<div class="max-w-3xl">
+<span class="inline-block mb-4 font-label-lg text-label-lg uppercase tracking-[0.2em] text-primary-fixed">ESTABLISHED BY TRADITION</span>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-surface mb-8 leading-tight italic">The Heart of Candimulyo</h1>
+<div class="flex gap-4">
+<a class="bg-surface text-primary px-8 py-4 font-label-lg text-label-lg tracking-widest uppercase hover:bg-primary-fixed transition-colors" href="#history">Discover Our Story</a>
+</div>
+</div>
+</div>
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-surface/60 animate-bounce">
+<span class="material-symbols-outlined text-4xl">keyboard_double_arrow_down</span>
+</div>
+</header>
+<main>
+<!-- History & Heritage Section -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto overflow-hidden" id="history">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<div class="md:col-span-5 relative group">
+<div class="rounded-xl overflow-hidden aspect-[3/4] shadow-2xl">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A detailed close-up of traditional Javanese architectural details found in Desa Tampirkulon. Carved dark teak wood panels from an ancient Joglo house show intricate floral and leaf patterns. The lighting is soft and moody, emphasizing the deep textures and rich brown tones of the heritage wood. The background is slightly out of focus, suggesting a quiet, historical interior filled with cultural weight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNfhWzN3xWaU1sxnGkBoDIhUSBqZ5lOAJrLKQQrYwCtRAdD5egQ5dAf6-cJmdj9tnbOIW9_2cPBLS-E6WSwyaVn0GrOphfN5yuur6DmGhKw-6Ld-Jsw9hrLopPdH-DEc-VlrdgM_MJJ1X8Y6ltBtjtTQxrlgwW1XZ1ktUBf6PnkZz9MplDVQcELrjLXi4dGvMb49SLEQrYFpThUVpY-rA8KqHii43Ej6wKKuUe0__tcYCOVXn6P-3XoQ"/>
+</div>
+<div class="absolute -bottom-8 -right-8 w-64 h-64 hidden md:block border border-secondary/20 -z-10 bg-surface-container-low"></div>
+</div>
+<div class="md:col-span-7 flex flex-col justify-center">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-8 border-l-4 border-secondary-fixed-dim pl-6">History &amp; Heritage</h2>
+<div class="space-y-6 text-on-surface-variant font-body-lg text-body-lg leading-relaxed">
+<p>Desa Wisata Tampirkulon is not merely a destination; it is a living chronicle of Javanese resilience and agrarian harmony. Nestled in the fertile volcanic shadows of the Candimulyo district, our village roots trace back through generations of farmers who transformed these slopes into the "Golden Bowl" of Magelang.</p>
+<p>The name itself carries the weight of our ancestors' journey—'Tampir' representing the traditional winnowing basket used for harvesting, and 'Kulon' marking our western orientation toward the sunset. For centuries, our people have lived in rhythmic dialogue with the seasons, preserving the sacred Tri Hita Karana philosophy: harmony between humans, nature, and the Divine.</p>
+<p>Today, we invite you to step into this timeless narrative, where every stone wall and ancient Joglo house tells a story of cultural continuity in a rapidly changing world.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Vision & Mission Section -->
+<section class="bg-primary text-on-primary py-section-gap relative overflow-hidden">
+<div class="absolute top-0 right-0 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-[400px]">park</span>
+</div>
+<div class="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto relative z-10">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg italic text-secondary-fixed mb-4">Our Commitment</h2>
+<p class="font-label-lg text-label-lg uppercase tracking-widest">Sustainability &amp; Preservation</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+<div class="bg-white/5 backdrop-blur-sm p-10 border border-white/10 rounded-xl hover:border-secondary-fixed/30 transition-all">
+<span class="material-symbols-outlined text-secondary-fixed text-5xl mb-6">visibility</span>
+<h3 class="font-headline-md text-headline-md mb-4">The Vision</h3>
+<p class="font-body-md text-body-md text-surface/80 leading-relaxed">To become Indonesia’s premier cultural sanctuary, where the echoes of Javanese heritage are preserved through high-end sustainable tourism that empowers the local community and regenerates our natural landscapes for generations to come.</p>
+</div>
+<div class="bg-white/5 backdrop-blur-sm p-10 border border-white/10 rounded-xl hover:border-secondary-fixed/30 transition-all">
+<span class="material-symbols-outlined text-secondary-fixed text-5xl mb-6">workspace_premium</span>
+<h3 class="font-headline-md text-headline-md mb-4">The Mission</h3>
+<ul class="space-y-4 font-body-md text-body-md text-surface/80">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary-fixed mt-1" style="font-variation-settings: 'FILL' 1;">eco</span>
+<span>Implementing zero-waste agricultural practices across all community-led farmsteads.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary-fixed mt-1" style="font-variation-settings: 'FILL' 1;">history_edu</span>
+<span>Creating educational residencies for master artisans to pass down ancestral weaving and carving skills.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary-fixed mt-1" style="font-variation-settings: 'FILL' 1;">groups</span>
+<span>Ensuring 100% local employment through community-owned hospitality and workshop initiatives.</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- Geography & Administration Section -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="mb-12">
+<h2 class="font-headline-lg text-headline-lg text-primary">Geography &amp; Location</h2>
+<p class="text-on-surface-variant font-body-lg text-body-lg mt-2">The Emerald Gateway to Central Java</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<div class="lg:col-span-2 rounded-xl overflow-hidden shadow-sm border border-secondary/20 h-[500px]">
+<div class="w-full h-full bg-surface-container-high relative">
+<!-- Map Placeholder -->
+<div class="w-full h-full flex items-center justify-center bg-cover bg-center" data-alt="A stylized, elegant topographic map of the Candimulyo region in Magelang. The map uses a sophisticated color palette of deep forest greens, soft creams, and sage accents. Key landmarks like Mount Merapi and local rivers are subtly indicated with minimalist line work. The overall aesthetic is professional and artistic, suitable for a premium travel brochure." data-location="Tampirkulon, Magelang, Central Java" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBzuiLKy957uWbyv_D8sPQ2hZCgD3uQEUA6-WgpAKHg7Tk3n9XgvYCVcGN71jY_9cTPxMwb-_DCtiSvVb8roJjDs4ZnWccU9I7A7k3zOXQavOA-nPDF_Xd9VpDbp9z5oXVnXy_lP8LN0ZcsTYLtURG_xm5NiWxcRL9eETiY9dcVt-IishfgMIcdoOm43CCSixGpkolg1lSTNGJ_FXQUOdpEzisOPTKC7J-LNausSAzOg4DulO0xlkihWA')">
+<div class="bg-surface/90 backdrop-blur px-8 py-6 rounded-lg shadow-xl text-center border border-primary/10">
+<span class="material-symbols-outlined text-primary text-4xl mb-2">location_on</span>
+<p class="font-headline-md text-headline-md text-primary">Tampirkulon, Magelang</p>
+<p class="text-on-surface-variant font-label-lg text-label-lg">Central Java, Indonesia</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-gutter">
+<div class="bg-surface-container p-8 rounded-xl border border-secondary/10 flex-1">
+<h4 class="font-label-lg text-label-lg uppercase tracking-widest text-primary mb-6">Quick Statistics</h4>
+<div class="space-y-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary-fixed rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">height</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-sm text-label-sm">Elevation</p>
+<p class="font-headline-md text-headline-md">350m Above Sea Level</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary-fixed rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">distance</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-sm text-label-sm">Area</p>
+<p class="font-headline-md text-headline-md">1.2 km² of Fertile Land</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary-fixed rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">thermostat</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-sm text-label-sm">Avg. Temperature</p>
+<p class="font-headline-md text-headline-md">24°C - 28°C</p>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-secondary-container/30 p-8 rounded-xl border border-secondary/10">
+<h4 class="font-label-lg text-label-lg uppercase tracking-widest text-primary mb-2">Climate</h4>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">The tropical climate of Tampirkulon is characterized by its high humidity and consistent rainfall, making it ideal for the cultivation of durian and exotic fruits.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Gallery / Visual Story (Bento Style) -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-4 h-[800px] md:h-[600px]">
+<div class="md:col-span-2 md:row-span-2 relative overflow-hidden rounded-xl shadow-lg group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A wide-angle, cinematic view of a traditional communal feast in Desa Tampirkulon. Villagers dressed in modest traditional Javanese attire are seated on bamboo mats in an open-air wooden pavilion. Long banana leaves are laid out with heaps of fragrant white rice and colorful side dishes. The scene is illuminated by soft afternoon light filtering through the trees, creating a warm, hospitable, and community-focused mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwROf_Fda2UrNOJEK1WvZvtelZruoPecNaD29yb38JqGWzNTg_CFf1EJhwpKFtQjHI1leT-F5_3eCZuEe0ODFWP70IkS_kf6oegF7ahCAciinGkXInqiuMzFfEtD8lM2DlobIu0S0moT6Jc-YiWb2laZTVcKO9Xm6yIm6pE_JdGgpBlbCVYRdvw05DEV5e_8TbYPGuOEiOYnPJYYac4nSaB4064rzLoHXDghztgPNxGucKsQsQxv7oCQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
+<p class="text-surface font-headline-md text-headline-md">The Spirit of 'Gotong Royong'</p>
+</div>
+</div>
+<div class="md:col-span-2 relative overflow-hidden rounded-xl shadow-lg group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A stunning aerial view of the durian orchards in Tampirkulon during the harvest season. The canopy is dense and vibrant green, with glimpses of village roads winding through the trees. The light is high-contrast and brilliant, highlighting the lushness of the Candimulyo landscape. The visual style is premium travel photography, clean and bright." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaCnvJsqkiO2d6kjg9NnWskJtmTPrIq5ZkAp1q7ERpGDhGIEIMlkycKUsVx0bC-VZ8HTkxjSo0fJH1vbcjiqH81m-yREtQJ_evu_VpikwRfvt2pj_W22KuN9rKEWrskrsCeBNIBigBmyQDBUf9Yli442s99eK-W0hh8MyHcG_txLFh5aZUGN0tq3jPFo2YuDKppcdOkxeefLmc9iPNzvubW56ilsbEcMVFSoM0JfC_I4gPEh45uMyweg"/>
+</div>
+<div class="relative overflow-hidden rounded-xl shadow-lg group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A close-up of a local artisan's hands weaving a traditional Tampir basket from split bamboo. The focus is sharp on the texture of the bamboo fibers and the rhythm of the work. The lighting is warm and directional, casting soft shadows that emphasize the craft and heritage of the village. The color palette is natural and earthy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA45yrhMBgln3HqnYH-jGF5cNY3WEDbuusnP5M2SPfq-4-hFP-YBz3gFAK2VrARSLE51X6HAoo7FKaDCNJIKGQQq4YtM6zltYFxAPGqg1E5-CbjWGKUAlbJCuApPWJ47EIIu01FkyC8jMajPjYJ7dl6gOLTdltUaFGJQbcJcWEJp4p4rddDORmkztB5YC6ZIjkrNoRDr33uXZ-UEbDpCB8mm5QQAhvqyTV5Lrfn8Rd63CkFuPVFSBKhWA"/>
+</div>
+<div class="relative overflow-hidden rounded-xl shadow-lg group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A serene river scene in the outskirts of Desa Tampirkulon. Clear water flows over smooth volcanic stones, surrounded by ferns and tropical foliage. The mood is tranquil and refreshing, capturing the raw natural beauty of the Magelang region in a soft-focus, high-end aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWL2dK4I9sTX91f49xZNAnDOGg61JN_Bre8p8migyTLCoVnrunhHubOHK3uHfPTm8mYGeXAookCS0rErOHRmmR9RvVDrqf8Bcp8bii9z4gbzb0VDqonEzN_fSMIyUpmYn8uQnkNvXcoJQLFt8eMWDNBXVd8V4K4To9daC60BKh4v72VK2B6jJ6JQ0JRU8YWfBBgID9mz45rydZINhClHYBJmeAVKUo956vkSjE8bZS4QfoTyCUTBU2Qg"/>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-tertiary dark:bg-tertiary-container text-on-tertiary">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-mobile md:px-margin-desktop py-section-gap max-w-container-max mx-auto">
+<div class="flex flex-col gap-6">
+<div class="font-headline-lg text-headline-lg text-on-tertiary dark:text-tertiary-fixed">Tampirkulon</div>
+<p class="font-body-md text-body-md text-on-tertiary-container">Experience the serene heart of Magelang, where heritage meets high-end sustainable tourism.</p>
+</div>
+<div>
+<h4 class="font-label-lg text-label-lg uppercase tracking-widest text-on-tertiary mb-6">Quick Links</h4>
+<ul class="space-y-4 font-body-md text-body-md">
+<li><a class="text-on-tertiary-container hover:text-on-tertiary transition-colors" href="#">About Us</a></li>
+<li><a class="text-on-tertiary-container hover:text-on-tertiary transition-colors" href="#">Cultural Heritage</a></li>
+<li><a class="text-on-tertiary-container hover:text-on-tertiary transition-colors" href="#">Sustainability</a></li>
+<li><a class="text-on-tertiary-container hover:text-on-tertiary transition-colors" href="#">Travel Guide</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-lg text-label-lg uppercase tracking-widest text-on-tertiary mb-6">Support</h4>
+<ul class="space-y-4 font-body-md text-body-md">
+<li><a class="text-on-tertiary-container hover:text-on-tertiary transition-colors" href="#">Contact</a></li>
+<li><a class="text-on-tertiary-container hover:text-on-tertiary transition-colors" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-lg text-label-lg uppercase tracking-widest text-on-tertiary mb-6">Newsletter</h4>
+<p class="font-body-md text-body-md text-on-tertiary-container mb-4">Subscribe to our seasonal updates.</p>
+<div class="flex flex-col gap-3">
+<input class="bg-tertiary-container/50 border border-white/10 rounded-lg p-3 text-white placeholder:text-white/40" placeholder="Your Email" type="email"/>
+<button class="bg-primary-fixed text-primary px-4 py-3 font-label-lg text-label-lg uppercase tracking-widest">Subscribe</button>
+</div>
+</div>
+</div>
+<div class="border-t border-white/5 py-8 text-center px-margin-mobile">
+<p class="font-body-md text-body-md text-on-tertiary-container">© 2024 Desa Wisata Tampirkulon. All rights reserved.</p>
+</div>
+</footer>
+<script>
+        // Micro-interactions for smooth revealing of sections
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('transition-all', 'duration-1000', 'opacity-0', 'translate-y-10');
+            observer.observe(section);
+        });
+
+        // Simple smooth scroll fallback
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body></html>

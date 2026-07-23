@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Paket Wisata | Tampirkulon Heritage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;family=Hanken+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#b0cfad",
+                    "secondary-fixed": "#ccebc7",
+                    "on-tertiary-fixed": "#1b1c19",
+                    "on-secondary-fixed-variant": "#334d33",
+                    "background": "#fcf9f8",
+                    "on-tertiary-container": "#94938f",
+                    "tertiary-container": "#2b2c29",
+                    "primary": "#061b0e",
+                    "surface-container": "#f0eded",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#1b1c1c",
+                    "secondary-container": "#ccebc7",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#1b3022",
+                    "outline-variant": "#c3c8c1",
+                    "on-surface-variant": "#434843",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#171815",
+                    "surface-container-highest": "#e4e2e1",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "error-container": "#ffdad6",
+                    "surface-bright": "#fcf9f8",
+                    "on-primary-fixed-variant": "#364c3c",
+                    "outline": "#737973",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f6f3f2",
+                    "primary-fixed-dim": "#b4cdb8",
+                    "on-primary-fixed": "#0b2013",
+                    "inverse-primary": "#b4cdb8",
+                    "inverse-on-surface": "#f3f0ef",
+                    "surface-tint": "#4d6453",
+                    "inverse-surface": "#303030",
+                    "error": "#ba1a1a",
+                    "surface-variant": "#e4e2e1",
+                    "primary-fixed": "#d0e9d4",
+                    "surface-dim": "#dcd9d9",
+                    "on-surface": "#1b1c1c",
+                    "on-secondary-fixed": "#07200b",
+                    "on-secondary-container": "#506b4f",
+                    "surface": "#fcf9f8",
+                    "on-primary-container": "#819986",
+                    "on-error": "#ffffff",
+                    "secondary": "#4a6549",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "tertiary-fixed": "#e4e2dd",
+                    "surface-container-high": "#eae7e7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "section-gap": "120px",
+                    "margin-mobile": "20px",
+                    "container-max": "1280px",
+                    "base": "8px",
+                    "margin-desktop": "64px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Libre Caslon Text"],
+                    "body-lg": ["Hanken Grotesk"],
+                    "label-sm": ["Hanken Grotesk"],
+                    "headline-lg": ["Libre Caslon Text"],
+                    "body-md": ["Hanken Grotesk"],
+                    "label-lg": ["Hanken Grotesk"],
+                    "headline-md": ["Libre Caslon Text"]
+            },
+            "fontSize": {
+                    "display-lg-mobile": ["40px", {"lineHeight": "48px", "fontWeight": "400"}],
+                    "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .hero-gradient {
+            background: linear-gradient(to bottom, rgba(6, 27, 14, 0.4), rgba(6, 27, 14, 0.8));
+        }
+        .card-hover-effect {
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(6, 27, 14, 0.08);
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #fcf9f8; }
+        ::-webkit-scrollbar-thumb { background: #4d6453; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-sm dark:shadow-none h-20">
+<div class="max-w-container-max mx-auto px-margin-desktop flex justify-between items-center h-full">
+<div class="font-display-lg text-headline-md text-primary tracking-tight">Tampirkulon Heritage</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-body-md text-body-md uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="#">Destinations</a>
+<a class="font-body-md text-body-md uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="#">Experiences</a>
+<a class="font-body-md text-body-md uppercase tracking-wider text-primary border-b border-primary/30 pb-1" href="#">Packages</a>
+<a class="font-body-md text-body-md uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="#">Heritage</a>
+<a class="font-body-md text-body-md uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="#">About</a>
+</div>
+<button class="bg-primary text-on-primary px-8 py-3 rounded-lg font-label-lg uppercase tracking-widest hover:opacity-80 transition-all active:scale-95">
+                Book Now
+            </button>
+</div>
+</nav>
+<!-- Hero Section -->
+<header class="relative h-[819px] flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A cinematic, wide-angle shot of lush Javanese rice terraces at dawn in Magelang. The morning mist clings to the vibrant green valleys, with a traditional Javanese joglo house nestled among tropical trees in the distance. The lighting is ethereal and golden, creating a serene and timeless atmosphere that embodies quiet luxury and cultural authenticity." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBRf6IVHSf98mELDq2HRfiWTQX3prsCAoy-yFvTA7C_ev-5QROjtoaDIiLFvBMktxAlnjXg5IKj8S6b3sOwBvR3LLGzEJrK8SM2mHaksf0wZdpBR_pGtS1utUY4Qq7y3_lcASn9kTSdrbixOTyc_Kj8KtVhQma8y8gnQZ0gbWkjVxtJR2PdfX9_cMBoxIWmA8879gn4309hBWZv9a9clnaPKmg_8uv57xXyOuoXqc_WCmS3m4mnxNXAWA')"></div>
+<div class="absolute inset-0 hero-gradient"></div>
+<div class="relative z-10 text-center max-w-4xl px-margin-mobile">
+<span class="font-label-lg text-secondary-fixed tracking-[0.3em] uppercase mb-4 block animate-fade-in">Experience Authenticity</span>
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-surface-bright mb-6 leading-tight">Curated Heritage Journeys</h1>
+<p class="font-body-lg text-body-lg text-surface-variant/90 max-w-2xl mx-auto leading-relaxed">
+                Step into a world where time slows down. Immerse yourself in the soulful traditions of Tampirkulon through our bespoke travel experiences, designed to connect you with nature and Javanese ancestral wisdom.
+            </p>
+</div>
+</header>
+<!-- Package Grid -->
+<section class="py-section-gap max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+<div class="max-w-xl">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4">Our Signature Packages</h2>
+<p class="font-body-md text-on-surface-variant">Carefully crafted itineraries that range from a peaceful day visit to a deep cultural dive into the heart of our community.</p>
+</div>
+<div class="flex gap-2">
+<span class="w-12 h-[1px] bg-secondary self-center mr-4"></span>
+<p class="font-label-lg text-secondary uppercase">View All Offers</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Package 1: Warisan Sehari -->
+<div class="card-hover-effect bg-white border border-secondary/20 rounded-xl overflow-hidden flex flex-col h-full">
+<div class="h-64 overflow-hidden relative">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-110" data-alt="A close-up shot of a steaming cup of traditional Javanese coffee served in a rustic clay mug. The background shows a sun-drenched wooden joglo porch with intricate carvings. The lighting is warm and inviting, highlighting the steam rising from the coffee and the rich texture of the wood, reflecting a peaceful morning village atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDxoq3l8rC3A0Mz3ysho0UsF0QarVnf8Yreq8IK4hFW68IsKuH-qITyBgyVyTjZzg5EtFT7z0F21-fVvIwvq2_qOfR5KuTfePZ0NQTFPRZ55Fc0CT9SAwXEYWcnuGwAo3z7Ah_ogByNNb2NGBFPYRcTbTyoxjCFpeOKtw48jcATajI3y1zAVjZsK4oxuT3e7P6ZM0PFRa7MWyUi5SqmEBwo6LkwkZjdniXpBR6IkCwUsXAW6ff0bW-fWA')"></div>
+<div class="absolute top-4 right-4 bg-primary/90 text-white px-4 py-1 rounded-full font-label-sm uppercase tracking-widest">Day Trip</div>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<h3 class="font-headline-md text-primary mb-2">Warisan Sehari</h3>
+<p class="font-label-sm text-secondary uppercase tracking-widest mb-6 italic">Day Heritage Experience</p>
+<div class="flex items-baseline mb-8">
+<span class="text-secondary font-label-lg">Rp</span>
+<span class="text-3xl font-display-lg text-primary mx-1">150.000</span>
+<span class="text-on-surface-variant font-label-sm">/ pax</span>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">map</span>
+<span class="font-body-md text-on-surface-variant">Guided Village Heritage Walk</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">restaurant</span>
+<span class="font-body-md text-on-surface-variant">Traditional Lunch at Joglo</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">coffee</span>
+<span class="font-body-md text-on-surface-variant">Manual Coffee Brew Workshop</span>
+</li>
+</ul>
+<button class="w-full py-4 bg-primary text-on-primary rounded-lg font-label-lg uppercase tracking-widest hover:bg-primary-container transition-colors active:scale-95">
+                        Reservasi Sekarang
+                    </button>
+</div>
+</div>
+<!-- Package 2: Retret Akhir Pekan -->
+<div class="card-hover-effect bg-surface-container-low border-2 border-secondary rounded-xl overflow-hidden flex flex-col h-full relative">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 z-20 bg-secondary text-on-secondary px-6 py-2 rounded-full font-label-sm uppercase tracking-widest shadow-md">Most Popular</div>
+<div class="h-64 overflow-hidden relative">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-110" data-alt="A cozy and elegant bedroom in a traditional Javanese homestay. The room features high-quality bamboo furniture, soft white linen on a wooden bed frame, and large windows looking out onto a private lush garden. The morning sun filters through the leaves, creating soft dappled light patterns on the floor. The style is minimalist tropical luxury." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC3khB9IoUzxNyF3gNGZzNywA8nnKsTYvhxqhTG8qCgDubV1TaGg4-FQpbpr7m4ktJ1XtTZkqLtlpuStVmcFaFWORXwDuDtXepDI1r0G3ffWYwMci1oNc74nTWQSxYWuSyABAQ1FaGJo56Wl5ELINqHzfOrLWxJe6yUU2MJUXJhxTrMP78i-npBvHaTaHSKRRUeFq5vPGsQclGfryiy38EtJVhSjPS65d4uyE2h7M77RBGSXFj0DOUCHw')"></div>
+<div class="absolute top-4 right-4 bg-secondary/90 text-white px-4 py-1 rounded-full font-label-sm uppercase tracking-widest">2D1N Stay</div>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<h3 class="font-headline-md text-primary mb-2">Retret Akhir Pekan</h3>
+<p class="font-label-sm text-secondary uppercase tracking-widest mb-6 italic">Weekend Retreat</p>
+<div class="flex items-baseline mb-8">
+<span class="text-secondary font-label-lg">Rp</span>
+<span class="text-3xl font-display-lg text-primary mx-1">750.000</span>
+<span class="text-on-surface-variant font-label-sm">/ pax</span>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">bed</span>
+<span class="font-body-md text-on-surface-variant">Heritage Homestay Overnight</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">eco</span>
+<span class="font-body-md text-on-surface-variant">Morning Nature &amp; Ricefield Trek</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">gesture</span>
+<span class="font-body-md text-on-surface-variant">Bamboo Weaving Workshop</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">flatware</span>
+<span class="font-body-md text-on-surface-variant">Full-board Traditional Meals</span>
+</li>
+</ul>
+<button class="w-full py-4 bg-secondary text-on-secondary rounded-lg font-label-lg uppercase tracking-widest hover:opacity-90 transition-all active:scale-95">
+                        Reservasi Sekarang
+                    </button>
+</div>
+</div>
+<!-- Package 3: Imersi Budaya -->
+<div class="card-hover-effect bg-white border border-secondary/20 rounded-xl overflow-hidden flex flex-col h-full">
+<div class="h-64 overflow-hidden relative">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-110" data-alt="A vibrant and detailed scene of a traditional Javanese gamelan performance in a grand wooden hall at night. Musicians in traditional batik attire play the golden bronze instruments under warm, ambient lantern lighting. The scene captures the cultural depth and spiritual resonance of the music, set against a dark, elegant background of carved teak wood." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCIjZ_g6X3Hb0N_Pr9tZjZw0DDXEBzGDwpzM4goM69adlZYc8A1Kvj-NMonSNhPcb1GANZMCYg-4QM3H_sv6Jw2wK8Y2F5LKX1nOKMqq0ak9pYxcrcPO0IcEVdFFkiRCkn1PAT9HsZSm6Qwih-ZCBP8N0CMM9C4GyoH25PypKd8dcm0QboGR7RyZcv-f4S6b__GjVHGHfOe73K5v36VmWRjgpYMs7t2vmA3QZQS5e3K5BFboiKBMfsl5w')"></div>
+<div class="absolute top-4 right-4 bg-primary/90 text-white px-4 py-1 rounded-full font-label-sm uppercase tracking-widest">3D2N Deep Dive</div>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<h3 class="font-headline-md text-primary mb-2">Imersi Budaya</h3>
+<p class="font-label-sm text-secondary uppercase tracking-widest mb-6 italic">Cultural Immersion</p>
+<div class="flex items-baseline mb-8">
+<span class="text-secondary font-label-lg">Rp</span>
+<span class="text-3xl font-display-lg text-primary mx-1">1.200.000</span>
+<span class="text-on-surface-variant font-label-sm">/ pax</span>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">skillet</span>
+<span class="font-body-md text-on-surface-variant">Traditional Cooking Masterclass</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">potted_plant</span>
+<span class="font-body-md text-on-surface-variant">Agriculture &amp; Farming Experience</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">music_note</span>
+<span class="font-body-md text-on-surface-variant">Evening Gamelan Performance</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">history_edu</span>
+<span class="font-body-md text-on-surface-variant">Personalized Heritage Journal</span>
+</li>
+</ul>
+<button class="w-full py-4 bg-primary text-on-primary rounded-lg font-label-lg uppercase tracking-widest hover:bg-primary-container transition-colors active:scale-95">
+                        Reservasi Sekarang
+                    </button>
+</div>
+</div>
+</div>
+</section>
+<!-- General Facilities Section -->
+<section class="py-24 bg-surface-container-low overflow-hidden">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-8">Excellence in Every Detail</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-12">Beyond the specific packages, every guest at Desa Wisata Tampirkulon enjoys our standard premium amenities designed for comfort and peace of mind.</p>
+<div class="grid grid-cols-2 gap-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">local_parking</span>
+</div>
+<div>
+<h4 class="font-label-lg text-primary">Free Parking</h4>
+<p class="text-xs text-on-surface-variant uppercase tracking-tighter">Secure &amp; Spacious</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">water_drop</span>
+</div>
+<div>
+<h4 class="font-label-lg text-primary">Clean Water</h4>
+<p class="text-xs text-on-surface-variant uppercase tracking-tighter">Filtered Spring Water</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">mosque</span>
+</div>
+<div>
+<h4 class="font-label-lg text-primary">Prayer Room</h4>
+<p class="text-xs text-on-surface-variant uppercase tracking-tighter">Serene Mushola</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">support_agent</span>
+</div>
+<div>
+<h4 class="font-label-lg text-primary">Expert Guides</h4>
+<p class="text-xs text-on-surface-variant uppercase tracking-tighter">Local Heritage Experts</p>
+</div>
+</div>
+</div>
+</div>
+<div class="relative group">
+<div class="absolute -inset-4 border-2 border-secondary/20 rounded-xl transition-all group-hover:inset-0"></div>
+<div class="aspect-video rounded-xl overflow-hidden shadow-xl">
+<div class="w-full h-full bg-cover bg-center" data-alt="A serene landscape of a traditional Javanese village at sunset. The sky is painted with soft hues of orange and purple. The silhouettes of coconut palms and peaked joglo roofs create a beautiful skyline. In the foreground, a stone pathway leads towards the village center, suggesting a journey of discovery and tranquility in a high-end, nature-focused travel setting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBkd-y8RO4XD9e0JmQPFti9ogjY4gv_-lxITov9a2UXvuj63TNDFQgJpf8uzKObdbpA9aepCIDc7jrdYjaF2-9WyeLyJp_u_7ov-X5qu_ym1SHrugcrWc9nZo4HgmvkJ6-dYLvlx5iTxuCkANhS5cuJ-MDZDhw10m2X4sMqc8QG7i35MUnOBZfZqmNF8YsLyspVpgsoEKOlbmjS-Rv6hb8RQlxZi66KsbnzLqGiuYbPvmJ0zaq7euE4qw')"></div>
+</div>
+<div class="absolute -bottom-6 -right-6 bg-primary p-8 rounded-lg shadow-2xl hidden md:block">
+<p class="font-display-lg text-headline-lg text-surface-bright italic">"Indahnya Tradisi"</p>
+<p class="font-label-sm text-secondary-fixed uppercase tracking-[0.2em] mt-2">The beauty of tradition</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Custom Group CTA -->
+<section class="py-section-gap">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="bg-primary p-12 md:p-20 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-secondary opacity-10 rounded-full -mr-32 -mt-32"></div>
+<div class="absolute bottom-0 left-0 w-48 h-48 bg-secondary opacity-10 rounded-full -ml-24 -mb-24"></div>
+<div class="relative z-10 max-w-2xl text-center md:text-left">
+<h2 class="font-headline-lg text-display-lg-mobile md:text-headline-lg text-white mb-6">Planning a Group Journey?</h2>
+<p class="font-body-lg text-body-lg text-on-primary-container">We offer tailored packages for corporate retreats, family reunions, or educational field trips. Let us design a custom heritage experience that meets your specific needs.</p>
+</div>
+<div class="relative z-10 flex flex-col sm:flex-row gap-4">
+<button class="px-10 py-5 bg-secondary text-on-secondary font-label-lg uppercase tracking-widest rounded-lg hover:opacity-90 transition-all active:scale-95">
+                        Inquiry Kustom
+                    </button>
+<button class="px-10 py-5 border border-on-primary-container text-white font-label-lg uppercase tracking-widest rounded-lg hover:bg-white/10 transition-all active:scale-95">
+                        Hubungi WhatsApp
+                    </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-tertiary text-on-tertiary py-16">
+<div class="max-w-container-max mx-auto px-margin-desktop">
+<div class="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
+<div class="max-w-xs">
+<div class="font-display-lg text-headline-md text-on-tertiary mb-6">Tampirkulon Heritage</div>
+<p class="font-body-md text-on-tertiary/60 leading-relaxed">Preserving the timeless beauty and cultural richness of Magelang through sustainable, community-led tourism.</p>
+</div>
+<div class="grid grid-cols-2 gap-x-16 gap-y-4">
+<a class="font-body-md text-on-tertiary/70 hover:text-on-tertiary transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-md text-on-tertiary/70 hover:text-on-tertiary transition-colors" href="#">Contact Us</a>
+<a class="font-body-md text-on-tertiary/70 hover:text-on-tertiary transition-colors" href="#">Terms of Service</a>
+<a class="font-body-md text-on-tertiary/70 hover:text-on-tertiary transition-colors" href="#">Sustainability</a>
+</div>
+<div>
+<h4 class="font-label-lg text-on-tertiary mb-6 uppercase tracking-widest">Connect</h4>
+<div class="flex gap-4">
+<div class="w-10 h-10 border border-on-tertiary/20 rounded-full flex items-center justify-center hover:bg-secondary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[20px]">public</span>
+</div>
+<div class="w-10 h-10 border border-on-tertiary/20 rounded-full flex items-center justify-center hover:bg-secondary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</div>
+</div>
+</div>
+</div>
+<div class="border-t border-on-tertiary/10 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="font-body-md text-body-md text-on-tertiary/50">© 2024 Desa Wisata Tampirkulon. Preserving Javanese Heritage.</p>
+<div class="flex gap-8">
+<span class="font-label-sm text-secondary-fixed-dim uppercase tracking-widest cursor-pointer hover:underline underline-offset-8 transition-all">Instagram</span>
+<span class="font-label-sm text-secondary-fixed-dim uppercase tracking-widest cursor-pointer hover:underline underline-offset-8 transition-all">Facebook</span>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Optional smooth fade-in observer for elements
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card-hover-effect').forEach(card => {
+            card.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-700');
+            observer.observe(card);
+        });
+    </script>
+</body></html>
