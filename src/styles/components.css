@@ -2,6 +2,47 @@
    SHARED COMPONENTS STYLES - STITCH UI COMPATIBLE
    ============================================================ */
 
+/* Dynamic Navbar States */
+.transparent-nav {
+  background: transparent;
+}
+.transparent-nav .nav-brand {
+  color: #ffffff;
+}
+.transparent-nav .nav-item-link {
+  color: rgba(255, 255, 255, 0.9);
+}
+.transparent-nav .nav-item-link:hover {
+  color: #ffffff;
+}
+.transparent-nav .nav-item-link.active {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+.transparent-nav .nav-hamburger {
+  color: #ffffff;
+}
+
+.scrolled-nav {
+  color: var(--on-surface);
+}
+.scrolled-nav .nav-brand {
+  color: var(--primary);
+}
+.scrolled-nav .nav-item-link {
+  color: var(--on-surface-variant);
+}
+.scrolled-nav .nav-item-link:hover {
+  color: var(--primary);
+}
+.scrolled-nav .nav-item-link.active {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.scrolled-nav .nav-hamburger {
+  color: var(--primary);
+}
+
 /* Navbar */
 .navbar {
   position: sticky;

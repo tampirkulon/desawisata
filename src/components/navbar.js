@@ -1,4 +1,4 @@
-// Navbar Component with Stitch Modern Styling & Material Icons
+// Navbar Component with Stitch Modern Transparent Header Styling
 
 export const renderNavbar = () => {
   const currentHash = window.location.hash || '#/';
@@ -14,28 +14,29 @@ export const renderNavbar = () => {
   ];
 
   return `
-    <nav class="fixed top-0 w-full z-50 transition-all duration-300 bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 shadow-sm" id="main-navbar">
-      <div class="flex justify-between items-center px-4 md:px-16 max-w-container-max mx-auto h-20">
-        <a href="#/" class="font-display-lg text-2xl font-bold text-primary flex items-center gap-2">
+    <nav class="fixed top-0 left-0 w-full z-50 transition-all duration-300 transparent-nav" id="main-navbar">
+      <div class="flex justify-between items-center px-6 md:px-16 max-w-container-max mx-auto h-20">
+        <!-- Rata Kiri: Logo -->
+        <a href="#/" class="font-display-lg text-2xl font-bold nav-brand flex items-center gap-2">
           <span>Tampirkulon</span>
-          <span class="text-[10px] bg-primary-fixed text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Wisata</span>
         </a>
 
-        <ul class="hidden md:flex gap-8 items-center list-none">
-          ${navItems.map(item => `
-            <li>
-              <a href="${item.hash}" class="font-body-md text-sm transition-all duration-200 ${currentHash === item.hash ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}">${item.label}</a>
-            </li>
-          `).join('')}
-        </ul>
-
-        <div class="flex items-center gap-3">
-          <a href="#/kontak" class="bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold text-xs hover:bg-primary-container transition-all shadow-level-1 hover:shadow-level-2">Pesan Sekarang</a>
-          <a href="#/admin/login" class="hidden md:inline-flex border border-primary text-primary px-3.5 py-1.5 rounded-full font-semibold text-xs hover:bg-primary hover:text-on-primary transition-colors">Admin</a>
-          <button class="md:hidden text-primary p-2" id="hamburger-toggle" aria-label="Toggle Menu">
-            <span class="material-symbols-outlined">menu</span>
-          </button>
+        <!-- Rata Kanan: Nav Links & CTA -->
+        <div class="hidden md:flex items-center gap-8">
+          <ul class="flex gap-7 items-center list-none m-0 p-0">
+            ${navItems.map(item => `
+              <li>
+                <a href="${item.hash}" class="font-body-md text-sm transition-all duration-200 nav-item-link ${currentHash === item.hash ? 'active font-bold border-b-2 pb-1' : ''}">${item.label}</a>
+              </li>
+            `).join('')}
+          </ul>
+          <a href="#/kontak" class="bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold text-xs hover:bg-primary-container transition-all shadow-level-1 hover:shadow-level-2 shrink-0">Pesan Sekarang</a>
         </div>
+
+        <!-- Mobile Menu Hamburger -->
+        <button class="md:hidden p-2 nav-hamburger" id="hamburger-toggle" aria-label="Toggle Menu">
+          <span class="material-symbols-outlined text-2xl">menu</span>
+        </button>
       </div>
     </nav>
 
@@ -49,7 +50,7 @@ export const renderNavbar = () => {
         ${navItems.map(item => `
           <a href="${item.hash}" class="py-2 px-3 rounded-lg font-body-md text-base transition-colors ${currentHash === item.hash ? 'bg-primary-fixed/50 text-primary font-bold' : 'text-on-surface hover:bg-surface-container-low'}">${item.label}</a>
         `).join('')}
-        <a href="#/admin/login" class="bg-surface-container text-primary font-bold text-center py-3 rounded-xl mt-4">Admin Login</a>
+        <a href="#/kontak" class="bg-primary text-white font-bold text-center py-3 rounded-xl mt-4">Pesan Sekarang</a>
       </div>
     </div>
   `;
@@ -65,9 +66,11 @@ export const initNavbarEvents = () => {
   const handleScroll = () => {
     if (!navbar) return;
     if (window.scrollY > 40) {
-      navbar.classList.add('shadow-md', 'bg-surface/95');
+      navbar.classList.add('scrolled-nav', 'bg-surface/95', 'backdrop-blur-md', 'shadow-sm', 'border-b', 'border-outline-variant/20');
+      navbar.classList.remove('transparent-nav');
     } else {
-      navbar.classList.remove('shadow-md');
+      navbar.classList.remove('scrolled-nav', 'bg-surface/95', 'backdrop-blur-md', 'shadow-sm', 'border-b', 'border-outline-variant/20');
+      navbar.classList.add('transparent-nav');
     }
   };
 
