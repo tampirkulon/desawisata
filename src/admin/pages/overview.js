@@ -1,153 +1,157 @@
-import { auth } from '../../utils/auth.js';
-import { renderAdminSidebar, initAdminSidebarEvents } from '../components/sidebar.js';
-import { renderAdminHeader } from '../components/header.js';
+import { renderSidebar } from '../components/sidebar.js';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
-import { mockData } from '../../data/seed.js';
 
 export const renderAdminOverview = async () => {
-  const isAuthed = await auth.requireAuth();
-  if (!isAuthed) return document.createElement('div');
-
-  let stats = {
-    destinasiCount: mockData.destinasi.length,
-    paketCount: mockData.paket_wisata.length,
-    artikelCount: mockData.artikel.length,
-    reservasiBaruCount: mockData.reservasi.filter(r => r.status === 'baru').length
-  };
-
-  let recentReservations = mockData.reservasi;
+  let stats = { destinasi: 12, paket: 8, artikel: 24, reservasi: 15 };
+  let recentReservations = [
+    { id: '#RES-001', nama_pemesan: 'Budi Santoso', paket: 'Paket Jelajah Alam', tanggal: '12 Okt 2024', status: 'Baru' },
+    { id: '#RES-002', nama_pemesan: 'Siti Aminah', paket: 'Paket Edukasi Budaya', tanggal: '14 Okt 2024', status: 'Selesai' },
+    { id: '#RES-003', nama_pemesan: 'Ahmad Yani', paket: 'Paket Jelajah Alam', tanggal: '15 Okt 2024', status: 'Baru' },
+    { id: '#RES-004', nama_pemesan: 'Lina Marlina', paket: 'Paket Kulinari Desa', tanggal: '18 Okt 2024', status: 'Baru' },
+  ];
 
   if (isSupabaseConfigured()) {
     try {
       const { count: cDest } = await supabase.from('destinasi').select('*', { count: 'exact', head: true });
-      if (cDest !== null) stats.destinasiCount = cDest;
-
       const { count: cPaket } = await supabase.from('paket_wisata').select('*', { count: 'exact', head: true });
-      if (cPaket !== null) stats.paketCount = cPaket;
+      const { count: cBlog } = await supabase.from('artikel').select('*', { count: 'exact', head: true });
+      const { count: cRes } = await supabase.from('reservasi').select('*', { count: 'exact', head: true });
 
-      const { count: cArt } = await supabase.from('artikel').select('*', { count: 'exact', head: true }).eq('status', 'published');
-      if (cArt !== null) stats.artikelCount = cArt;
+      if (cDest !== null) stats.destinasi = cDest;
+      if (cPaket !== null) stats.paket = cPaket;
+      if (cBlog !== null) stats.artikel = cBlog;
+      if (cRes !== null) stats.reservasi = cRes;
 
-      const { count: cRsv } = await supabase.from('reservasi').select('*', { count: 'exact', head: true }).eq('status', 'baru');
-      if (cRsv !== null) stats.reservasiBaruCount = cRsv;
-
-      const { data: recent } = await supabase.from('reservasi').select('*').order('created_at', { ascending: false }).limit(5);
-      if (recent) recentReservations = recent;
+      const { data: resData } = await supabase.from('reservasi').select('*, paket_wisata(nama)').order('created_at', { ascending: false }).limit(5);
+      if (resData && resData.length > 0) {
+        recentReservations = resData.map((r, i) => ({
+          id: `#RES-${String(i + 1).padStart(3, '0')}`,
+          nama_pemesan: r.nama_pemesan,
+          paket: r.paket_wisata?.nama || 'Paket General',
+          tanggal: r.tanggal_kunjungan ? new Date(r.tanggal_kunjungan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Terbaru',
+          status: r.status === 'pending' ? 'Baru' : 'Selesai'
+        }));
+      }
     } catch (e) {
-      console.warn('Fallback stats:', e);
+      console.warn('Fallback seed stats:', e);
     }
   }
 
   const container = document.createElement('div');
-  container.className = 'dashboard-wrapper';
+  container.className = 'flex h-screen overflow-hidden font-body-md text-on-surface bg-slate-100 w-full';
 
   container.innerHTML = `
-    ${renderAdminSidebar('#/admin/overview')}
+    ${renderSidebar('overview')}
 
-    <main class="admin-main">
-      ${renderAdminHeader('Overview Dashboard')}
+    <main class="flex-grow flex flex-col overflow-hidden">
+      <!-- Top Header -->
+      <header class="h-20 bg-surface-container-lowest border-b border-outline-variant/30 flex items-center justify-between px-6 flex-shrink-0">
+        <h2 class="font-display-lg text-2xl font-bold text-primary m-0">Overview Dashboard</h2>
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary text-white font-bold flex items-center justify-center text-sm shadow-sm">AU</div>
+            <div class="flex flex-col">
+              <span class="font-body-sm text-sm font-semibold text-on-surface">Admin User</span>
+              <span class="font-label-caps text-xs text-on-surface-variant">Administrator</span>
+            </div>
+          </div>
+          <button id="logout-btn" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-variant hover:bg-rose-100 hover:text-rose-700 text-on-surface-variant transition-colors text-xs font-bold">
+            <span class="material-symbols-outlined text-sm">logout</span>
+            <span>Keluar</span>
+          </button>
+        </div>
+      </header>
 
-      <div class="admin-body">
-        <!-- Stat Cards Grid -->
-        <div class="admin-stats-grid">
-          <div class="stat-card">
-            <div class="stat-card-icon" style="background: #e6f4ea; color: var(--primary-500);">⛰️</div>
-            <div class="stat-card-info">
-              <h3>${stats.destinasiCount}</h3>
-              <p>Total Destinasi Wisata</p>
+      <!-- Scrollable Main Dashboard Area -->
+      <div class="flex-grow p-6 overflow-y-auto">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-level-1 flex items-center justify-between border border-outline-variant/20">
+            <div>
+              <p class="font-label-caps text-xs font-bold text-on-surface-variant uppercase mb-1">TOTAL DESTINASI</p>
+              <h3 class="font-display-lg text-3xl font-bold text-primary m-0">${stats.destinasi}</h3>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-primary-container text-white flex items-center justify-center shadow-sm">
+              <span class="material-symbols-outlined text-2xl">landscape</span>
             </div>
           </div>
 
-          <div class="stat-card">
-            <div class="stat-card-icon" style="background: #fff8e6; color: var(--accent-amber);">🎒</div>
-            <div class="stat-card-info">
-              <h3>${stats.paketCount}</h3>
-              <p>Paket Wisata Aktif</p>
+          <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-level-1 flex items-center justify-between border border-outline-variant/20">
+            <div>
+              <p class="font-label-caps text-xs font-bold text-on-surface-variant uppercase mb-1">TOTAL PAKET</p>
+              <h3 class="font-display-lg text-3xl font-bold text-primary m-0">${stats.paket}</h3>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-primary-container text-white flex items-center justify-center shadow-sm">
+              <span class="material-symbols-outlined text-2xl">inventory_2</span>
             </div>
           </div>
 
-          <div class="stat-card">
-            <div class="stat-card-icon" style="background: #e0f2fe; color: var(--status-info);">📰</div>
-            <div class="stat-card-info">
-              <h3>${stats.artikelCount}</h3>
-              <p>Artikel Dipublikasikan</p>
+          <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-level-1 flex items-center justify-between border border-outline-variant/20">
+            <div>
+              <p class="font-label-caps text-xs font-bold text-on-surface-variant uppercase mb-1">ARTIKEL BLOG</p>
+              <h3 class="font-display-lg text-3xl font-bold text-primary m-0">${stats.artikel}</h3>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-primary-container text-white flex items-center justify-center shadow-sm">
+              <span class="material-symbols-outlined text-2xl">rss_feed</span>
             </div>
           </div>
 
-          <div class="stat-card">
-            <div class="stat-card-icon" style="background: #fee2e2; color: var(--status-error);">📋</div>
-            <div class="stat-card-info">
-              <h3>${stats.reservasiBaruCount}</h3>
-              <p>Reservasi Baru</p>
+          <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-level-1 flex items-center justify-between border border-outline-variant/20">
+            <div>
+              <p class="font-label-caps text-xs font-bold text-on-surface-variant uppercase mb-1">RESERVASI BARU</p>
+              <h3 class="font-display-lg text-3xl font-bold text-primary m-0">${stats.reservasi}</h3>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-secondary-container text-secondary flex items-center justify-center shadow-sm font-bold">
+              <span class="material-symbols-outlined text-2xl">event_available</span>
             </div>
           </div>
         </div>
 
-        <!-- Quick Actions & Recent Table -->
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
-          <!-- Recent Reservations -->
-          <div class="card" style="padding: 24px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <h3 style="font-size: 1.15rem;">📋 Reservasi Terbaru</h3>
-              <a href="#/admin/reservasi" style="font-size: 0.85rem; color: var(--primary-500); font-weight: 600;">Lihat Semua →</a>
-            </div>
-
-            <div class="table-wrapper">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Pemesan</th>
-                    <th>Tanggal</th>
-                    <th>Jumlah</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${recentReservations.length === 0 ? `
-                    <tr><td colspan="4" style="text-align: center; color: var(--neutral-600);">Belum ada reservasi masuk.</td></tr>
-                  ` : recentReservations.map(item => `
-                    <tr>
-                      <td>
-                        <strong>${item.nama}</strong>
-                        <div style="font-size: 0.8rem; color: var(--neutral-600);">${item.telepon}</div>
-                      </td>
-                      <td>${item.tanggal_kunjungan}</td>
-                      <td>${item.jumlah_orang} Orang</td>
-                      <td>
-                        <span class="badge ${item.status === 'baru' ? 'badge-primary' : item.status === 'dikonfirmasi' ? 'badge-warning' : 'badge-success'}">
-                          ${item.status}
-                        </span>
-                      </td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
+        <!-- Recent Reservations Table -->
+        <div class="bg-surface-container-lowest rounded-2xl shadow-level-1 border border-outline-variant/20 overflow-hidden">
+          <div class="px-6 py-5 border-b border-outline-variant/20 flex justify-between items-center bg-surface">
+            <h3 class="font-display-lg text-lg font-bold text-primary m-0">Recent Reservations</h3>
+            <a href="#/admin/reservasi" class="text-primary hover:text-secondary transition-colors font-bold text-xs">VIEW ALL</a>
           </div>
-
-          <!-- Quick Shortcuts -->
-          <div class="card" style="padding: 24px;">
-            <h3 style="font-size: 1.15rem; margin-bottom: 16px;">⚡ Pintas Cepat</h3>
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-              <a href="#/admin/destinasi" class="btn btn-outline" style="justify-content: flex-start; text-align: left;">
-                ➕ Tambah Destinasi Wisata
-              </a>
-              <a href="#/admin/paket" class="btn btn-outline" style="justify-content: flex-start; text-align: left;">
-                ➕ Tambah Paket Wisata
-              </a>
-              <a href="#/admin/artikel" class="btn btn-outline" style="justify-content: flex-start; text-align: left;">
-                ✍️ Tulis Artikel Baru
-              </a>
-              <a href="#/admin/profil" class="btn btn-secondary" style="justify-content: flex-start; text-align: left;">
-                ⚙️ Perbarui Info Profil Desa
-              </a>
-            </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-outline-variant/20 bg-surface-container-low text-xs text-on-surface-variant uppercase tracking-wider font-bold">
+                  <th class="py-4 px-6">ID</th>
+                  <th class="py-4 px-6">Tamu</th>
+                  <th class="py-4 px-6">Paket Wisata</th>
+                  <th class="py-4 px-6">Tanggal</th>
+                  <th class="py-4 px-6">Status</th>
+                </tr>
+              </thead>
+              <tbody class="font-body-md text-sm text-on-surface">
+                ${recentReservations.map(res => `
+                  <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+                    <td class="py-4 px-6 font-bold text-primary">${res.id}</td>
+                    <td class="py-4 px-6 font-semibold">${res.nama_pemesan}</td>
+                    <td class="py-4 px-6 text-on-surface-variant">${res.paket}</td>
+                    <td class="py-4 px-6">${res.tanggal}</td>
+                    <td class="py-4 px-6">
+                      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${res.status === 'Baru' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
+                        ${res.status}
+                      </span>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </main>
   `;
 
-  setTimeout(() => initAdminSidebarEvents(), 0);
+  setTimeout(() => {
+    container.querySelector('#logout-btn')?.addEventListener('click', () => {
+      localStorage.removeItem('admin_logged_in');
+      window.location.hash = '#/admin/login';
+    });
+  }, 0);
+
   return container;
 };

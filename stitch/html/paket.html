@@ -1,0 +1,335 @@
+<!DOCTYPE html><html lang="id"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Paket Wisata - Tampirkulon Heritage &amp; Nature</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Outfit:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#7a9f88",
+                        "primary": "#001f11",
+                        "on-error": "#ffffff",
+                        "background": "#fff8ef",
+                        "secondary-fixed": "#b0f591",
+                        "primary-container": "#123524",
+                        "primary-fixed-dim": "#a9cfb7",
+                        "on-secondary-fixed-variant": "#165200",
+                        "tertiary-fixed": "#c8f085",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#f4e8c6",
+                        "surface-bright": "#fff8ef",
+                        "surface": "#fff8ef",
+                        "on-tertiary-fixed-variant": "#354e00",
+                        "on-primary-fixed": "#002112",
+                        "surface-container-highest": "#eee2c1",
+                        "on-secondary-fixed": "#052100",
+                        "on-error-container": "#93000a",
+                        "secondary": "#2f6b19",
+                        "primary-fixed": "#c5ecd2",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#211b07",
+                        "surface-tint": "#436652",
+                        "outline": "#727973",
+                        "outline-variant": "#c1c8c1",
+                        "on-primary-fixed-variant": "#2b4e3b",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#fff3d3",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#35721e",
+                        "on-tertiary-fixed": "#131f00",
+                        "tertiary-fixed-dim": "#add36c",
+                        "secondary-fixed-dim": "#95d878",
+                        "on-surface-variant": "#414843",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#211b07",
+                        "inverse-surface": "#36301a",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#223400",
+                        "surface-variant": "#eee2c1",
+                        "inverse-on-surface": "#fcf0cf",
+                        "secondary-container": "#b0f591",
+                        "on-tertiary-container": "#7ea241",
+                        "inverse-primary": "#a9cfb7",
+                        "surface-container": "#f9edcc",
+                        "tertiary": "#111d00",
+                        "surface-dim": "#e5d9b9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "0.5rem",
+                        "unit": "4",
+                        "md": "1.5rem",
+                        "lg": "2.5rem",
+                        "sm": "1rem",
+                        "gutter": "24px",
+                        "xl": "4rem",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Outfit"],
+                        "body-md": ["Inter"],
+                        "headline-md-mobile": ["Outfit"],
+                        "body-sm": ["Inter"],
+                        "title-lg": ["Outfit"],
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Outfit"],
+                        "display-lg": ["Outfit"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["36px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "title-lg": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "display-lg": ["56px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    },
+                    boxShadow: {
+                        'level-1': '0 4px 20px rgba(18, 53, 36, 0.08)',
+                        'level-2': '0 12px 32px rgba(18, 53, 36, 0.12)',
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased pt-24 min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md dark:bg-surface-container-low/80 shadow-sm border-b-0">
+<div class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto">
+<a class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg font-bold text-primary" href="#">
+                Tampirkulon Heritage &amp; Nature
+            </a>
+<!-- Desktop Navigation -->
+<div class="hidden md:flex gap-md items-center">
+<a class="text-on-surface-variant font-body-md text-body-md font-medium hover:text-secondary transition-colors duration-200" href="#">Home</a>
+<a class="text-on-surface-variant font-body-md text-body-md font-medium hover:text-secondary transition-colors duration-200" href="#">Profile</a>
+<a class="text-on-surface-variant font-body-md text-body-md font-medium hover:text-secondary transition-colors duration-200" href="#">Destinations</a>
+<a aria-current="page" class="text-primary font-body-md text-body-md font-bold border-b-2 border-tertiary pb-1 hover:text-secondary transition-colors duration-200" href="#">Packages</a>
+<button class="bg-primary text-on-primary px-sm py-xs rounded-full font-body-md text-body-md hover:bg-secondary transition-colors active:scale-95 ml-sm shadow-level-1 hover:shadow-level-2">
+                    Book Now
+                </button>
+</div>
+<!-- Mobile Menu Button (Visual Only for context) -->
+<button class="md:hidden text-primary p-xs">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-5 md:px-lg py-xl flex flex-col items-center">
+<!-- Header Section -->
+<header class="text-center max-w-2xl mb-xl">
+<h1 class="font-headline-md-mobile md:font-headline-md text-headline-md-mobile md:text-headline-md text-primary mb-sm">
+                Pilih Paket Liburan Anda
+            </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                Temukan pengalaman wisata desa yang otentik. Dari eksplorasi alam hingga lokakarya budaya, kami memiliki paket yang dirancang khusus untuk menciptakan memori tak terlupakan.
+            </p>
+</header>
+<!-- Pricing Cards Container -->
+<div class="w-full flex md:grid md:grid-cols-3 gap-lg overflow-x-auto md:overflow-visible pb-md no-scrollbar snap-x snap-mandatory px-5 md:px-0 -mx-5 md:mx-0">
+<!-- Basic Package -->
+<article class="bg-surface rounded-xl shadow-level-1 border border-surface-variant p-md flex flex-col min-w-[300px] md:min-w-0 snap-center shrink-0"><div class="-mx-5 -mt-5 mb-md h-48 overflow-hidden rounded-t-xl"><img alt="Trekking Hutan Pinus" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAMxOsdcqG1biTuhZQPkTuxTJ1vOyrpL89x6-z_tucCikqN0rGep8KsIF0ISbZPe3zNbwNKEnxDahVz7yiep9QZG8jgVl_DTdXX_AQ345028wik18IEh63X57ciLUKhzLWXevpjuEUcpMuLiuCR_E-XzSkzeaUN8Jl2c36w5y2bMKip9DJkCwpWGuHmEswLWVl55Vo7XYokv2biJeOs-I2oRMH1ZcpHZHyH6OZNlvEH4ZLpCLD8Usi"></div>
+<div class="mb-md">
+<h2 class="font-title-lg text-title-lg text-primary mb-xs">Paket Jelajah Alam</h2>
+<div class="flex items-baseline gap-xs">
+<span class="font-headline-md-mobile text-headline-md-mobile text-primary">Rp 150.000</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ pax</span>
+</div>
+</div>
+<div class="flex gap-sm mb-md border-y border-surface-variant py-sm">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span>
+<span class="font-body-sm text-body-sm">Half Day</span>
+</div>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="group">group</span>
+<span class="font-body-sm text-body-sm">Min. 2 Orang</span>
+</div>
+</div>
+<ul class="flex flex-col gap-sm mb-lg flex-grow">
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Trekking Hutan Pinus</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Kunjungan ke Curug Indah</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Snack Tradisional</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Guide Lokal Berpengalaman</span>
+</li>
+</ul>
+<button class="w-full bg-primary text-on-primary font-body-md text-body-md py-sm rounded-lg hover:bg-secondary transition-colors mt-auto shadow-level-1">
+                    Pesan Sekarang
+                </button>
+</article>
+<!-- Popular Package (Middle) -->
+<article class="bg-surface rounded-xl shadow-level-2 border-2 border-tertiary-fixed p-md flex flex-col min-w-[300px] md:min-w-0 snap-center shrink-0 relative transform md:-translate-y-sm"><div class="-mx-5 -mt-5 mb-md h-48 overflow-hidden rounded-t-xl"><img alt="Paket Budaya &amp; Alam" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLv0kmPyXlx735C-3FBTB_btvd6IOzpOfv8reV4yrmbXWSpYqTUCgFkZ_2PuSVRtioFNOUL_7vEfh9ykgRLvufo9vdRONN04mxuEumo797mDUt6r-DwXjhT8pZHuKBVfRgc3KcVFFHdy8NgyVVD17ZnV22HDZWY5H1at2jNZuOgrJ-kgBsda7pjf_0_rL9fYtVDavMg9G7Qv7iqE8gyLZpw9eZryb4JbvYGL_t-Hb1rDIcleP0-J6wiUfg"></div>
+<!-- Badge -->
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-tertiary-fixed text-tertiary px-sm py-xs rounded-full font-label-caps text-label-caps flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+                    POPULER
+                </div>
+<div class="mb-md">
+<h2 class="font-title-lg text-title-lg text-primary mb-xs">Paket Budaya &amp; Alam</h2>
+<div class="flex items-baseline gap-xs">
+<span class="font-headline-md-mobile text-headline-md-mobile text-primary">Rp 250.000</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ pax</span>
+</div>
+</div>
+<div class="flex gap-sm mb-md border-y border-surface-variant py-sm">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span>
+<span class="font-body-sm text-body-sm">Full Day</span>
+</div>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="group">group</span>
+<span class="font-body-sm text-body-sm">Min. 4 Orang</span>
+</div>
+</div>
+<ul class="flex flex-col gap-sm mb-lg flex-grow">
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Semua fasilitas Paket Jelajah Alam</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Makan Siang Khas Pedesaan</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Workshop Membuat Gula Aren</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Sesi Foto Pakaian Tradisional</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Souvenir Khas Desa</span>
+</li>
+</ul>
+<button class="w-full bg-tertiary text-primary font-body-md text-body-md font-bold py-sm rounded-lg hover:bg-tertiary-fixed transition-colors mt-auto shadow-level-1">
+                    Pesan Sekarang
+                </button>
+</article>
+<!-- Premium Package -->
+<article class="bg-surface rounded-xl shadow-level-1 border border-surface-variant p-md flex flex-col min-w-[300px] md:min-w-0 snap-center shrink-0"><div class="-mx-5 -mt-5 mb-md h-48 overflow-hidden rounded-t-xl"><img alt="Homestay Premium" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCz5u0FRTnGJc79J7otHTFEkrMAsyqDqB5KnC2GM2A52Bh--JfsZWD-LmkaFO3fNPhA69lUBOoMZwCbCTlxQ9rrfUNp-vcJA_UH7S9RhOmXyaaBsZ0qAe0E7ur-ruekeDvjbE7rEvJ5rWchpRJBUDGhwLpLnjZ0WvHPhiLmBfGIrcRAB5mgY9Dm9rabD-V4EOY22ASVcIjiXqTvKwMNSGhtzPs8SqWwRZzrxfY-TvpcN-LDKy8HRZG9"></div>
+<div class="mb-md">
+<h2 class="font-title-lg text-title-lg text-primary mb-xs">Paket Menginap</h2>
+<div class="flex items-baseline gap-xs">
+<span class="font-headline-md-mobile text-headline-md-mobile text-primary">Rp 650.000</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ pax</span>
+</div>
+</div>
+<div class="flex gap-sm mb-md border-y border-surface-variant py-sm">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span>
+<span class="font-body-sm text-body-sm">2H 1M</span>
+</div>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="group">group</span>
+<span class="font-body-sm text-body-sm">Min. 2 Orang</span>
+</div>
+</div>
+<ul class="flex flex-col gap-sm mb-lg flex-grow">
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Semua fasilitas Paket Budaya &amp; Alam</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Akomodasi Homestay Premium</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Makan 3x Sehari (B, L, D)</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Api Unggun &amp; Jagung Bakar</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-background">Transportasi Antar Jemput (Radius 10km)</span>
+</li>
+</ul>
+<button class="w-full bg-primary text-on-primary font-body-md text-body-md py-sm rounded-lg hover:bg-secondary transition-colors mt-auto shadow-level-1">
+                    Pesan Sekarang
+                </button>
+</article>
+</div>
+<!-- Image Section to show aesthetic -->
+<div class="mt-xl w-full">
+<div class="bg-cover bg-center w-full h-64 md:h-96 rounded-xl shadow-level-1" data-alt="A serene, wide-angle landscape photograph of a traditional Indonesian village nestled amongst lush, deep green rolling hills and pine forests. Warm, golden hour sunlight washes over terraced rice paddies, creating a peaceful, organic atmosphere that reflects an eco-tourism aesthetic. The lighting is soft and natural, emphasizing the pristine, untouched beauty of the environment." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAy8dRaTmjaItnag4eAYbwrCr-xQ0ns_mjRDwDmL-8HyVzJhVHFCZog6Lhhu3pSQ3TvmDuqmRYaw19MKA_5wk-yZwAzLqVj5e5PqXCgzgkjEu_-BkuavYWz6t-cgEuXbzpTV5DWW3UIXdR3NwZwlgMZRAaqS5Jvx5JBw7Ypdl91XbGRGEHlWgw4GACJ8zG8L5xRXs9D_vUJ8P0XlDEgnY2G-sbmQUTVOC9fESJxehgngchJj56pqRw8')"></div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-primary-container dark:bg-primary-container w-full mt-auto">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg px-lg py-xl max-w-container-max mx-auto">
+<div class="flex flex-col gap-sm">
+<span class="font-headline-md text-headline-md text-on-primary">
+                    Tampirkulon Heritage &amp; Nature
+                </span>
+<p class="font-body-sm text-body-sm text-on-primary-container">
+                    Menghadirkan pesona alam dan kearifan lokal yang autentik untuk pengalaman wisata berkelanjutan.
+                </p>
+</div>
+<div class="flex flex-col gap-sm">
+<h3 class="font-title-lg text-title-lg text-on-primary">Quick Links</h3>
+<nav class="flex flex-col gap-xs">
+<a class="font-body-md text-body-md text-on-primary-container hover:text-secondary-fixed transition-colors cursor-pointer" href="#">About Us</a>
+<a class="font-body-md text-body-md text-tertiary-fixed font-bold hover:text-secondary-fixed transition-colors cursor-pointer" href="#">Packages</a>
+</nav>
+</div>
+<div class="flex flex-col gap-sm">
+<h3 class="font-title-lg text-title-lg text-on-primary">Contact Info</h3>
+<div class="flex flex-col gap-xs font-body-md text-body-md text-on-primary-container">
+<p class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[20px]" data-icon="location_on">location_on</span>
+                        Desa Tampirkulon, Magelang, Jawa Tengah
+                    </p>
+<p class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[20px]" data-icon="mail">mail</span>
+                        hello@tampirkulon.id
+                    </p>
+</div>
+</div>
+</div>
+<div class="w-full border-t border-on-primary-container/20 py-sm px-lg text-center">
+<span class="font-body-sm text-body-sm text-on-primary-container">
+                © 2024 Tampirkulon Heritage &amp; Nature. All rights reserved.
+            </span>
+</div>
+</footer>
+</body></html>

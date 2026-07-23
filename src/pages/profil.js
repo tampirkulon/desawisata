@@ -8,94 +8,118 @@ export const renderProfil = async () => {
 
   if (isSupabaseConfigured()) {
     try {
-      const { data } = await supabase.from('profil_desa').select('*').single();
-      if (data) profil = data;
+      const { data: prof } = await supabase.from('profil_desa').select('*').single();
+      if (prof) profil = prof;
     } catch (e) {
-      console.warn('Fallback to seed:', e);
+      console.warn('Fallback seed:', e);
     }
   }
 
   const container = document.createElement('div');
+  container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background pt-20';
+
   container.innerHTML = `
     ${renderNavbar()}
 
-    <!-- Header Banner -->
-    <div style="background: var(--dark-navy); color: #fff; padding: 120px 0 60px; text-align: center;">
-      <div class="container">
-        <span class="badge badge-gold" style="margin-bottom: 12px;">Profil Resmi</span>
-        <h1 style="color: #fff; font-size: 2.75rem; margin-bottom: 12px;">Profil Desa Wisata Tampirkulon</h1>
-        <p style="color: rgba(255,255,255,0.85); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-          Kecamatan Candimulyo, Kabupaten Magelang, Jawa Tengah
-        </p>
+    <!-- Header Page Section -->
+    <section class="w-full bg-primary py-16 md:py-24 px-6 relative overflow-hidden text-center text-white" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center;">
+      <div class="max-w-container-max mx-auto text-center relative z-10">
+        <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Profil Desa Wisata Tampirkulon</h1>
+        <p class="text-primary-fixed-dim max-w-2xl mx-auto font-body-md text-base md:text-lg text-white/90">Mengenal lebih dekat warisan budaya, keindahan alam, dan visi pembangunan berkelanjutan di jantung Jawa Tengah.</p>
       </div>
-    </div>
+    </section>
 
-    <!-- Content Section -->
-    <div class="container section">
-      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px;" class="profil-grid-layout">
-        <div>
-          <!-- Sejarah -->
-          <div class="card" style="padding: 36px; margin-bottom: 32px;">
-            <h2 style="font-size: 1.75rem; margin-bottom: 20px; border-bottom: 2px solid var(--primary-500); padding-bottom: 10px;">📖 Sejarah & Gambaran Umum</h2>
-            <div style="font-size: 1.05rem; line-height: 1.8; color: var(--neutral-700);">
-              ${(profil.sejarah || '').split('\n').map(p => `<p style="margin-bottom: 16px;">${p}</p>`).join('')}
-            </div>
-          </div>
-
-          <!-- Visi & Misi -->
-          <div class="card" style="padding: 36px;">
-            <h2 style="font-size: 1.75rem; margin-bottom: 20px; border-bottom: 2px solid var(--primary-500); padding-bottom: 10px;">🎯 Visi & Misi Desa</h2>
-            
-            <div style="margin-bottom: 24px;">
-              <h3 style="color: var(--primary-500); margin-bottom: 8px;">Visi:</h3>
-              <p style="font-weight: 500; font-size: 1.1rem; color: var(--neutral-800); bg: var(--primary-50); padding: 16px; border-radius: 8px; background: var(--primary-50);">
-                "${profil.visi}"
+    <!-- Main Content Section -->
+    <section class="max-w-container-max mx-auto px-4 md:px-16 py-16 flex-grow w-full">
+      <div class="flex flex-col lg:flex-row gap-12">
+        <!-- Left Column (60%) -->
+        <div class="lg:w-[60%] flex flex-col gap-10">
+          <article>
+            <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-primary mb-4 border-b border-outline-variant/30 pb-3">Sejarah Desa</h2>
+            <div class="font-body-md text-on-surface-variant leading-relaxed flex flex-col gap-4 text-base">
+              <p>
+                Desa Tampirkulon memiliki sejarah panjang yang terjalin erat dengan perkembangan peradaban agraris di lereng pegunungan. Berawal dari pemukiman kecil yang mengandalkan sumber air alami dan kesuburan tanah vulkanik, desa ini perlahan berkembang menjadi pusat komunitas yang memegang teguh tradisi leluhur.
+              </p>
+              <p>
+                Nama 'Tampirkulon' sendiri diyakini berasal dari alat tradisional penampi beras (tampah/tampir) yang melambangkan kemakmuran dan 'kulon' yang menunjukkan posisi geografis di sebelah barat. Warisan budaya ini dijaga turun-temurun, tercermin dalam arsitektur rumah tua, upacara adat panen, dan semangat gotong royong yang masih kental terasa di setiap sudut desa.
+              </p>
+              <p>
+                Transformasi menjadi Desa Wisata dimulai pada awal dekade 2000-an, didorong oleh inisiatif pemuda lokal yang menyadari potensi alam dan budaya mereka. Dengan pendekatan eko-pariwisata, Tampirkulon kini tidak hanya melestarikan warisannya tetapi juga membagikan keindahannya dengan dunia.
               </p>
             </div>
+          </article>
 
-            <div>
-              <h3 style="color: var(--primary-500); margin-bottom: 12px;">Misi:</h3>
-              <div style="line-height: 1.8; font-size: 1rem; color: var(--neutral-700);">
-                ${(profil.misi || '').split('\n').map(m => `<p style="margin-bottom: 8px;">${m}</p>`).join('')}
-              </div>
+          <article>
+            <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-primary mb-4 border-b border-outline-variant/30 pb-3">Visi & Misi</h2>
+            <div class="bg-surface-container rounded-2xl p-8 border border-outline-variant/30">
+              <h3 class="font-display-lg text-xl font-bold text-primary mb-2">Visi</h3>
+              <p class="text-on-surface-variant mb-6 italic text-base leading-relaxed">"${profil.visi || 'Menjadi Desa Wisata Mandiri Berbasis Kearifan Lokal dan Kelestarian Alam Bertaraf Internasional.'}"</p>
+              
+              <h3 class="font-display-lg text-xl font-bold text-primary mb-4">Misi</h3>
+              <ul class="list-none flex flex-col gap-3 p-0">
+                <li class="flex items-start gap-3 text-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-primary text-xl mt-0.5">check_circle</span>
+                  <span>Melestarikan nilai-nilai budaya dan tradisi lokal sebagai daya tarik utama wisata edukasi.</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-primary text-xl mt-0.5">eco</span>
+                  <span>Menjaga keseimbangan ekosistem dan kebersihan lingkungan melalui pengelolaan tata ruang yang ramah alam.</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-primary text-xl mt-0.5">group</span>
+                  <span>Meningkatkan kesejahteraan ekonomi masyarakat melalui pemberdayaan UMKM lokal dan pengelolaan pariwisata terpadu.</span>
+                </li>
+              </ul>
             </div>
-          </div>
+          </article>
         </div>
 
-        <!-- Sidebar Info Geografis -->
-        <div>
-          <div class="card" style="padding: 28px; position: sticky; top: 90px;">
-            <h3 style="font-size: 1.3rem; margin-bottom: 20px; border-bottom: 1px solid var(--neutral-200); padding-bottom: 10px;">📍 Informasi Geografis</h3>
+        <!-- Right Column (40%) -->
+        <aside class="lg:w-[40%]">
+          <div class="bg-surface rounded-2xl p-8 border border-outline-variant/50 shadow-level-1 relative overflow-hidden">
+            <h3 class="font-display-lg text-2xl font-bold text-primary mb-6">Informasi Desa</h3>
             
-            <ul style="list-style: none; display: flex; flex-direction: column; gap: 16px;">
-              <li>
-                <span style="display: block; font-size: 0.85rem; color: var(--neutral-600);">Kecamatan & Kabupaten</span>
-                <span style="font-weight: 600;">Candimulyo, Magelang</span>
+            <div class="w-full h-48 bg-surface-variant rounded-xl mb-6 flex items-center justify-center overflow-hidden relative border border-outline-variant/30">
+              <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80" alt="Peta Lokasi" class="w-full h-full object-cover opacity-80" />
+              <div class="absolute inset-0 bg-primary/20 backdrop-blur-[1px] flex flex-col items-center justify-center text-white">
+                <span class="material-symbols-outlined text-4xl mb-1 text-tertiary-fixed">location_on</span>
+                <span class="font-bold text-xs bg-black/50 px-3 py-1 rounded-full">Tampirkulon, Magelang</span>
+              </div>
+            </div>
+
+            <ul class="flex flex-col gap-4 list-none p-0">
+              <li class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
+                <div class="bg-primary-fixed text-primary p-2.5 rounded-full flex items-center justify-center">
+                  <span class="material-symbols-outlined text-xl">aspect_ratio</span>
+                </div>
+                <div>
+                  <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold">Luas Wilayah</p>
+                  <p class="font-display-lg text-lg font-bold text-primary">150+ Hektar</p>
+                </div>
               </li>
-              <li>
-                <span style="display: block; font-size: 0.85rem; color: var(--neutral-600);">Luas Wilayah</span>
-                <span style="font-weight: 600;">${profil.luas_wilayah || '3.45 km²'}</span>
+              <li class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
+                <div class="bg-secondary-container text-secondary p-2.5 rounded-full flex items-center justify-center">
+                  <span class="material-symbols-outlined text-xl">diversity_3</span>
+                </div>
+                <div>
+                  <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold">Populasi</p>
+                  <p class="font-display-lg text-lg font-bold text-primary">2.500+ Jiwa</p>
+                </div>
               </li>
-              <li>
-                <span style="display: block; font-size: 0.85rem; color: var(--neutral-600);">Jumlah Penduduk</span>
-                <span style="font-weight: 600;">${profil.populasi || '2.850 Jiwa'}</span>
-              </li>
-              <li>
-                <span style="display: block; font-size: 0.85rem; color: var(--neutral-600);">Jam Operasional Wisata</span>
-                <span style="font-weight: 600;">${profil.jam_operasional || '08:00 - 17:00 WIB'}</span>
+              <li class="flex items-start gap-4 p-4 bg-surface-container-low rounded-xl">
+                <div class="bg-tertiary-fixed text-primary p-2.5 rounded-full flex items-center justify-center mt-1">
+                  <span class="material-symbols-outlined text-xl">home_pin</span>
+                </div>
+                <div>
+                  <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold mb-1">Alamat Lengkap</p>
+                  <p class="font-body-sm text-sm text-primary leading-relaxed">${profil.alamat || 'Desa Tampirkulon, Kecamatan Candimulyo, Kabupaten Magelang, Jawa Tengah 56191'}</p>
+                </div>
               </li>
             </ul>
-
-            <div style="margin-top: 24px; border-top: 1px solid var(--neutral-200); padding-top: 20px;">
-              <h4 style="margin-bottom: 12px; font-size: 1rem;">Lokasi di Google Maps</h4>
-              <div style="border-radius: var(--radius-md); overflow: hidden; height: 220px;">
-                ${profil.google_maps_embed || '<div style="background:#eee; height:100%; display:flex; align-items:center; justify-content:center;">Peta Google Maps</div>'}
-              </div>
-            </div>
           </div>
-        </div>
+        </aside>
       </div>
-    </div>
+    </section>
 
     ${renderFooter(profil)}
   `;

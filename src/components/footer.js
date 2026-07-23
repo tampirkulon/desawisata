@@ -3,56 +3,61 @@
 export const renderFooter = (profilData = {}) => {
   const currentYear = new Date().getFullYear();
   const namaDesa = profilData.nama_desa || 'Desa Wisata Tampirkulon';
-  const alamat = profilData.alamat || 'Jl. Raya Candimulyo No. 12, Tampirkulon, Candimulyo, Magelang';
+  const alamat = profilData.alamat || 'Jl. Raya Tampirkulon No. 123, Candimulyo, Magelang, Jawa Tengah';
   const telepon = profilData.telepon || '+62 812-3456-7890';
+  const email = profilData.email || 'info@tampirkulon.desa.id';
 
   return `
-    <footer class="site-footer">
-      <div class="container">
-        <div class="footer-grid">
-          <div>
-            <a href="#/" style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--primary); display: inline-block; margin-bottom: 12px;">
-              Tampirkulon
-            </a>
-            <p style="font-size: 0.9rem; line-height: 1.6; color: var(--on-surface-variant); max-width: 320px; margin-bottom: 20px;">
-              Memelihara kearifan budaya dan keasrian alam Jawa melalui pariwisata berkelanjutan.
-            </p>
-            <div style="display: flex; gap: 12px;">
-              <a href="${profilData.instagram || '#'}" target="_blank" class="btn btn-sm btn-secondary" style="border-radius: 50%; width: 40px; height: 40px; padding: 0;">📸</a>
-              <a href="${profilData.facebook || '#'}" target="_blank" class="btn btn-sm btn-secondary" style="border-radius: 50%; width: 40px; height: 40px; padding: 0;">📘</a>
-              <a href="${profilData.youtube || '#'}" target="_blank" class="btn btn-sm btn-secondary" style="border-radius: 50%; width: 40px; height: 40px; padding: 0;">▶️</a>
+    <footer class="bg-primary-container text-on-primary w-full border-t border-outline-variant/20 mt-auto">
+      <div class="py-12 px-4 md:px-16 max-w-container-max mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+          <!-- Column 1: About -->
+          <div class="flex flex-col gap-4">
+            <div class="font-display-lg text-2xl font-bold text-tertiary-fixed">
+              ${namaDesa}
             </div>
+            <p class="text-on-primary-container font-body-sm text-sm leading-relaxed">
+              Desa Wisata Tampirkulon adalah destinasi yang memadukan keindahan alam pegunungan dengan kearifan lokal yang kental. Kami berkomitmen untuk melestarikan warisan budaya dan alam demi masa depan yang berkelanjutan.
+            </p>
           </div>
-
-          <div>
-            <h4>Jelajahi</h4>
-            <ul class="footer-links">
-              <li><a href="#/destinasi">Wisata Alam</a></li>
-              <li><a href="#/paket">Paket Tour Durian</a></li>
-              <li><a href="#/galeri">Galeri Foto & Video</a></li>
-              <li><a href="#/blog">Artikel & Berita</a></li>
+          <!-- Column 2: Quick Links -->
+          <div class="flex flex-col gap-4">
+            <h4 class="font-title-lg text-lg text-tertiary-fixed font-semibold">Tautan Cepat</h4>
+            <ul class="flex flex-col gap-2 list-none p-0">
+              <li><a href="#/" class="text-on-primary-container font-body-sm text-sm hover:text-tertiary-fixed transition-colors">Beranda</a></li>
+              <li><a href="#/destinasi" class="text-on-primary-container font-body-sm text-sm hover:text-tertiary-fixed transition-colors">Destinasi Wisata</a></li>
+              <li><a href="#/paket" class="text-on-primary-container font-body-sm text-sm hover:text-tertiary-fixed transition-colors">Paket Tour</a></li>
+              <li><a href="#/profil" class="text-on-primary-container font-body-sm text-sm hover:text-tertiary-fixed transition-colors">Profil Desa</a></li>
+              <li><a href="#/galeri" class="text-on-primary-container font-body-sm text-sm hover:text-tertiary-fixed transition-colors">Galeri Foto</a></li>
+              <li><a href="#/blog" class="text-on-primary-container font-body-sm text-sm hover:text-tertiary-fixed transition-colors">Blog Artikel</a></li>
             </ul>
           </div>
-
-          <div>
-            <h4>Informasi</h4>
-            <ul class="footer-links">
-              <li><a href="#/profil">Profil Desa</a></li>
-              <li><a href="#/kontak">Kontak & Reservasi</a></li>
-              <li><a href="#/admin/login">Login Pengelola Admin</a></li>
+          <!-- Column 3: Contact -->
+          <div class="flex flex-col gap-4">
+            <h4 class="font-title-lg text-lg text-tertiary-fixed font-semibold">Kontak Kami</h4>
+            <ul class="flex flex-col gap-3 list-none p-0">
+              <li class="flex items-start gap-3 text-on-primary-container font-body-sm text-sm">
+                <span class="material-symbols-outlined text-tertiary-fixed">location_on</span>
+                <span>${alamat}</span>
+              </li>
+              <li class="flex items-center gap-3 text-on-primary-container font-body-sm text-sm">
+                <span class="material-symbols-outlined text-tertiary-fixed">call</span>
+                <span>${telepon}</span>
+              </li>
+              <li class="flex items-center gap-3 text-on-primary-container font-body-sm text-sm">
+                <span class="material-symbols-outlined text-tertiary-fixed">mail</span>
+                <span>${email}</span>
+              </li>
             </ul>
-          </div>
-
-          <div>
-            <h4>Kontak & Alamat</h4>
-            <p style="font-size: 0.875rem; color: var(--on-surface-variant); margin-bottom: 8px;">📍 ${alamat}</p>
-            <p style="font-size: 0.875rem; color: var(--on-surface-variant); margin-bottom: 8px;">📞 ${telepon}</p>
-            <p style="font-size: 0.875rem; color: var(--on-surface-variant);">✉️ ${profilData.email || 'info@tampirkulon.desawisata.id'}</p>
           </div>
         </div>
-
-        <div class="footer-bottom">
-          <p>© ${currentYear} ${namaDesa}. Preserving the Soul of Java.</p>
+        <div class="pt-8 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div class="text-on-primary-container/70 font-body-sm text-xs">
+            © ${currentYear} ${namaDesa}. Hak Cipta Dilindungi.
+          </div>
+          <div class="flex gap-6">
+            <a href="#/admin/login" class="text-on-primary-container/70 hover:text-tertiary-fixed transition-colors font-body-sm text-xs">Admin Login</a>
+          </div>
         </div>
       </div>
     </footer>

@@ -5,198 +5,240 @@ import { mockData } from '../data/seed.js';
 
 export const renderBeranda = async () => {
   let profil = mockData.profil_desa;
-  let kategori = mockData.kategori_wisata;
   let destinasi = mockData.destinasi;
-  let testimoni = mockData.testimoni;
 
   if (isSupabaseConfigured()) {
     try {
       const { data: profilData } = await supabase.from('profil_desa').select('*').single();
       if (profilData) profil = profilData;
 
-      const { data: katData } = await supabase.from('kategori_wisata').select('*').order('urutan', { ascending: true });
-      if (katData && katData.length > 0) kategori = katData;
-
-      const { data: destData } = await supabase.from('destinasi').select('*').eq('is_published', true).eq('is_unggulan', true).limit(3);
+      const { data: destData } = await supabase.from('destinasi').select('*').eq('is_published', true).limit(3);
       if (destData && destData.length > 0) destinasi = destData;
-
-      const { data: testData } = await supabase.from('testimoni').select('*').eq('is_shown', true);
-      if (testData && testData.length > 0) testimoni = testData;
     } catch (e) {
-      console.warn('Falling back to seed data:', e);
+      console.warn('Fallback seed:', e);
     }
   }
 
   const container = document.createElement('div');
+  container.className = 'w-full min-h-screen flex flex-col';
+
   container.innerHTML = `
     ${renderNavbar()}
 
-    <!-- Hero Section (Stitch UI Inspired) -->
-    <section class="hero-section" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2000&q=80');">
-      <div class="hero-overlay"></div>
-      <div class="hero-content">
-        <span class="badge badge-gold" style="margin-bottom: 20px; padding: 6px 16px; font-size: 0.85rem;">Discover the Soul of Java</span>
-        <h1 class="hero-title">${profil.nama_desa || 'Desa Wisata Tampirkulon'}</h1>
-        <p class="hero-subtitle">${profil.tagline || 'Keindahan Alam & Pesona Budaya Candimulyo, Magelang'}</p>
-        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 24px;">
-          <a href="#/destinasi" class="btn btn-primary btn-lg">Jelajahi Wisata</a>
-          <a href="#/kontak" class="glass-panel text-on-primary font-label-md btn-lg" style="color: #fff; border-radius: var(--radius-full); padding: 14px 28px; display: inline-flex; align-items: center; gap: 8px;">
-            <span class="material-symbols-outlined">calendar_month</span>
+    <!-- Header / Hero Section (Stitch Exact Design) -->
+    <header class="relative min-h-screen flex items-center justify-center text-center text-white pt-20" id="home">
+      <div class="absolute inset-0 bg-cover bg-center z-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD1N3qfr45yGM4LIKsP1pNq68gNszE9t16hkBpSAprxngOlDrcG0fnvmNffH5_U3RwX7YxGgeOlCWIt60mzvtTAkHXSRU3RMPrM0PZPWZXRHy5uFNjikWcHVqhFhPFTHABTjT_6dRAAH5Te068QCo6Ow_7L92HcK4GXHyW-4fyN1UC0iCWWT5nWRx-gAnC6fVi8Ou7tiA-JBVZcPPWNXLY54akzStvnMQtGuydK-46gAGSErezw4ASK');"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-primary/80 z-0"></div>
+      <div class="relative z-10 max-w-4xl px-6 py-20 flex flex-col items-center">
+        <span class="bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
+          Welcome to Tampirkulon
+        </span>
+        <h1 class="font-display-lg text-4xl md:text-6xl font-bold mb-6 leading-tight drop-shadow-md">
+          ${profil.nama_desa || 'Jelajahi Warisan Alam Tampirkulon'}
+        </h1>
+        <p class="font-body-md text-lg md:text-xl text-white/90 mb-10 max-w-2xl leading-relaxed">
+          ${profil.tagline || 'Temukan keindahan tersembunyi, rasakan kehangatan budaya, dan ciptakan kenangan tak terlupakan di desa wisata kami.'}
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center">
+          <a href="#/destinasi" class="bg-secondary text-white font-bold px-8 py-3.5 rounded-full hover:bg-secondary/90 transition-all transform hover:-translate-y-1 shadow-level-1">
+            Mulai Petualangan
+          </a>
+          <a href="#/kontak" class="bg-white/20 backdrop-blur-md border border-white/40 text-white font-bold px-8 py-3.5 rounded-full hover:bg-white/30 transition-all">
             Reservasi Online
           </a>
         </div>
       </div>
-      <div class="hero-scroll-indicator" onclick="document.getElementById('section-experiences').scrollIntoView({behavior: 'smooth'})" style="position: absolute; bottom: 30px; font-size: 2rem; opacity: 0.8; cursor: pointer;">
-        ↓
-      </div>
-    </section>
+    </header>
 
-    <!-- Curated Experiences (Bento Grid Layout - Stitch Design) -->
-    <section class="section container" id="section-experiences">
-      <div class="section-header">
-        <span class="badge badge-primary" style="margin-bottom: 8px;">Immerse Yourself</span>
-        <h2 class="section-title">Pengalaman Wisata Terpilih</h2>
-        <p class="section-subtitle">Dari petualangan jelajah alam hingga perjalanan kuliner durian Candimulyo, temukan cara terbaik menikmati Tampirkulon.</p>
-      </div>
-
-      <div class="bento-grid">
-        <!-- Large Bento Card (Nature Trails) -->
-        <div class="bento-card-large" onclick="window.location.hash='#/destinasi'">
-          <img class="bento-card-img" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80" alt="Wisata Alam & Terasering Sawah" />
-          <div class="bento-overlay">
-            <span class="badge badge-gold" style="width: fit-content; margin-bottom: 12px;">🌱 Wisata Alam</span>
-            <h3 style="font-size: 1.75rem; color: #fff; margin-bottom: 8px;">Terasering Sawah & Perbukitan Asri</h3>
-            <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin-bottom: 16px;">Nikmati pemandangan sawah terasering berlatar Gunung Merbabu dan sungai jernih.</p>
-            <span style="font-weight: 600; color: var(--accent-gold); display: inline-flex; align-items: center; gap: 6px;">Eksplor Sekarang →</span>
+    <!-- Highlights Grid Section -->
+    <section class="py-16 md:py-24 bg-surface border-t-4 border-primary" id="highlights">
+      <div class="max-w-container-max mx-auto px-4 md:px-16">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="bg-surface-container-lowest p-8 rounded-2xl text-center shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300">
+            <div class="w-16 h-16 bg-surface-container text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="material-symbols-outlined text-3xl">park</span>
+            </div>
+            <h3 class="font-display-lg text-xl font-bold text-on-surface mb-2">Wisata Alam</h3>
+            <p class="font-body-sm text-sm text-on-surface-variant">Eksplorasi bentang alam yang asri dan menenangkan.</p>
           </div>
-        </div>
 
-        <!-- Small Bento Card Top (Kuliner Durian) -->
-        <div class="bento-card-small" onclick="window.location.hash='#/paket'">
-          <img class="bento-card-img" src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80" alt="Wisata Kuliner Durian" />
-          <div class="bento-overlay" style="padding: 20px;">
-            <span class="badge badge-primary" style="width: fit-content; margin-bottom: 6px;">🍲 Kuliner Durian</span>
-            <h4 style="font-size: 1.2rem; color: #fff;">Kebun Durian Candimulyo</h4>
+          <div class="bg-surface-container-lowest p-8 rounded-2xl text-center shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300">
+            <div class="w-16 h-16 bg-surface-container text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="material-symbols-outlined text-3xl">festival</span>
+            </div>
+            <h3 class="font-display-lg text-xl font-bold text-on-surface mb-2">Budaya Lokal</h3>
+            <p class="font-body-sm text-sm text-on-surface-variant">Saksikan tradisi dan kesenian yang masih terjaga.</p>
           </div>
-        </div>
 
-        <!-- Small Bento Card Bottom (Budaya) -->
-        <div class="bento-card-small" onclick="window.location.hash='#/profil'">
-          <img class="bento-card-img" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80" alt="Kesenian Budaya" />
-          <div class="bento-overlay" style="padding: 20px;">
-            <span class="badge badge-gold" style="width: fit-content; margin-bottom: 6px;">🎭 Seni & Budaya</span>
-            <h4 style="font-size: 1.2rem; color: #fff;">Tarian Tradisional Dayakan</h4>
+          <div class="bg-surface-container-lowest p-8 rounded-2xl text-center shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300">
+            <div class="w-16 h-16 bg-surface-container text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="material-symbols-outlined text-3xl">restaurant</span>
+            </div>
+            <h3 class="font-display-lg text-xl font-bold text-on-surface mb-2">Kuliner Khas</h3>
+            <p class="font-body-sm text-sm text-on-surface-variant">Nikmati hidangan otentik dengan resep turun temurun.</p>
+          </div>
+
+          <div class="bg-surface-container-lowest p-8 rounded-2xl text-center shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300">
+            <div class="w-16 h-16 bg-surface-container text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="material-symbols-outlined text-3xl">home_work</span>
+            </div>
+            <h3 class="font-display-lg text-xl font-bold text-on-surface mb-2">Homestay Nyaman</h3>
+            <p class="font-body-sm text-sm text-on-surface-variant">Menginap bersama warga untuk pengalaman otentik.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Destinasi Unggulan Section -->
-    <section class="section" style="background-color: var(--surface-container-low);">
-      <div class="container">
-        <div class="section-header">
-          <span class="badge badge-gold">Destinasi Populer</span>
-          <h2 class="section-title">Destinasi Unggulan Desa</h2>
-          <p class="section-subtitle">Tempat terseru dan fotogenik yang paling disukai para wisatawan.</p>
+    <!-- Destinations Section -->
+    <section class="py-16 md:py-24 bg-surface-container-low" id="destinations">
+      <div class="max-w-container-max mx-auto px-4 md:px-16">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-3">Destinasi Unggulan</h2>
+          <p class="font-body-md text-base text-on-surface-variant">Tempat-tempat terbaik yang wajib Anda kunjungi di Tampirkulon.</p>
         </div>
 
-        <div class="destination-grid">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           ${destinasi.map(item => `
-            <div class="card destination-card">
-              <div class="destination-card-img">
-                <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${item.nama}" loading="lazy" />
-                <span class="badge badge-primary" style="position: absolute; top: 16px; left: 16px;">Unggulan</span>
+            <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 flex flex-col">
+              <div class="relative h-56 overflow-hidden">
+                <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${item.nama}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <span class="absolute top-4 right-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                  ${item.kategori_id || 'Alam'}
+                </span>
               </div>
-              <div class="destination-card-body">
-                <h3 class="destination-card-title">${item.nama}</h3>
-                <p class="destination-card-desc">${item.deskripsi ? item.deskripsi.substring(0, 105) + '...' : ''}</p>
-                <div class="destination-card-footer">
-                  <span style="font-weight: 700; color: var(--primary); font-size: 1.05rem;">${item.harga_tiket || 'Gratis'}</span>
-                  <a href="#/destinasi?id=${item.id}" class="btn btn-sm btn-outline">Lihat Detail →</a>
+              <div class="p-6 flex flex-col flex-grow">
+                <h3 class="font-display-lg text-xl font-bold text-primary mb-2">${item.nama}</h3>
+                <p class="font-body-sm text-sm text-on-surface-variant mb-6 flex-grow leading-relaxed">
+                  ${item.deskripsi ? item.deskripsi.substring(0, 110) + '...' : ''}
+                </p>
+                <div class="pt-4 border-t border-outline-variant/20 flex justify-between items-center mt-auto">
+                  <span class="font-bold text-primary text-base">${item.harga_tiket || 'Gratis'}</span>
+                  <a href="#/destinasi?id=${item.id}" class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-primary-container transition-colors">Lihat Detail</a>
                 </div>
               </div>
             </div>
           `).join('')}
         </div>
 
-        <div style="text-align: center; margin-top: 48px;">
-          <a href="#/destinasi" class="btn btn-primary btn-lg">Lihat Seluruh Destinasi Wisata</a>
+        <div class="text-center mt-12">
+          <a href="#/destinasi" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3.5 rounded-full hover:bg-primary-container transition-all">
+            Lihat Semua Destinasi
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
         </div>
       </div>
     </section>
 
-    <!-- Village Amenities Bento Section (Stitch Modern Feature) -->
-    <section class="container section">
-      <div class="amenities-bento">
-        <div class="amenities-card">
-          <span class="badge badge-primary" style="margin-bottom: 12px;">Fasilitas Desa</span>
-          <h2 style="font-size: 2rem; margin-bottom: 8px;">Kenyamanan Modern di Alam Pedesaan</h2>
-          <p style="color: var(--on-surface-variant); font-size: 1rem;">Desa Tampirkulon dilengkapi berbagai fasilitas pendukung untuk memastikan kunjungan Anda nyaman dan berkesan.</p>
+    <!-- About Section -->
+    <section class="py-16 md:py-24 bg-surface border-t border-outline-variant/30" id="about">
+      <div class="max-w-container-max mx-auto px-4 md:px-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-4">Mengenal Tampirkulon</h2>
+            <p class="font-body-md text-base text-on-surface-variant mb-4 leading-relaxed">
+              Desa Wisata Tampirkulon menawarkan perpaduan harmonis antara keindahan alam yang masih perawan dan kekayaan budaya lokal yang terus dilestarikan. Kami berkomitmen untuk menyajikan pengalaman ekowisata yang tidak hanya memanjakan mata, tetapi juga memberikan dampak positif bagi komunitas dan lingkungan.
+            </p>
+            <p class="font-body-md text-base text-on-surface-variant mb-6 leading-relaxed">
+              Dengan keramahan penduduk lokal dan fasilitas yang terus dikembangkan, kami mengundang Anda untuk sejenak melepas penat dan menemukan kedamaian di desa kami.
+            </p>
+            <a href="#/profil" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-6 py-3 rounded-full hover:bg-primary-container transition-all">
+              Baca Selengkapnya
+            </a>
+          </div>
 
-          <div class="amenities-icons-grid">
-            <div class="amenity-icon-box">
-              <span class="material-symbols-outlined" style="color: var(--primary); font-size: 2rem;">wifi</span>
-              <span style="font-size: 0.85rem; font-weight: 600;">High-Speed Wi-Fi</span>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="bg-surface-container-low p-6 rounded-2xl text-center shadow-level-1">
+              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">150+</div>
+              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Ha Luas Area</div>
             </div>
-            <div class="amenity-icon-box">
-              <span class="material-symbols-outlined" style="color: var(--primary); font-size: 2rem;">local_cafe</span>
-              <span style="font-size: 0.85rem; font-weight: 600;">Kedai Kopi Desa</span>
+            <div class="bg-surface-container-low p-6 rounded-2xl text-center shadow-level-1">
+              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">2.5k</div>
+              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Populasi Penduduk</div>
             </div>
-            <div class="amenity-icon-box">
-              <span class="material-symbols-outlined" style="color: var(--primary); font-size: 2rem;">storefront</span>
-              <span style="font-size: 0.85rem; font-weight: 600;">Pasar UMKM</span>
+            <div class="bg-surface-container-low p-6 rounded-2xl text-center shadow-level-1">
+              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">12</div>
+              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Titik Wisata</div>
             </div>
-            <div class="amenity-icon-box">
-              <span class="material-symbols-outlined" style="color: var(--primary); font-size: 2rem;">local_parking</span>
-              <span style="font-size: 0.85rem; font-weight: 600;">Area Parkir Luas</span>
+            <div class="bg-surface-container-low p-6 rounded-2xl text-center shadow-level-1">
+              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">50+</div>
+              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Mitra Homestay</div>
             </div>
           </div>
-        </div>
-
-        <!-- Group Booking Card -->
-        <div style="background: var(--primary); color: #fff; border-radius: var(--radius-2xl); padding: 40px; display: flex; flex-direction: column; justify-content: center; text-align: center; position: relative; overflow: hidden;">
-          <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--primary-fixed); margin-bottom: 16px;">groups</span>
-          <h3 style="color: #fff; font-size: 1.75rem; margin-bottom: 12px;">Rombongan & Komunitas?</h3>
-          <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin-bottom: 24px;">Dapatkan paket penawaran khusus untuk rombongan sekolah, kantor, atau keluarga besar.</p>
-          <a href="#/kontak" class="btn btn-accent btn-lg" style="width: 100%;">Hubungi Pengelola</a>
         </div>
       </div>
     </section>
 
     <!-- Testimonials Section -->
-    <section class="section" style="background-color: var(--surface-container-low);">
-      <div class="container">
-        <div class="section-header">
-          <span class="badge badge-primary">Testimoni Pengunjung</span>
-          <h2 class="section-title">Apa Kata Mereka</h2>
-          <p class="section-subtitle">Pengalaman nyata para wisatawan yang telah menikmati pesona Desa Tampirkulon.</p>
+    <section class="py-16 md:py-24 bg-surface-container-low" id="testimonials">
+      <div class="max-w-container-max mx-auto px-4 md:px-16">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-3">Kata Mereka</h2>
+          <p class="font-body-md text-base text-on-surface-variant">Pengalaman tak terlupakan dari pengunjung kami.</p>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
-          ${testimoni.map(item => `
-            <div class="card" style="padding: 32px;">
-              <div style="color: var(--accent-gold); font-size: 1.25rem; margin-bottom: 12px;">
-                ${'★'.repeat(item.rating || 5)}
-              </div>
-              <p style="font-style: italic; color: var(--on-surface-variant); margin-bottom: 20px; line-height: 1.7;">"${item.pesan}"</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-surface-container-lowest p-8 rounded-2xl shadow-level-1 flex flex-col justify-between">
+            <div>
+              <div class="flex text-amber-500 mb-4">★★★★★</div>
+              <p class="font-body-md italic text-on-surface-variant text-sm mb-6 leading-relaxed">
+                "Pengalaman yang sangat luar biasa. Udaranya sejuk dan warga desanya sangat ramah. Homestay-nya juga bersih dan nyaman."
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold">A</div>
               <div>
-                <h4 style="font-size: 1.1rem; color: var(--on-surface);">${item.nama}</h4>
-                <span style="font-size: 0.85rem; color: var(--on-surface-variant);">${item.asal || 'Wisatawan'}</span>
+                <h4 class="font-bold text-sm text-on-surface">Andi S.</h4>
+                <span class="text-xs text-on-surface-variant">Wisatawan Domestik</span>
               </div>
             </div>
-          `).join('')}
+          </div>
+
+          <div class="bg-surface-container-lowest p-8 rounded-2xl shadow-level-1 flex flex-col justify-between">
+            <div>
+              <div class="flex text-amber-500 mb-4">★★★★★</div>
+              <p class="font-body-md italic text-on-surface-variant text-sm mb-6 leading-relaxed">
+                "Pemandangan di Curug Indah sangat memukau. Akses jalannya cukup menantang tapi sepadan dengan keindahannya."
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-secondary text-white rounded-full flex items-center justify-center font-bold">B</div>
+              <div>
+                <h4 class="font-bold text-sm text-on-surface">Budi Raharjo</h4>
+                <span class="text-xs text-on-surface-variant">Travel Blogger</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-surface-container-lowest p-8 rounded-2xl shadow-level-1 flex flex-col justify-between">
+            <div>
+              <div class="flex text-amber-500 mb-4">★★★★★</div>
+              <p class="font-body-md italic text-on-surface-variant text-sm mb-6 leading-relaxed">
+                "Makanan khasnya enak sekali! Saya belajar banyak tentang budaya lokal. Sangat direkomendasikan untuk liburan keluarga."
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-tertiary-container text-white rounded-full flex items-center justify-center font-bold">C</div>
+              <div>
+                <h4 class="font-bold text-sm text-on-surface">Citra L.</h4>
+                <span class="text-xs text-on-surface-variant">Karyawan Swasta</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- CTA Banner Section -->
-    <section class="container" style="margin-top: 60px; margin-bottom: 60px;">
-      <div style="background: linear-gradient(135deg, var(--dark-navy) 0%, var(--primary) 100%); color: #fff; padding: 60px 40px; border-radius: var(--radius-2xl); text-align: center;">
-        <h2 style="color: #fff; font-size: 2.5rem; margin-bottom: 16px;">Siap Merencanakan Liburan Seru?</h2>
-        <p style="font-size: 1.1rem; color: rgba(255,255,255,0.85); max-width: 620px; margin: 0 auto 32px;">
-          Pesan paket wisata durian dan jelajah alam pedesaan Tampirkulon secara online sekarang.
+    <!-- Call to Action Banner -->
+    <section class="py-16 bg-primary-fixed/30 text-center">
+      <div class="max-w-3xl mx-auto px-6">
+        <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-4">Siap Menjelajahi Tampirkulon?</h2>
+        <p class="font-body-md text-base text-on-surface-variant mb-8">
+          Temukan kedamaian dan keindahan yang autentik di Desa Wisata Tampirkulon. Kami siap menyambut kedatangan Anda dengan keramahan khas desa kami.
         </p>
-        <a href="#/kontak" class="btn btn-accent btn-lg" style="padding: 16px 36px; font-size: 1.1rem;">Formulir Reservasi Online</a>
+        <a href="#/kontak" class="inline-flex items-center gap-2 bg-secondary text-white font-bold px-8 py-3.5 rounded-full hover:bg-secondary/90 transition-all shadow-level-1">
+          <span class="material-symbols-outlined text-xl">calendar_month</span>
+          Pesan Sekarang
+        </a>
       </div>
     </section>
 

@@ -24,68 +24,73 @@ export const renderPaket = async () => {
   };
 
   const container = document.createElement('div');
+  container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background pt-20';
+
   container.innerHTML = `
     ${renderNavbar()}
 
-    <!-- Header Banner -->
-    <div style="background: var(--primary); color: #fff; padding: 120px 0 60px; text-align: center;">
-      <div class="container">
-        <span class="badge badge-gold" style="margin-bottom: 12px;">Curated Itineraries</span>
-        <h1 style="color: #fff; font-size: 3rem; margin-bottom: 12px;">Paket Wisata Tampirkulon</h1>
-        <p style="color: rgba(255,255,255,0.9); font-size: 1.15rem; max-width: 620px; margin: 0 auto;">Pilihan paket tour terjangkau dengan fasilitas lengkap untuk liburan keluarga & rombongan.</p>
-      </div>
-    </div>
+    <main class="flex-grow w-full max-w-container-max mx-auto px-5 md:px-lg py-xl flex flex-col items-center">
+      <!-- Header Section -->
+      <header class="text-center max-w-2xl mb-xl mt-6">
+        <h1 class="font-headline-md-mobile md:font-headline-md text-headline-md-mobile md:text-headline-md text-primary mb-sm">
+          Pilih Paket Liburan Anda
+        </h1>
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          Temukan pengalaman wisata desa yang otentik. Dari eksplorasi alam hingga lokakarya budaya, kami memiliki paket yang dirancang khusus untuk menciptakan memori tak terlupakan.
+        </p>
+      </header>
 
-    <!-- Packages Grid -->
-    <div class="container section">
-      <div class="section-header">
-        <h2 class="section-title">Signature Travel Packages</h2>
-        <p class="section-subtitle">Kombinasi sempurna petualangan outdoor, kuliner durian, dan edukasi budaya.</p>
-      </div>
-
-      <div class="packages-grid">
+      <!-- Pricing Cards Container -->
+      <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-lg mb-xl">
         ${paketList.map((paket, index) => `
-          <div class="package-card ${index === 0 ? 'highlight' : ''}">
-            ${index === 0 ? '<span class="badge badge-gold" style="position: absolute; top: 20px; right: 20px;">Paling Populer</span>' : ''}
+          <article class="bg-surface rounded-xl shadow-level-1 border ${index === 1 ? 'border-2 border-tertiary-fixed shadow-level-2 transform md:-translate-y-2' : 'border-surface-variant'} p-6 flex flex-col relative">
             
-            <h3 style="font-size: 1.6rem; margin-bottom: 8px;">${paket.nama}</h3>
-            <p style="color: var(--on-surface-variant); font-size: 0.95rem; min-height: 48px;">${paket.deskripsi || ''}</p>
-            
-            <div class="package-price">
-              ${formatRupiah(paket.harga)}
-              <span style="font-size: 0.9rem; font-weight: normal; color: var(--on-surface-variant);">/ orang</span>
+            ${index === 1 ? `
+              <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-tertiary-fixed text-primary px-3 py-1 rounded-full font-label-caps text-xs flex items-center gap-1 shadow-sm font-bold">
+                <span class="material-symbols-outlined text-[14px]">star</span>
+                POPULER
+              </div>
+            ` : ''}
+
+            <div class="-mx-6 -mt-6 mb-6 h-48 overflow-hidden rounded-t-xl">
+              <img src="${paket.gambar_url || (index === 0 ? 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80' : index === 1 ? 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80' : 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80')}" alt="${paket.nama}" class="w-full h-full object-cover" />
             </div>
 
-            <div style="font-size: 0.9rem; color: var(--on-surface-variant); margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; background: var(--surface-container-low); padding: 14px; border-radius: var(--radius-md);">
-              <span style="display: flex; align-items: center; gap: 6px;">
-                <span class="material-symbols-outlined" style="font-size: 18px; color: var(--primary);">schedule</span>
-                <strong>Durasi:</strong> ${paket.durasi || '1 Hari'}
-              </span>
-              <span style="display: flex; align-items: center; gap: 6px;">
-                <span class="material-symbols-outlined" style="font-size: 18px; color: var(--primary);">groups</span>
-                <strong>Kapasitas:</strong> ${paket.kapasitas_min || 1} - ${paket.kapasitas_max || '30'} orang
-              </span>
+            <div class="mb-4">
+              <h2 class="font-display-lg text-xl font-bold text-primary mb-2">${paket.nama}</h2>
+              <div class="flex items-baseline gap-1">
+                <span class="font-display-lg text-2xl md:text-3xl font-bold text-primary">${formatRupiah(paket.harga)}</span>
+                <span class="font-body-sm text-xs text-on-surface-variant">/ pax</span>
+              </div>
             </div>
 
-            <h4 style="font-size: 0.95rem; font-family: var(--font-label); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); margin-bottom: 12px;">Fasilitas Termasuk:</h4>
-            <ul class="package-facilities">
+            <div class="flex gap-4 mb-6 border-y border-outline-variant/20 py-3 text-xs text-on-surface-variant">
+              <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm text-primary">schedule</span>
+                <span>${paket.durasi || '1 Hari'}</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm text-primary">group</span>
+                <span>Min. ${paket.kapasitas_min || 2} Orang</span>
+              </div>
+            </div>
+
+            <ul class="flex flex-col gap-3 mb-8 flex-grow list-none p-0">
               ${(paket.fasilitas || []).map(f => `
-                <li>
-                  <span class="material-symbols-outlined" style="color: var(--primary); font-size: 20px;">check_circle</span>
-                  ${f}
+                <li class="flex items-start gap-2 text-sm text-on-background">
+                  <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                  <span>${f}</span>
                 </li>
               `).join('')}
             </ul>
 
-            <div style="margin-top: auto; padding-top: 28px;">
-              <a href="#/kontak?paket_id=${paket.id}" class="btn ${index === 0 ? 'btn-primary' : 'btn-outline'}" style="width: 100%; padding: 14px; font-size: 1rem;">
-                Reservasi Sekarang
-              </a>
-            </div>
-          </div>
+            <a href="#/kontak?paket_id=${paket.id}" class="w-full text-center ${index === 1 ? 'bg-tertiary-fixed text-primary font-bold hover:bg-tertiary-fixed-dim' : 'bg-primary text-on-primary font-semibold hover:bg-primary-container'} py-3 rounded-lg transition-colors mt-auto shadow-level-1">
+              Pesan Sekarang
+            </a>
+          </article>
         `).join('')}
       </div>
-    </div>
+    </main>
 
     ${renderFooter(profil)}
   `;

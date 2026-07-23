@@ -4,7 +4,7 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
 
 export const renderDestinasi = async (queryParams) => {
-  const selectedId = queryParams.get('id');
+  const selectedId = queryParams ? queryParams.get('id') : null;
 
   let kategoriList = mockData.kategori_wisata;
   let destinasiList = mockData.destinasi;
@@ -28,7 +28,8 @@ export const renderDestinasi = async (queryParams) => {
   let activeCategory = 'all';
 
   const container = document.createElement('div');
-  
+  container.className = 'w-full min-h-screen flex flex-col bg-surface text-on-surface';
+
   const renderContent = () => {
     const filteredDestinasi = activeCategory === 'all' 
       ? destinasiList 
@@ -37,46 +38,58 @@ export const renderDestinasi = async (queryParams) => {
     return `
       ${renderNavbar()}
 
-      <div style="background: var(--primary); color: #fff; padding: 120px 0 60px; text-align: center;">
-        <div class="container">
-          <span class="badge badge-gold" style="margin-bottom: 12px;">Explore Tampirkulon</span>
-          <h1 style="color: #fff; font-size: 3rem; margin-bottom: 12px;">Destinasi Wisata Desa</h1>
-          <p style="color: rgba(255,255,255,0.9); font-size: 1.15rem; max-width: 600px; margin: 0 auto;">Eksplorasi tempat wisata alam, kebun durian, dan cagar seni budaya.</p>
+      <!-- Page Header -->
+      <section class="relative flex items-center justify-center overflow-hidden w-full bg-primary pt-28 pb-16 px-6 text-center" style="min-height: 340px;">
+        <div class="absolute inset-0 z-0">
+          <img alt="Tampirkulon Heritage" class="w-full h-full object-cover opacity-30" src="https://lh3.googleusercontent.com/aida/AP1WRLv0kmPyXlx735C-3FBTB_btvd6IOzpOfv8reV4yrmbXWSpYqTUCgFkZ_2PuSVRtioFNOUL_7vEfh9ykgRLvufo9vdRONN04mxuEumo797mDUt6r-DwXjhT8pZHuKBVfRgc3KcVFFHdy8NgyVVD17ZnV22HDZWY5H1at2jNZuOgrJ-kgBsda7pjf_0_rL9fYtVDavMg9G7Qv7iqE8gyLZpw9eZryb4JbvYGL_t-Hb1rDIcleP0-J6wiUfg" />
+          <div class="absolute inset-0 bg-primary/60 backdrop-blur-[2px]"></div>
         </div>
-      </div>
+        <div class="relative z-10 max-w-container-max mx-auto px-4 text-center">
+          <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-background mb-4">Eksplorasi Destinasi Kami</h1>
+          <p class="font-body-md text-base md:text-lg text-background/90 max-w-2xl mx-auto leading-relaxed">
+            Temukan keindahan alam yang tak tertandingi, kekayaan budaya yang otentik, dan pengalaman tak terlupakan di Desa Wisata Tampirkulon.
+          </p>
+        </div>
+      </section>
 
-      <div class="container section">
-        <!-- Filter Tabs -->
-        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 48px;">
-          <button class="btn ${activeCategory === 'all' ? 'btn-primary' : 'btn-secondary'} filter-btn" data-cat="all">
-            Semua Destinasi
+      <!-- Filter Bar -->
+      <section class="max-w-container-max mx-auto px-4 md:px-16 my-8">
+        <div class="flex flex-wrap justify-center gap-3">
+          <button class="filter-btn border px-6 py-2 rounded-full font-label-caps text-xs font-semibold transition-colors ${activeCategory === 'all' ? 'bg-primary text-on-primary border-primary' : 'bg-surface text-primary border-primary hover:bg-primary-fixed'}" data-cat="all">
+            Semua
           </button>
           ${kategoriList.map(cat => `
-            <button class="btn ${activeCategory === cat.id ? 'btn-primary' : 'btn-secondary'} filter-btn" data-cat="${cat.id}">
-              <span>${cat.icon || '🍃'}</span>
+            <button class="filter-btn border px-6 py-2 rounded-full font-label-caps text-xs font-semibold transition-colors ${activeCategory === cat.id ? 'bg-primary text-on-primary border-primary' : 'bg-surface text-primary border-primary hover:bg-primary-fixed'}" data-cat="${cat.id}">
               ${cat.nama}
             </button>
           `).join('')}
         </div>
+      </section>
 
-        <!-- Destination Cards Grid -->
-        <div class="destination-grid">
+      <!-- Destination Grid -->
+      <section class="max-w-container-max mx-auto px-4 md:px-16 mb-20 flex-grow">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           ${filteredDestinasi.map(item => `
-            <div class="card destination-card">
-              <div class="destination-card-img">
-                <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${item.nama}" loading="lazy" />
-                ${item.is_unggulan ? '<span class="badge badge-gold" style="position: absolute; top: 16px; left: 16px;">Unggulan</span>' : ''}
+            <div class="bg-surface-container-lowest rounded-xl shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden relative group cursor-pointer border border-outline-variant/30">
+              <div class="relative w-full aspect-[4/3] overflow-hidden">
+                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${item.nama}" />
+                <span class="absolute top-4 left-4 bg-tertiary-fixed/90 text-primary font-label-caps text-xs px-3 py-1 rounded-full backdrop-blur-sm shadow-sm font-bold">
+                  ${item.harga_tiket || 'Gratis'}
+                </span>
               </div>
-              <div class="destination-card-body">
-                <h3 class="destination-card-title">${item.nama}</h3>
-                <p style="font-size: 0.85rem; color: var(--on-surface-variant); margin-bottom: 10px; display: flex; align-items: center; gap: 4px;">
-                  <span class="material-symbols-outlined" style="font-size: 16px; color: var(--primary);">location_on</span>
-                  ${item.lokasi || 'Tampirkulon, Candimulyo'}
+              <div class="p-6 flex flex-col flex-grow">
+                <h3 class="font-display-lg text-xl font-bold text-primary mb-2 line-clamp-1">${item.nama}</h3>
+                <p class="font-body-sm text-sm text-on-surface-variant mb-6 line-clamp-2 leading-relaxed">
+                  ${item.deskripsi || ''}
                 </p>
-                <p class="destination-card-desc">${item.deskripsi ? item.deskripsi.substring(0, 110) + '...' : ''}</p>
-                <div class="destination-card-footer">
-                  <span style="font-weight: 800; color: var(--primary); font-size: 1.1rem;">${item.harga_tiket || 'Gratis'}</span>
-                  <button class="btn btn-sm btn-outline detail-btn" data-id="${item.id}">Detail Destinasi →</button>
+                <div class="mt-auto flex justify-between items-center pt-4 border-t border-outline-variant/10">
+                  <span class="text-xs text-on-surface-variant flex items-center gap-1 font-semibold">
+                    <span class="material-symbols-outlined text-sm text-primary">location_on</span>
+                    ${item.lokasi || 'Tampirkulon'}
+                  </span>
+                  <button class="detail-btn w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary hover:bg-secondary hover:text-on-secondary transition-colors duration-300" data-id="${item.id}">
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -84,11 +97,11 @@ export const renderDestinasi = async (queryParams) => {
         </div>
 
         ${filteredDestinasi.length === 0 ? `
-          <div style="text-align: center; padding: 60px; color: var(--on-surface-variant);">
-            <p style="font-size: 1.2rem;">Belum ada destinasi dalam kategori ini.</p>
+          <div class="text-center py-16 text-on-surface-variant">
+            <p class="text-lg">Belum ada destinasi dalam kategori ini.</p>
           </div>
         ` : ''}
-      </div>
+      </section>
 
       <div id="destinasi-modal-root"></div>
 
@@ -123,36 +136,33 @@ export const renderDestinasi = async (queryParams) => {
 
     const modalRoot = container.querySelector('#destinasi-modal-root');
     modalRoot.innerHTML = `
-      <div class="modal-overlay active" id="detail-modal">
-        <div class="modal-container" style="max-width: 720px;">
-          <div class="modal-header">
-            <h3 style="font-size: 1.4rem;">${item.nama}</h3>
-            <button id="modal-close" style="font-size: 1.5rem; border: none; background: none; cursor: pointer;">✕</button>
+      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" id="detail-modal">
+        <div class="bg-surface-container-lowest rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-outline-variant">
+          <div class="p-6 border-b border-outline-variant flex justify-between items-center">
+            <h3 class="font-display-lg text-2xl font-bold text-primary">${item.nama}</h3>
+            <button id="modal-close" class="text-2xl text-on-surface-variant hover:text-primary">✕</button>
           </div>
-          <div class="modal-body">
-            <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${item.nama}" style="width: 100%; height: 340px; object-fit: cover; border-radius: var(--radius-xl); margin-bottom: 20px;" />
+          <div class="p-6">
+            <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${item.nama}" class="w-full h-80 object-cover rounded-xl mb-6 shadow-sm" />
             
-            <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; font-size: 0.95rem; background: var(--surface-container-low); padding: 16px; border-radius: var(--radius-lg);">
-              <span>📍 <strong>Lokasi:</strong> ${item.lokasi || 'Tampirkulon'}</span>
-              <span>⏰ <strong>Jam Buka:</strong> ${item.jam_buka || '08:00 - 16:00'}</span>
-              <span>🎟️ <strong>Tiket:</strong> ${item.harga_tiket || 'Gratis'}</span>
+            <div class="grid grid-cols-3 gap-4 mb-6 bg-surface-container-low p-4 rounded-xl text-center text-sm font-semibold">
+              <div>📍 ${item.lokasi || 'Tampirkulon'}</div>
+              <div>⏰ ${item.jam_buka || '08:00 - 16:00'}</div>
+              <div>🎟️ ${item.harga_tiket || 'Gratis'}</div>
             </div>
 
-            <h4 style="margin-bottom: 10px; font-size: 1.1rem;">Deskripsi Destinasi</h4>
-            <p style="line-height: 1.8; color: var(--on-surface-variant); font-size: 1rem;">${item.deskripsi || ''}</p>
+            <h4 class="font-bold text-lg text-primary mb-2">Deskripsi Destinasi</h4>
+            <p class="text-on-surface-variant leading-relaxed text-base">${item.deskripsi || ''}</p>
           </div>
-          <div class="modal-footer">
-            <a href="#/kontak" class="btn btn-primary">Pesan Paket Terkait</a>
-            <button id="modal-close-btn" class="btn btn-secondary">Tutup</button>
+          <div class="p-6 border-t border-outline-variant flex justify-end gap-3">
+            <a href="#/kontak" class="bg-primary text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-primary-container">Pesan Paket Terkait</a>
+            <button id="modal-close-btn" class="bg-surface-container text-on-surface px-6 py-2.5 rounded-full font-semibold text-sm">Tutup</button>
           </div>
         </div>
       </div>
     `;
 
-    const closeModal = () => {
-      modalRoot.innerHTML = '';
-    };
-
+    const closeModal = () => { modalRoot.innerHTML = ''; };
     modalRoot.querySelector('#modal-close')?.addEventListener('click', closeModal);
     modalRoot.querySelector('#modal-close-btn')?.addEventListener('click', closeModal);
   };

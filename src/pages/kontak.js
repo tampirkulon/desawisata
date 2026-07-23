@@ -1,11 +1,10 @@
 import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
-import { showToast } from '../components/toast.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
 
 export const renderKontak = async (queryParams) => {
-  const selectedPaketId = queryParams.get('paket_id');
+  const selectedPaketId = queryParams ? queryParams.get('paket_id') : null;
 
   let profil = mockData.profil_desa;
   let paketList = mockData.paket_wisata;
@@ -15,126 +14,125 @@ export const renderKontak = async (queryParams) => {
       const { data: prof } = await supabase.from('profil_desa').select('*').single();
       if (prof) profil = prof;
 
-      const { data: pkt } = await supabase.from('paket_wisata').select('*').eq('is_published', true);
-      if (pkt) paketList = pkt;
+      const { data: pak } = await supabase.from('paket_wisata').select('*').eq('is_published', true);
+      if (pak && pak.length > 0) paketList = pak;
     } catch (e) {
       console.warn('Fallback seed:', e);
     }
   }
 
-  // Calculate tomorrow's date for date picker min
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const minDateStr = tomorrow.toISOString().split('T')[0];
-
   const container = document.createElement('div');
+  container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background pt-20';
+
   container.innerHTML = `
     ${renderNavbar()}
 
-    <div style="background: var(--dark-navy); color: #fff; padding: 120px 0 50px; text-align: center;">
-      <div class="container">
-        <span class="badge badge-gold" style="margin-bottom: 12px;">Hubungi Kami</span>
-        <h1 style="color: #fff; font-size: 2.5rem; margin-bottom: 12px;">Kontak & Formulir Reservasi</h1>
-        <p style="color: rgba(255,255,255,0.85); font-size: 1.1rem;">Isi formulir reservasi online di bawah ini untuk memesan paket kunjungan Anda.</p>
+    <main class="pt-8 pb-16 px-4 md:px-16 max-w-container-max mx-auto w-full flex-grow flex flex-col justify-center">
+      <div class="mb-12 text-center md:text-left">
+        <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-primary mb-3">Kontak & Reservasi</h1>
+        <p class="font-body-md text-base text-on-surface-variant max-w-2xl">Rencanakan kunjungan Anda atau hubungi kami untuk informasi lebih lanjut. Kami siap menyambut Anda di Tampirkulon.</p>
       </div>
-    </div>
 
-    <div class="container section">
-      <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px;" class="kontak-grid-layout">
-        <!-- Form Reservasi -->
-        <div class="card" style="padding: 36px;">
-          <h2 style="font-size: 1.75rem; margin-bottom: 8px;">Formulir Reservasi Kunjungan</h2>
-          <p style="color: var(--neutral-600); margin-bottom: 28px;">Silakan lengkapi data Anda. Tim pengelola desa wisata akan segera menghubungi Anda untuk konfirmasi.</p>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left Column: Reservation Form -->
+        <div class="lg:col-span-7 bg-surface-container-lowest rounded-2xl p-6 md:p-10 shadow-level-1 border border-outline-variant/30">
+          <h2 class="font-display-lg text-2xl font-bold text-primary mb-8">Formulir Reservasi</h2>
+          
+          <div id="form-alert" class="hidden mb-6 p-4 rounded-xl text-sm font-semibold"></div>
 
-          <form id="reservation-form">
-            <div class="form-group">
-              <label class="form-label" for="nama">Nama Lengkap *</label>
-              <input type="text" id="nama" class="form-control" placeholder="Masukkan nama Anda" required />
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-              <div class="form-group">
-                <label class="form-label" for="email">Alamat Email *</label>
-                <input type="email" id="email" class="form-control" placeholder="nama@email.com" required />
+          <form id="reservasi-form" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block font-body-sm text-sm text-on-surface-variant font-semibold mb-2" for="nama_pemesan">Nama Lengkap *</label>
+                <input class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="nama_pemesan" placeholder="John Doe" type="text" required />
               </div>
-              <div class="form-group">
-                <label class="form-label" for="telepon">Nomor Telepon / WhatsApp *</label>
-                <input type="tel" id="telepon" class="form-control" placeholder="0812xxxxxxx" required />
+              <div>
+                <label class="block font-body-sm text-sm text-on-surface-variant font-semibold mb-2" for="email">Alamat Email *</label>
+                <input class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="email" placeholder="john@example.com" type="email" required />
               </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-              <div class="form-group">
-                <label class="form-label" for="tanggal_kunjungan">Tanggal Rencana Kunjungan *</label>
-                <input type="date" id="tanggal_kunjungan" class="form-control" min="${minDateStr}" required />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block font-body-sm text-sm text-on-surface-variant font-semibold mb-2" for="telepon">Nomor WhatsApp *</label>
+                <input class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="telepon" placeholder="+62 812-3456-7890" type="tel" required />
               </div>
-              <div class="form-group">
-                <label class="form-label" for="jumlah_orang">Jumlah Orang *</label>
-                <input type="number" id="jumlah_orang" class="form-control" min="1" value="2" required />
+              <div>
+                <label class="block font-body-sm text-sm text-on-surface-variant font-semibold mb-2" for="tanggal_kunjungan">Tanggal Kunjungan *</label>
+                <input class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="tanggal_kunjungan" type="date" required />
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label" for="paket_id">Pilih Paket Wisata (Opsional)</label>
-              <select id="paket_id" class="form-control">
-                <option value="">-- Tanpa Paket (Kunjungan Mandiri) --</option>
-                ${paketList.map(p => `
-                  <option value="${p.id}" ${selectedPaketId === p.id ? 'selected' : ''}>
-                    ${p.nama} (${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(p.harga)}/orang)
-                  </option>
-                `).join('')}
-              </select>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block font-body-sm text-sm text-on-surface-variant font-semibold mb-2" for="jumlah_peserta">Jumlah Peserta *</label>
+                <input class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="jumlah_peserta" min="1" placeholder="2" type="number" required />
+              </div>
+              <div>
+                <label class="block font-body-sm text-sm text-on-surface-variant font-semibold mb-2" for="paket_id">Pilih Paket Wisata</label>
+                <select class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="paket_id">
+                  <option value="">-- Pilih Paket (Opsional) --</option>
+                  ${paketList.map(p => `
+                    <option value="${p.id}" ${selectedPaketId === p.id ? 'selected' : ''}>${p.nama} - Rp ${p.harga?.toLocaleString('id-ID')}</option>
+                  `).join('')}
+                </select>
+              </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label" for="pesan">Pesan / Catatan Khusus</label>
-              <textarea id="pesan" class="form-control" rows="4" placeholder="Misal: Permintaan khusus durian super, riwayat alergi, dll."></textarea>
+            <div>
+              <label class="block font-body-sm text-sm text-on-surface-variant font-semibold mb-2" for="catatan">Catatan / Pesan Tambahan</label>
+              <textarea class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none" id="catatan" placeholder="Permintaan khusus atau pertanyaan..." rows="4"></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; padding: 14px; font-size: 1.05rem;" id="submit-rsv-btn">
-              Kirim Reservasi Sekarang
+            <button class="w-full md:w-auto bg-primary text-white px-8 py-3.5 rounded-full font-bold text-sm hover:bg-primary-container transition-all shadow-level-1" type="submit">
+              Kirim Reservasi Now
             </button>
           </form>
         </div>
 
-        <!-- Info Kontak -->
-        <div>
-          <div class="card" style="padding: 28px; margin-bottom: 24px;">
-            <h3 style="font-size: 1.3rem; margin-bottom: 20px; border-bottom: 1px solid var(--neutral-200); padding-bottom: 10px;">📞 Informasi Kontak</h3>
-            
-            <div style="display: flex; flex-direction: column; gap: 20px;">
-              <div>
-                <span style="display: block; font-size: 0.85rem; color: var(--neutral-600);">Alamat Lengkap</span>
-                <p style="font-weight: 500; font-size: 0.95rem;">${profil.alamat || 'Tampirkulon, Candimulyo, Magelang'}</p>
-              </div>
-
-              <div>
-                <span style="display: block; font-size: 0.85rem; color: var(--neutral-600);">Telepon / Hotline</span>
-                <p style="font-weight: 600; color: var(--primary-500); font-size: 1.05rem;">${profil.telepon || '+62 812-3456-7890'}</p>
-              </div>
-
-              <div>
-                <span style="display: block; font-size: 0.85rem; color: var(--neutral-600);">Email Resmi</span>
-                <p style="font-weight: 500;">${profil.email || 'info@tampirkulon.desawisata.id'}</p>
-              </div>
-
-              <div style="padding-top: 10px;">
-                <a href="https://wa.me/${profil.whatsapp || '6281234567890'}?text=Halo%20Pengelola%20Desa%20Wisata%20Tampirkulon,%20saya%20ingin%20bertanya%20mengenai%20paket%20wisata." target="_blank" class="btn btn-accent" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                  💬 Chat WhatsApp Langsung
-                </a>
+        <!-- Right Column: Contact Info & Map -->
+        <div class="lg:col-span-5 flex flex-col gap-6">
+          <div class="bg-primary-container text-on-primary rounded-2xl p-8 shadow-level-1">
+            <h3 class="font-display-lg text-xl font-bold mb-6 text-tertiary-fixed">Informasi Kontak</h3>
+            <ul class="space-y-6 list-none p-0">
+              <li class="flex items-start gap-4">
+                <span class="material-symbols-outlined text-tertiary-fixed text-2xl">location_on</span>
+                <div>
+                  <span class="block font-label-caps text-xs text-on-primary-container font-bold uppercase mb-1">ALAMAT DESA</span>
+                  <span class="font-body-md text-sm text-white/90 leading-relaxed">${profil.alamat || 'Jl. Raya Tampirkulon No. 123, Candimulyo, Magelang, Jawa Tengah'}</span>
+                </div>
+              </li>
+              <li class="flex items-center gap-4">
+                <span class="material-symbols-outlined text-tertiary-fixed text-2xl">call</span>
+                <div>
+                  <span class="block font-label-caps text-xs text-on-primary-container font-bold uppercase mb-1">WHATSAPP / TELP</span>
+                  <span class="font-body-md text-sm text-white/90">${profil.telepon || '+62 812-3456-7890'}</span>
+                </div>
+              </li>
+              <li class="flex items-center gap-4">
+                <span class="material-symbols-outlined text-tertiary-fixed text-2xl">mail</span>
+                <div>
+                  <span class="block font-label-caps text-xs text-on-primary-container font-bold uppercase mb-1">EMAIL RESMI</span>
+                  <span class="font-body-md text-sm text-white/90">${profil.email || 'info@tampirkulon.desa.id'}</span>
+                </div>
+              </li>
+            </ul>
+            <div class="mt-8 pt-6 border-t border-white/20">
+              <h4 class="font-label-caps text-xs text-tertiary-fixed font-bold uppercase mb-2">JAM OPERASIONAL</h4>
+              <div class="flex justify-between items-center text-sm">
+                <span>Senin - Minggu</span>
+                <span class="font-bold text-tertiary-fixed">08:00 - 17:00 WIB</span>
               </div>
             </div>
           </div>
 
-          <div class="card" style="padding: 28px;">
-            <h3 style="font-size: 1.2rem; margin-bottom: 16px;">🗺️ Peta Lokasi Desa</h3>
-            <div style="border-radius: var(--radius-md); overflow: hidden; height: 260px;">
-              ${profil.google_maps_embed || '<div style="background:#eee; height:100%; display:flex; align-items:center; justify-content:center;">Google Maps Embed</div>'}
-            </div>
+          <!-- Map Box -->
+          <div class="bg-surface-variant rounded-2xl h-64 w-full relative overflow-hidden shadow-level-1 border border-outline-variant/50 flex items-center justify-center">
+            <iframe class="w-full h-full border-0" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>
           </div>
         </div>
       </div>
-    </div>
+    </main>
 
     ${renderFooter(profil)}
   `;
@@ -142,46 +140,44 @@ export const renderKontak = async (queryParams) => {
   const bindEvents = () => {
     initNavbarEvents();
 
-    const form = container.querySelector('#reservation-form');
+    const form = container.querySelector('#reservasi-form');
+    const alertBox = container.querySelector('#form-alert');
+
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-
-        const submitBtn = container.querySelector('#submit-rsv-btn');
-        submitBtn.disabled = true;
-        submitBtn.innerText = 'Mengirim Reservasi...';
-
+        
         const payload = {
-          nama: container.querySelector('#nama').value.trim(),
-          email: container.querySelector('#email').value.trim(),
-          telepon: container.querySelector('#telepon').value.trim(),
+          nama_pemesan: container.querySelector('#nama_pemesan').value,
+          email: container.querySelector('#email').value,
+          telepon: container.querySelector('#telepon').value,
           tanggal_kunjungan: container.querySelector('#tanggal_kunjungan').value,
-          jumlah_orang: parseInt(container.querySelector('#jumlah_orang').value),
+          jumlah_peserta: parseInt(container.querySelector('#jumlah_peserta').value),
           paket_id: container.querySelector('#paket_id').value || null,
-          pesan: container.querySelector('#pesan').value.trim(),
-          status: 'baru'
+          catatan: container.querySelector('#catatan').value || '',
+          status: 'pending'
         };
 
         if (isSupabaseConfigured()) {
           try {
             const { error } = await supabase.from('reservasi').insert([payload]);
             if (error) throw error;
-            showToast('Reservasi Anda berhasil terkirim! Tim kami akan menghubungi Anda.', 'success');
+
+            alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300';
+            alertBox.innerHTML = '✅ Reservasi berhasil dikirim! Tim pengelola Desa Wisata Tampirkulon akan segera menghubungi WhatsApp Anda.';
+            alertBox.classList.remove('hidden');
             form.reset();
           } catch (err) {
-            console.error('Error submitting reservation:', err);
-            showToast('Gagal mengirim reservasi: ' + err.message, 'error');
+            alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-rose-100 text-rose-800 border border-rose-300';
+            alertBox.innerHTML = '❌ Gagal mengirim reservasi: ' + err.message;
+            alertBox.classList.remove('hidden');
           }
         } else {
-          // Mock submit
-          setTimeout(() => {
-            showToast('[Demo Mode] Reservasi berhasil dikirim!', 'success');
-            form.reset();
-          }, 800);
+          alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300';
+          alertBox.innerHTML = '✅ Reservasi berhasil disimpan (Mode Demo)! Kami akan segera menghubungi WhatsApp Anda.';
+          alertBox.classList.remove('hidden');
+          form.reset();
         }
-
-        submitBtn.disabled = false;
-        submitBtn.innerText = 'Kirim Reservasi Sekarang';
       });
     }
   };

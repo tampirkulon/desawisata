@@ -5,8 +5,16 @@
    ============================================================ */
 
 :root {
-  /* Stitch Tampirkulon Heritage & Nature Color Tokens */
-  --primary: #316342;                /* Deep Forest Green */
+  --color-primary: #316342;
+  --color-primary-light: #4a7c59;
+  --color-primary-dark: #1e5031;
+  --color-accent: #7a5900;
+  --color-bg: #fcf9f8;
+  --color-surface: #ffffff;
+  --color-text: #1c1b1b;
+  --color-text-secondary: #414942;
+
+  --primary: #316342;
   --primary-container: #4a7c59;
   --on-primary: #ffffff;
   --on-primary-container: #e1ffe5;
@@ -20,9 +28,9 @@
   --tertiary: #306345;
   --tertiary-container: #497c5c;
 
-  --accent-gold: #d4a84b;             /* Harvest Gold Accent */
+  --accent-gold: #d4a84b;
 
-  --background: #fcf9f8;              /* Warm Off-White Canvas */
+  --background: #fcf9f8;
   --on-background: #1c1b1b;
   
   --surface: #fcf9f8;
@@ -37,43 +45,15 @@
   --on-surface-variant: #414942;
 
   --dark-navy: #1b3022;
-  --dark-navy-light: #316342;
-  --dark-navy-active: #4a7c59;
 
-  --outline: #717971;
-  --outline-variant: #c1c9bf;
+  --font-body: 'Inter', sans-serif;
+  --font-heading: 'Outfit', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+  --font-label: 'Inter', sans-serif;
 
-  --error: #ba1a1a;
-  --error-container: #ffdad6;
-  --status-success: #10b981;
-  --status-warning: #f59e0b;
-  --status-error: #ef4444;
-
-  /* Typography */
-  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-label: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-
-  /* Elevasi & Shadows Tinted Forest Green */
-  --shadow-sm: 0 1px 3px rgba(49, 99, 66, 0.05);
-  --shadow-md: 0 4px 20px rgba(49, 99, 66, 0.08);
-  --shadow-lg: 0 12px 32px rgba(49, 99, 66, 0.12);
-  --shadow-xl: 0 20px 40px -6px rgba(27, 48, 34, 0.16);
-
-  --shadow-level-1: 0 4px 20px rgba(49, 99, 66, 0.08);
-  --shadow-level-2: 0 12px 32px rgba(49, 99, 66, 0.12);
-
-  /* Corner Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-2xl: 32px;
-  --radius-full: 9999px;
-
-  /* Transitions */
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-speed: 0.3s;
+  --border-radius: 0.5rem;
+  --border-radius-lg: 1rem;
 }
 
 /* Reset & Base */

@@ -3,16 +3,14 @@ import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
 
-export const renderBlog = async (queryParams) => {
-  const selectedArticleId = queryParams.get('id');
-
+export const renderBlog = async () => {
   let artikelList = mockData.artikel;
   let profil = mockData.profil_desa;
 
   if (isSupabaseConfigured()) {
     try {
-      const { data } = await supabase.from('artikel').select('*').eq('status', 'published').order('published_at', { ascending: false });
-      if (data && data.length > 0) artikelList = data;
+      const { data: art } = await supabase.from('artikel').select('*').eq('is_published', true).order('created_at', { ascending: false });
+      if (art && art.length > 0) artikelList = art;
 
       const { data: prof } = await supabase.from('profil_desa').select('*').single();
       if (prof) profil = prof;
@@ -21,88 +19,80 @@ export const renderBlog = async (queryParams) => {
     }
   }
 
+  const featuredArticle = artikelList[0] || {};
+  const recentArticles = artikelList.slice(1);
+
   const container = document.createElement('div');
+  container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background pt-20';
 
-  if (selectedArticleId) {
-    const article = artikelList.find(a => a.id === selectedArticleId) || artikelList[0];
-    container.innerHTML = `
-      ${renderNavbar()}
+  container.innerHTML = `
+    ${renderNavbar()}
 
-      <div style="background: var(--dark-navy); color: #fff; padding: 120px 0 40px;">
-        <div class="container" style="max-width: 800px;">
-          <a href="#/blog" style="color: var(--accent-gold); font-weight: 500; display: inline-block; margin-bottom: 16px;">← Kembali ke Artikel</a>
-          <span class="badge badge-gold" style="display: block; width: fit-content; margin-bottom: 12px;">${article.kategori || 'Berita'}</span>
-          <h1 style="color: #fff; font-size: 2.5rem; line-height: 1.3;">${article.judul}</h1>
-          <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 12px;">Dipublikasikan: ${new Date(article.published_at || article.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-        </div>
-      </div>
+    <main class="flex-grow max-w-container-max mx-auto px-4 md:px-16 w-full mb-16">
+      <!-- Header Title Section -->
+      <section class="py-12 text-center max-w-3xl mx-auto">
+        <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-primary mb-4">
+          Kisah dari Tampirkulon
+        </h1>
+        <p class="font-body-md text-base text-on-surface-variant leading-relaxed">
+          Temukan cerita, tradisi, dan keindahan alam desa kami melalui catatan perjalanan dan berita terbaru.
+        </p>
+      </section>
 
-      <div class="container section" style="max-width: 800px;">
-        ${article.gambar_url ? `<img src="${article.gambar_url}" alt="${article.judul}" style="width: 100%; max-height: 420px; object-fit: cover; border-radius: var(--radius-lg); margin-bottom: 32px;" />` : ''}
-        
-        <div class="card" style="padding: 40px; line-height: 1.8; font-size: 1.05rem; color: var(--neutral-800);">
-          ${(article.konten || '').split('\n\n').map(p => {
-            if (p.startsWith('## ')) return `<h2 style="font-size: 1.6rem; margin: 24px 0 12px; color: var(--primary-500);">${p.replace('## ', '')}</h2>`;
-            if (p.startsWith('### ')) return `<h3 style="font-size: 1.3rem; margin: 20px 0 10px; color: var(--neutral-900);">${p.replace('### ', '')}</h3>`;
-            return `<p style="margin-bottom: 16px;">${p}</p>`;
-          }).join('')}
-        </div>
-      </div>
-
-      ${renderFooter(profil)}
-    `;
-  } else {
-    const featured = artikelList[0];
-    const others = artikelList.slice(1);
-
-    container.innerHTML = `
-      ${renderNavbar()}
-
-      <div style="background: var(--dark-navy); color: #fff; padding: 120px 0 50px; text-align: center;">
-        <div class="container">
-          <h1 style="color: #fff; font-size: 2.5rem; margin-bottom: 12px;">Blog & Berita Desa Tampirkulon</h1>
-          <p style="color: rgba(255,255,255,0.85); font-size: 1.1rem;">Kabar terbaru, cerita budaya, dan rekomendasi seputar wisata pedesaan.</p>
-        </div>
-      </div>
-
-      <div class="container section">
-        <!-- Featured Article -->
-        ${featured ? `
-          <div class="card" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; overflow: hidden; margin-bottom: 50px; padding: 0;" class="featured-article-card">
-            <div style="height: 100%; min-height: 300px;">
-              <img src="${featured.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${featured.judul}" style="width: 100%; height: 100%; object-fit: cover;" />
+      <!-- Featured Article Hero Banner -->
+      ${featuredArticle.judul ? `
+        <section class="mb-16">
+          <div class="bg-surface-container-lowest rounded-2xl shadow-level-1 overflow-hidden flex flex-col lg:flex-row group transition-all duration-300 hover:shadow-level-2 border border-outline-variant/30">
+            <div class="w-full lg:w-1/2 h-64 lg:h-auto overflow-hidden">
+              <img src="${featuredArticle.gambar_url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80'}" alt="${featuredArticle.judul}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" />
             </div>
-            <div style="padding: 36px; display: flex; flex-direction: column; justify-content: center;">
-              <span class="badge badge-primary" style="width: fit-content; margin-bottom: 12px;">${featured.kategori || 'Berita Utama'}</span>
-              <h2 style="font-size: 1.8rem; margin-bottom: 12px;"><a href="#/blog?id=${featured.id}">${featured.judul}</a></h2>
-              <p style="color: var(--neutral-600); margin-bottom: 20px; line-height: 1.6;">${featured.ringkasan || ''}</p>
-              <div>
-                <a href="#/blog?id=${featured.id}" class="btn btn-primary">Baca Selengkapnya →</a>
+            <div class="w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center bg-surface">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="bg-primary-fixed text-primary px-3 py-1 rounded-full font-label-caps text-xs font-bold uppercase">${featuredArticle.kategori || 'Budaya'}</span>
+                <span class="text-on-surface-variant text-xs font-body-sm">${featuredArticle.created_at ? new Date(featuredArticle.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '15 Oktober 2024'}</span>
               </div>
+              <h2 class="font-display-lg text-2xl lg:text-3xl font-bold text-primary mb-4 leading-tight">${featuredArticle.judul}</h2>
+              <p class="font-body-md text-sm text-on-surface-variant mb-6 line-clamp-3 leading-relaxed">
+                ${featuredArticle.ringkasan || (featuredArticle.konten ? featuredArticle.konten.substring(0, 180) + '...' : '')}
+              </p>
+              <a href="#/blog" class="text-primary font-bold text-sm flex items-center gap-2 hover:text-primary-container transition-colors w-fit">
+                Baca Selengkapnya
+                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+              </a>
             </div>
           </div>
-        ` : ''}
+        </section>
+      ` : ''}
 
-        <!-- Other Articles Grid -->
-        <h3 style="font-size: 1.5rem; margin-bottom: 24px;">Artikel Lainnya</h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 28px;">
-          ${others.map(item => `
-            <div class="card">
-              <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80'}" alt="${item.judul}" style="width: 100%; height: 200px; object-fit: cover;" />
-              <div style="padding: 24px;">
-                <span class="badge badge-primary" style="margin-bottom: 8px;">${item.kategori || 'Artikel'}</span>
-                <h3 style="font-size: 1.2rem; margin-bottom: 8px;"><a href="#/blog?id=${item.id}">${item.judul}</a></h3>
-                <p style="color: var(--neutral-600); font-size: 0.9rem; margin-bottom: 16px;">${item.ringkasan || ''}</p>
-                <a href="#/blog?id=${item.id}" class="btn btn-sm btn-outline">Baca →</a>
+      <!-- Recent Blog Grid Section -->
+      <section>
+        <div class="flex justify-between items-end mb-8">
+          <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-primary">Artikel Terbaru</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          ${(recentArticles.length > 0 ? recentArticles : artikelList).map(article => `
+            <article class="bg-surface-container-lowest rounded-xl shadow-level-1 overflow-hidden hover:shadow-level-2 transition-all duration-300 group flex flex-col h-full border border-outline-variant/30 cursor-pointer">
+              <div class="h-48 overflow-hidden">
+                <img src="${article.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${article.judul}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
               </div>
-            </div>
+              <div class="p-6 flex flex-col flex-grow bg-surface">
+                <div class="flex items-center gap-3 mb-3">
+                  <span class="bg-primary-fixed text-primary px-2.5 py-0.5 rounded-full font-label-caps text-[10px] font-bold uppercase">${article.kategori || 'Berita'}</span>
+                  <span class="text-on-surface-variant text-xs">${article.created_at ? new Date(article.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '12 Okt 2024'}</span>
+                </div>
+                <h3 class="font-display-lg text-lg font-bold text-primary mb-2 line-clamp-2">${article.judul}</h3>
+                <p class="font-body-sm text-sm text-on-surface-variant line-clamp-3 mb-4 flex-grow leading-relaxed">
+                  ${article.ringkasan || (article.konten ? article.konten.substring(0, 110) + '...' : '')}
+                </p>
+              </div>
+            </article>
           `).join('')}
         </div>
-      </div>
+      </section>
+    </main>
 
-      ${renderFooter(profil)}
-    `;
-  }
+    ${renderFooter(profil)}
+  `;
 
   setTimeout(() => initNavbarEvents(), 0);
   return container;

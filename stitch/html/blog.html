@@ -1,0 +1,316 @@
+<!DOCTYPE html><html lang="id" style=""><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Outfit:wght@600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "background": "#fff8ef",
+                    "tertiary-container": "#223400",
+                    "on-primary-container": "#7a9f88",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#211b07",
+                    "on-error": "#ffffff",
+                    "inverse-on-surface": "#fcf0cf",
+                    "outline": "#727973",
+                    "surface-bright": "#fff8ef",
+                    "secondary-fixed": "#b0f591",
+                    "on-primary-fixed-variant": "#2b4e3b",
+                    "surface-container-highest": "#eee2c1",
+                    "on-surface-variant": "#414843",
+                    "on-secondary-fixed": "#052100",
+                    "on-secondary-fixed-variant": "#165200",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#a9cfb7",
+                    "surface-container": "#f9edcc",
+                    "secondary": "#2f6b19",
+                    "inverse-surface": "#36301a",
+                    "on-secondary": "#ffffff",
+                    "surface": "#fff8ef",
+                    "primary-fixed": "#c5ecd2",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#c8f085",
+                    "tertiary": "#111d00",
+                    "tertiary-fixed-dim": "#add36c",
+                    "outline-variant": "#c1c8c1",
+                    "on-secondary-container": "#35721e",
+                    "on-background": "#211b07",
+                    "secondary-container": "#b0f591",
+                    "on-tertiary-fixed-variant": "#354e00",
+                    "surface-dim": "#e5d9b9",
+                    "error-container": "#ffdad6",
+                    "surface-container-low": "#fff3d3",
+                    "secondary-fixed-dim": "#95d878",
+                    "primary": "#001f11",
+                    "surface-tint": "#436652",
+                    "inverse-primary": "#a9cfb7",
+                    "on-tertiary-container": "#7ea241",
+                    "on-tertiary": "#ffffff",
+                    "surface-variant": "#eee2c1",
+                    "on-tertiary-fixed": "#131f00",
+                    "error": "#ba1a1a",
+                    "primary-container": "#123524",
+                    "on-primary-fixed": "#002112",
+                    "surface-container-high": "#f4e8c6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4",
+                    "xl": "4rem",
+                    "gutter": "24px",
+                    "xs": "0.5rem",
+                    "sm": "1rem",
+                    "lg": "2.5rem",
+                    "container-max": "1280px",
+                    "md": "1.5rem"
+            },
+            "fontFamily": {
+                    "title-lg": [
+                            "Outfit"
+                    ],
+                    "label-caps": [
+                            "Inter"
+                    ],
+                    "display-lg": [
+                            "Outfit"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "display-lg-mobile": [
+                            "Outfit"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "headline-md-mobile": [
+                            "Outfit"
+                    ],
+                    "headline-md": [
+                            "Outfit"
+                    ]
+            },
+            "fontSize": {
+                    "title-lg": [
+                            "20px",
+                            {
+                                    "lineHeight": "1.4",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "display-lg": [
+                            "56px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg-mobile": [
+                            "36px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md-mobile": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-md": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+        },
+        },
+      }
+    }catch(_e){}</script><meta charset="utf-8"></head><body class="antialiased min-h-screen flex flex-col pt-24">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md dark:bg-surface-container-low/80 shadow-sm transition-all duration-300">
+<div class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto">
+<div class="font-display-lg text-title-lg md:text-headline-md font-bold text-primary tracking-tight">
+                Tampirkulon Heritage &amp; Nature
+            </div>
+<nav class="hidden md:flex gap-8">
+<a href="#" class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200">Home</a>
+<a href="#" class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200">Profile</a>
+<a href="#" class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200">Destinations</a>
+<a href="#" class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200">Packages</a>
+<a href="#" class="text-primary font-bold border-b-2 border-tertiary pb-1 hover:text-secondary transition-colors duration-200">Blog</a>
+</nav>
+<button class="bg-primary-container text-on-primary px-6 py-2 rounded-full font-body-md font-medium hover:bg-secondary transition-colors active:scale-95">
+                Book Now
+            </button>
+</div>
+</header>
+<main class="flex-grow max-w-container-max mx-auto px-lg w-full mb-xl">
+<!---->
+<section class="py-xl text-center max-w-3xl mx-auto">
+  <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-6 tracking-tight">
+    Kisah dari Tampirkulon
+  </h1>
+  <p class="font-body-md text-body-md text-on-surface-variant">
+    Temukan cerita, tradisi, dan keindahan alam desa kami melalui catatan perjalanan dan berita terbaru.
+  </p>
+</section><section class="mt-8 mb-16">
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(18,53,36,0.08)] overflow-hidden flex flex-col lg:flex-row group transition-all duration-300 hover:shadow-[0_12px_32px_rgba(18,53,36,0.12)]">
+<div class="w-full lg:w-1/2 h-64 lg:h-auto overflow-hidden">
+<img alt="Featured Article Image" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" data-alt="A breathtaking, wide-angle photograph of a traditional Javanese cultural festival in Tampirkulon village. Locals are dressed in vibrant traditional attire, engaging in a ceremonial dance against a backdrop of lush, terraced green rice fields and misty volcanic mountains. The lighting is golden hour, casting long soft shadows. The overall aesthetic is professional, nature-inspired, and culturally rich, emphasizing deep greens and warm cream tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8kLnfMLaKULxGN-9DbNmH_c28a8sQ4ac8vMUXJsi7zyoMf-5gx46AUUIAmmNU80Ms38v7SuSn8fzVUeKzZ96L_CUrXi_aNLSdMm_LeTI-C7XlZYBJUbVua6nHZZrWNkWeqKjI8P-0UoLtpya78I_s0W0JXJUy6iPBILeGqsiLu_JMsCSkvUDob6PZCq8nNaAe2HWM22yyLBaElpVsmf9hSsnWgMCLD5OvBkaVu7pidomSx_lqzF27">
+</div>
+<div class="w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center bg-surface">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-tertiary/10 text-primary px-3 py-1 rounded-full font-label-caps text-label-caps">BUDAYA</span>
+<span class="text-on-surface-variant text-body-sm font-body-sm">15 Oktober 2024</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary mb-4 leading-tight">Salva keren&nbsp;</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-3">
+                        Desa Tampirkulon bukan sekadar destinasi wisata alam. Di balik pesona lanskap hijaunya, tersimpan warisan budaya yang dihidupi masyarakat secara turun-temurun. Artikel ini akan membawa Anda menyelami ritual adat, kerajinan tangan, dan harmoni kehidupan pedesaan yang menenangkan jiwa.
+                    </p>
+<a class="text-tertiary-container font-body-md font-semibold flex items-center gap-2 hover:text-secondary transition-colors w-fit" href="#">
+                        Baca Selengkapnya
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+<!-- Blog Grid Section -->
+<section>
+<div class="flex justify-between items-end mb-8">
+<h2 class="font-headline-md text-headline-md text-primary">Artikel Terbaru</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Blog Card 1 -->
+<article class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(18,53,36,0.08)] overflow-hidden hover:shadow-[0_12px_32px_rgba(18,53,36,0.12)] transition-shadow duration-300 group flex flex-col h-full cursor-pointer">
+<div class="h-48 overflow-hidden">
+<img alt="Blog Image 1" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="A serene, professional photograph of a misty morning over terraced rice fields in Tampirkulon village. A small traditional wooden hut sits quietly in the middle distance. The color palette focuses on deep organic greens, soft morning mist, and warm sunlight filtering through the clouds, reflecting a refined eco-tourism aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8PhmcSZSrvB4mb9vsQuVdSBWZ-SaWwfbjkmUQnH1RGng8PZ1SqMBupXBD0IKBYIvdo2smFtC-wDUqeogLoi_4dWoSPB1E073p0MR3kY7uiOsrNskaMTjWgdI9IMMbMb5woTnF5zWIaQekoDFrvg80QEHwbZIZRzfA36MtUUYMO5470WznFY6nIke0JAMPmJ2gOONkCPfGZ3dTh1vLOgX7HTl4mYvSAdQQDvBY-E73pGnnD1mMCXNv">
+</div>
+<div class="p-6 flex flex-col flex-grow bg-surface">
+<div class="flex items-center gap-3 mb-3">
+<span class="bg-tertiary/10 text-primary px-2.5 py-0.5 rounded-full font-label-caps text-[10px]">ALAM</span>
+<span class="text-on-surface-variant text-xs font-body-sm">12 Oktober 2024</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-2 line-clamp-2">Pesona Embun Pagi di Terasering Hijau Tampirkulon</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mb-4 flex-grow">
+                            Menyaksikan matahari terbit dari sela-sela perbukitan sambil menikmati udara segar pedesaan. Sebuah pengalaman spiritual yang menyegarkan pikiran dari hiruk pikuk kota.
+                        </p>
+</div>
+</article>
+<!-- Blog Card 2 -->
+<article class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(18,53,36,0.08)] overflow-hidden hover:shadow-[0_12px_32px_rgba(18,53,36,0.12)] transition-shadow duration-300 group flex flex-col h-full cursor-pointer">
+<div class="h-48 overflow-hidden">
+<img alt="Blog Image 2" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="A close-up, high-quality photograph of a local artisan in Tampirkulon village weaving a traditional bamboo basket. Hands are weathered and skilled, focusing on the tactile texture of the natural materials. The lighting is warm and natural, emphasizing organic tones of brown, beige, and deep green in the background, portraying a refined heritage aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSivmmLPqlVqYluFP-um-PeTBwRvdK0RGkjAcU4hckFsnKn-0cxbscrC1p0-El8Do39QAy43skdU-LrFcTZaubfB7ICF3N5AfKxnNrEiuO-jZKslsfdC-qspf5YPL2WTZ8FRg4lwZVLptaL6iBA-KymaDjTx9rUi787AZ5GlLfQjYlX7GsS9sFb-WetH1ATEcyU1XowtUVnEf2Ow3U1Avtf06DS1VDu01Aiq_eiCkFkQo1TuxMFXhS">
+</div>
+<div class="p-6 flex flex-col flex-grow bg-surface">
+<div class="flex items-center gap-3 mb-3">
+<span class="bg-tertiary/10 text-primary px-2.5 py-0.5 rounded-full font-label-caps text-[10px]">KERAJINAN</span>
+<span class="text-on-surface-variant text-xs font-body-sm">08 Oktober 2024</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-2 line-clamp-2">Sentuhan Tangan Pengrajin Bambu Lokal</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mb-4 flex-grow">
+                            Mengenal lebih dekat para pengrajin lokal yang menjaga tradisi anyaman bambu. Setiap karya memiliki filosofi mendalam tentang keselarasan hidup manusia dan alam.
+                        </p>
+</div>
+</article>
+<!-- Blog Card 3 -->
+<article class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(18,53,36,0.08)] overflow-hidden hover:shadow-[0_12px_32px_rgba(18,53,36,0.12)] transition-shadow duration-300 group flex flex-col h-full cursor-pointer">
+<div class="h-48 overflow-hidden">
+<img alt="Blog Image 3" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="A beautiful, vibrant photo of a traditional culinary spread from Tampirkulon village served on banana leaves. Dishes include organic local vegetables and heritage recipes. The setting is a rustic wooden table outdoors with a lush green backdrop. Lighting is bright, soft, and inviting, showcasing a modern nature-inspired culinary experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQoGdC709prg13vYi0T7vHxl7yzvQtV0TUJbyIAu9s27e6645VpRw1N8_y3PToQZXjCwU6Z6kupGJCiaR7fr-IKTKYssoo_IeMhkb39xvubuZ4IdmJ0Iu6lfD9YXpgpiUfxpsosQI8gdIpFaM8PNH-icIY4TvUcLFziEBUr_F4Rnu8t3jjx-rxzudXMhy1fOysksKHgEf_HiYBn88nhx5AYEh4_rZuj3aUex-5If7gh9RCyyMKiqe6">
+</div>
+<div class="p-6 flex flex-col flex-grow bg-surface">
+<div class="flex items-center gap-3 mb-3">
+<span class="bg-tertiary/10 text-primary px-2.5 py-0.5 rounded-full font-label-caps text-[10px]">KULINER</span>
+<span class="text-on-surface-variant text-xs font-body-sm">01 Oktober 2024</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-2 line-clamp-2">Cita Rasa Otentik Hidangan Tradisional Pedesaan</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mb-4 flex-grow">
+                            Eksplorasi ragam kuliner khas yang dimasak dengan kayu bakar menggunakan bahan-bahan organik yang dipanen langsung dari kebun warga sekitar.
+                        </p>
+</div>
+</article>
+</div>
+<!-- Pagination / Load More (Optional minimal design) -->
+<div class="flex justify-center mt-12">
+<button class="bg-transparent border border-outline text-primary px-8 py-2 rounded-full font-body-md hover:bg-surface-container-high transition-colors">
+                    Muat Lebih Banyak
+                </button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-primary-container dark:bg-primary-container mt-auto">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg px-lg py-xl max-w-container-max mx-auto">
+<div class="flex flex-col gap-4">
+<div class="font-headline-md text-headline-md text-on-primary">
+                    Tampirkulon Heritage &amp; Nature
+                </div>
+<p class="font-body-sm text-body-sm text-on-primary-container mt-2 max-w-xs">
+                    Melestarikan alam dan budaya untuk generasi mendatang melalui ekowisata berkelanjutan.
+                </p>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-title-lg text-title-lg text-on-primary">Quick Links</h4>
+<nav class="flex flex-col gap-2">
+<a class="font-body-md text-body-md text-on-primary-container hover:text-secondary-fixed transition-colors cursor-pointer" href="#">About Us</a>
+<a class="font-body-md text-body-md text-on-primary-container hover:text-secondary-fixed transition-colors cursor-pointer" href="#">Destinations</a>
+<a class="font-body-md text-body-md text-on-primary-container hover:text-secondary-fixed transition-colors cursor-pointer" href="#">Packages</a>
+<a class="font-body-md text-body-md text-tertiary-fixed font-bold hover:text-secondary-fixed transition-colors cursor-pointer" href="#">Blog</a>
+</nav>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-title-lg text-title-lg text-on-primary">Contact Info</h4>
+<div class="flex flex-col gap-2">
+<p class="font-body-md text-body-md text-on-primary-container flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+                        Desa Tampirkulon, Magelang
+                    </p>
+<p class="font-body-md text-body-md text-on-primary-container flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+                        hello@tampirkulon.com
+                    </p>
+</div>
+</div>
+</div>
+<div class="border-t border-on-primary-container/20 w-full">
+<div class="max-w-container-max mx-auto px-lg py-6 text-center">
+<p class="font-body-sm text-body-sm text-on-primary-container">
+                    © 2024 Tampirkulon Heritage &amp; Nature. All rights reserved.
+                </p>
+</div>
+</div>
+</footer>
+
+</body></html>
