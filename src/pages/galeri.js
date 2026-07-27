@@ -30,7 +30,7 @@ export const renderGaleri = async () => {
     const filteredGaleri = activeFilter === 'all' ? galeriList : galeriList.filter(g => g.kategori === activeFilter);
 
     return `
-      ${renderNavbar()}
+      ${renderNavbar(true)}
 
       <main class="max-w-container-max mx-auto px-4 md:px-16 pb-20 w-full flex-grow">
         <!-- Header Section -->
@@ -77,7 +77,7 @@ export const renderGaleri = async () => {
   container.innerHTML = renderContent();
 
   const bindEvents = () => {
-    initNavbarEvents();
+    initNavbarEvents(true);
 
     container.querySelectorAll('.galeri-filter-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {

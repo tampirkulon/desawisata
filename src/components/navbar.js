@@ -1,6 +1,6 @@
 // Navbar Component with Stitch Modern Transparent Header Styling
 
-export const renderNavbar = () => {
+export const renderNavbar = (isSolid = false) => {
   const currentHash = window.location.hash || '#/';
   
   const navItems = [
@@ -13,8 +13,12 @@ export const renderNavbar = () => {
     { hash: '#/kontak', label: 'Kontak' },
   ];
 
+  const initialClasses = isSolid 
+    ? 'scrolled-nav bg-surface/95 backdrop-blur-md shadow-sm border-b border-outline-variant/20' 
+    : 'transparent-nav';
+
   return `
-    <nav class="fixed top-0 left-0 w-full z-50 transition-all duration-300 transparent-nav" id="main-navbar">
+    <nav class="fixed top-0 left-0 w-full z-50 transition-all duration-300 ${initialClasses}" id="main-navbar" ${isSolid ? 'data-solid="true"' : ''}>
       <div class="flex justify-between items-center px-6 md:px-16 max-w-container-max mx-auto h-20">
         <!-- Rata Kiri: Logo -->
         <a href="#/" class="font-display-lg text-2xl font-bold nav-brand flex items-center gap-2">
@@ -56,16 +60,18 @@ export const renderNavbar = () => {
   `;
 };
 
-export const initNavbarEvents = () => {
+export const initNavbarEvents = (isSolid = false) => {
   const navbar = document.getElementById('main-navbar');
   const hamburger = document.getElementById('hamburger-toggle');
   const drawer = document.getElementById('mobile-drawer');
   const overlay = document.getElementById('drawer-overlay');
   const drawerClose = document.getElementById('drawer-close');
 
+  const alwaysSolid = isSolid || (navbar && navbar.dataset.solid === 'true');
+
   const handleScroll = () => {
     if (!navbar) return;
-    if (window.scrollY > 40) {
+    if (alwaysSolid || window.scrollY > 40) {
       navbar.classList.add('scrolled-nav', 'bg-surface/95', 'backdrop-blur-md', 'shadow-sm', 'border-b', 'border-outline-variant/20');
       navbar.classList.remove('transparent-nav');
     } else {

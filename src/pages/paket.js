@@ -24,21 +24,20 @@ export const renderPaket = async () => {
   };
 
   const container = document.createElement('div');
-  container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background pt-20';
+  container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background';
 
   container.innerHTML = `
     ${renderNavbar()}
 
-    <main class="flex-grow w-full max-w-container-max mx-auto px-5 md:px-lg py-xl flex flex-col items-center">
-      <!-- Header Section -->
-      <header class="text-center max-w-2xl mb-xl mt-6">
-        <h1 class="font-headline-md-mobile md:font-headline-md text-headline-md-mobile md:text-headline-md text-primary mb-sm">
-          Pilih Paket Liburan Anda
-        </h1>
-        <p class="font-body-md text-body-md text-on-surface-variant">
-          Temukan pengalaman wisata desa yang otentik. Dari eksplorasi alam hingga lokakarya budaya, kami memiliki paket yang dirancang khusus untuk menciptakan memori tak terlupakan.
-        </p>
-      </header>
+    <!-- Header Page Section -->
+    <section class="w-full bg-primary relative flex items-center justify-center overflow-hidden text-center text-white px-6 pt-20" style="min-height: 391px; background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center;">
+      <div class="max-w-container-max mx-auto text-center relative z-10 py-8">
+        <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Pilih Paket Liburan Anda</h1>
+        <p class="text-primary-fixed-dim max-w-2xl mx-auto font-body-md text-base md:text-lg text-white/90">Temukan pengalaman wisata desa yang otentik. Dari eksplorasi alam hingga lokakarya budaya, kami memiliki paket yang dirancang khusus untuk menciptakan memori tak terlupakan.</p>
+      </div>
+    </section>
+
+    <main class="flex-grow w-full max-w-container-max mx-auto px-5 md:px-lg py-16 flex flex-col items-center">
 
       <!-- Pricing Cards Container -->
       <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-lg mb-xl">

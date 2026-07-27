@@ -25,7 +25,7 @@ export const renderKontak = async (queryParams) => {
   container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background pt-20';
 
   container.innerHTML = `
-    ${renderNavbar()}
+    ${renderNavbar(true)}
 
     <main class="pt-8 pb-16 px-4 md:px-16 max-w-container-max mx-auto w-full flex-grow flex flex-col justify-center">
       <div class="mb-12 text-center md:text-left">
@@ -138,7 +138,7 @@ export const renderKontak = async (queryParams) => {
   `;
 
   const bindEvents = () => {
-    initNavbarEvents();
+    initNavbarEvents(true);
 
     const form = container.querySelector('#reservasi-form');
     const alertBox = container.querySelector('#form-alert');

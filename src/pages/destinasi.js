@@ -39,14 +39,14 @@ export const renderDestinasi = async (queryParams) => {
       ${renderNavbar()}
 
       <!-- Page Header -->
-      <section class="relative flex items-center justify-center overflow-hidden w-full bg-primary pt-28 pb-16 px-6 text-center" style="min-height: 340px;">
+      <section class="relative flex items-center justify-center overflow-hidden w-full bg-primary pt-20 px-6 text-center text-white" style="min-height: 391px;">
         <div class="absolute inset-0 z-0">
           <img alt="Tampirkulon Heritage" class="w-full h-full object-cover opacity-30" src="https://lh3.googleusercontent.com/aida/AP1WRLv0kmPyXlx735C-3FBTB_btvd6IOzpOfv8reV4yrmbXWSpYqTUCgFkZ_2PuSVRtioFNOUL_7vEfh9ykgRLvufo9vdRONN04mxuEumo797mDUt6r-DwXjhT8pZHuKBVfRgc3KcVFFHdy8NgyVVD17ZnV22HDZWY5H1at2jNZuOgrJ-kgBsda7pjf_0_rL9fYtVDavMg9G7Qv7iqE8gyLZpw9eZryb4JbvYGL_t-Hb1rDIcleP0-J6wiUfg" />
           <div class="absolute inset-0 bg-primary/60 backdrop-blur-[2px]"></div>
         </div>
-        <div class="relative z-10 max-w-container-max mx-auto px-4 text-center">
-          <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-background mb-4">Eksplorasi Destinasi Kami</h1>
-          <p class="font-body-md text-base md:text-lg text-background/90 max-w-2xl mx-auto leading-relaxed">
+        <div class="relative z-10 max-w-container-max mx-auto px-4 text-center py-8">
+          <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Eksplorasi Destinasi Kami</h1>
+          <p class="font-body-md text-base md:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
             Temukan keindahan alam yang tak tertandingi, kekayaan budaya yang otentik, dan pengalaman tak terlupakan di Desa Wisata Tampirkulon.
           </p>
         </div>

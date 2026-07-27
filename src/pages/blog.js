@@ -26,7 +26,7 @@ export const renderBlog = async () => {
   container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background pt-20';
 
   container.innerHTML = `
-    ${renderNavbar()}
+    ${renderNavbar(true)}
 
     <main class="flex-grow max-w-container-max mx-auto px-4 md:px-16 w-full mb-16">
       <!-- Header Title Section -->
@@ -94,6 +94,6 @@ export const renderBlog = async () => {
     ${renderFooter(profil)}
   `;
 
-  setTimeout(() => initNavbarEvents(), 0);
+  setTimeout(() => initNavbarEvents(true), 0);
   return container;
 };
