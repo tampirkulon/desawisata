@@ -228,14 +228,6 @@ export const renderAdminOverview = async () => {
                   </div>
                 </div>
               </div>
-                    <span class="text-xs font-semibold text-slate-400">F</span>
-                  </div>
-                  <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                    <div class="w-full max-w-[42px] h-[80%] bg-slate-300 rounded-full"></div>
-                    <span class="text-xs font-semibold text-slate-400">S</span>
-                  </div>
-                </div>
-              </div>
 
               <!-- Actionable Recent Reservations Table Widget -->
               <div class="donezo-card p-6 overflow-hidden">
