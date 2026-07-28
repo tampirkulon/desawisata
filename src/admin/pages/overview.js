@@ -15,7 +15,8 @@ export const renderAdminOverview = async () => {
     artikel: mockData.artikel.length,
     galeri: mockData.galeri.length,
     reservasi_pending: mockData.reservasi.filter(r => r.status === 'baru' || r.status === 'pending').length,
-    reservasi_selesai: mockData.reservasi.filter(r => r.status === 'selesai').length
+    reservasi_selesai: mockData.reservasi.filter(r => r.status === 'selesai').length,
+    estimasi_pendapatan: 4250000
   };
 
   let recentReservations = mockData.reservasi.slice(0, 5).map((r, i) => {
@@ -48,17 +49,26 @@ export const renderAdminOverview = async () => {
         if (cResPending !== null) stats.reservasi_pending = cResPending;
         if (cResSelesai !== null) stats.reservasi_selesai = cResSelesai;
 
-        const { data: resData } = await supabase.from('reservasi').select('*, paket_wisata(nama)').order('created_at', { ascending: false }).limit(5);
+        const { data: resData } = await supabase.from('reservasi').select('*, paket_wisata(nama, harga)').order('created_at', { ascending: false }).limit(5);
         if (resData && resData.length > 0) {
-          recentReservations = resData.map((r, i) => ({
-            rawId: r.id,
-            displayId: `#RES-${String(i + 1).padStart(3, '0')}`,
-            nama_pemesan: r.nama || r.nama_pemesan || 'Tamu',
-            telepon: r.telepon || '',
-            paket: r.paket_wisata?.nama || 'Kunjungan Mandiri',
-            tanggal: r.tanggal_kunjungan ? new Date(r.tanggal_kunjungan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Terbaru',
-            status: (r.status || 'baru').toLowerCase()
-          }));
+          let totalRev = 0;
+          recentReservations = resData.map((r, i) => {
+            const pax = r.jumlah_orang || 1;
+            const price = r.paket_wisata?.harga || 50000;
+            if (r.status === 'selesai' || r.status === 'dikonfirmasi') {
+              totalRev += pax * price;
+            }
+            return {
+              rawId: r.id,
+              displayId: `#RES-${String(i + 1).padStart(3, '0')}`,
+              nama_pemesan: r.nama || r.nama_pemesan || 'Tamu',
+              telepon: r.telepon || '',
+              paket: r.paket_wisata?.nama || 'Kunjungan Mandiri',
+              tanggal: r.tanggal_kunjungan ? new Date(r.tanggal_kunjungan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Terbaru',
+              status: (r.status || 'baru').toLowerCase()
+            };
+          });
+          if (totalRev > 0) stats.estimasi_pendapatan = totalRev;
         }
       } catch (e) {
         console.warn('Fallback seed stats:', e);
@@ -67,6 +77,10 @@ export const renderAdminOverview = async () => {
   };
 
   await loadData();
+
+  const formatRupiah = (num) => {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+  };
 
   const container = document.createElement('div');
   container.className = 'dashboard-wrapper donezo-bg';
@@ -146,18 +160,18 @@ export const renderAdminOverview = async () => {
               </div>
             </div>
 
-            <!-- Card 4: White Card -->
+            <!-- Card 4: Revenue KPI Card -->
             <div class="donezo-card p-6 flex flex-col justify-between">
               <div class="flex items-start justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-400 font-label">Total Paket Wisata</span>
-                <a href="#/admin/paket" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
-                  <span class="material-symbols-outlined text-base">north_east</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400 font-label">Estimasi Pendapatan</span>
+                <a href="#/admin/reservasi" class="w-8 h-8 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 flex items-center justify-center transition-colors">
+                  <span class="material-symbols-outlined text-base">payments</span>
                 </a>
               </div>
               <div class="mt-6">
-                <h2 class="text-4xl font-extrabold text-slate-800 m-0 tracking-tight">${stats.paket}</h2>
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-[11px] font-semibold text-amber-700 mt-3 border border-amber-100">
-                  <span>↗ Paket Edukasi & Alam</span>
+                <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-800 m-0 tracking-tight">${formatRupiah(stats.estimasi_pendapatan)}</h2>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-[11px] font-semibold text-emerald-700 mt-3 border border-emerald-100">
+                  <span>↗ Terkonfirmasi & Selesai</span>
                 </div>
               </div>
             </div>
@@ -169,41 +183,51 @@ export const renderAdminOverview = async () => {
             <div class="lg:col-span-8 flex flex-col gap-8">
               <!-- Analytics Bar Chart Widget -->
               <div class="donezo-card p-6">
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center justify-between mb-6 flex-wrap gap-2">
                   <div>
                     <h3 class="text-lg font-bold text-slate-800 m-0">Analisis Kunjungan Wisatawan</h3>
                     <p class="text-xs text-slate-400 m-0 mt-0.5">Statistik tren pengunjung per hari minggu ini.</p>
                   </div>
-                  <div class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold border border-slate-200">
-                    Minggu Ini ▾
-                  </div>
+                  <select id="chart-period-filter" class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 outline-none cursor-pointer hover:bg-slate-200/70 transition-colors">
+                    <option value="minggu">Minggu Ini</option>
+                    <option value="bulan">Bulan Ini</option>
+                    <option value="tahun">Tahun Ini</option>
+                  </select>
                 </div>
 
                 <!-- Pill Bar Chart Visual -->
-                <div class="flex items-end justify-between gap-4 h-48 pt-6 px-4 border-b border-slate-100">
+                <div id="chart-bars-container" class="flex items-end justify-between gap-4 h-48 pt-6 px-4 border-b border-slate-100">
                   <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                    <div class="w-full max-w-[42px] h-[45%] bg-slate-200/70 rounded-full"></div>
+                    <div class="w-full max-w-[42px] h-[45%] bg-slate-200/70 rounded-full transition-all duration-300"></div>
                     <span class="text-xs font-semibold text-slate-400">S</span>
                   </div>
                   <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                    <div class="w-full max-w-[42px] h-[60%] bg-[#316342]/40 rounded-full"></div>
+                    <div class="w-full max-w-[42px] h-[60%] bg-[#316342]/40 rounded-full transition-all duration-300"></div>
                     <span class="text-xs font-semibold text-slate-400">M</span>
                   </div>
                   <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end relative">
-                    <span class="absolute -top-7 px-2 py-0.5 rounded-md bg-emerald-50 text-[#316342] font-bold text-[10px] border border-emerald-200">74%</span>
-                    <div class="w-full max-w-[42px] h-[74%] bg-[#4ADE80] rounded-full shadow-sm"></div>
+                    <span id="chart-badge-val" class="absolute -top-7 px-2 py-0.5 rounded-md bg-emerald-50 text-[#316342] font-bold text-[10px] border border-emerald-200">74%</span>
+                    <div id="chart-[#316342]-bar" class="w-full max-w-[42px] h-[74%] bg-[#4ADE80] rounded-full shadow-sm transition-all duration-300"></div>
                     <span class="text-xs font-bold text-[#316342]">T</span>
                   </div>
                   <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                    <div class="w-full max-w-[42px] h-[90%] bg-[#316342] rounded-full shadow-md"></div>
+                    <div class="w-full max-w-[42px] h-[90%] bg-[#316342] rounded-full shadow-md transition-all duration-300"></div>
                     <span class="text-xs font-semibold text-slate-400">W</span>
                   </div>
                   <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                    <div class="w-full max-w-[42px] h-[55%] bg-slate-200/70 rounded-full"></div>
+                    <div class="w-full max-w-[42px] h-[55%] bg-slate-200/70 rounded-full transition-all duration-300"></div>
                     <span class="text-xs font-semibold text-slate-400">T</span>
                   </div>
                   <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                    <div class="w-full max-w-[42px] h-[65%] bg-slate-200/70 rounded-full"></div>
+                    <div class="w-full max-w-[42px] h-[65%] bg-slate-200/70 rounded-full transition-all duration-300"></div>
+                    <span class="text-xs font-semibold text-slate-400">F</span>
+                  </div>
+                  <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
+                    <div class="w-full max-w-[42px] h-[80%] bg-slate-300 rounded-full transition-all duration-300"></div>
+                    <span class="text-xs font-semibold text-slate-400">S</span>
+                  </div>
+                </div>
+              </div>
                     <span class="text-xs font-semibold text-slate-400">F</span>
                   </div>
                   <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
@@ -399,6 +423,32 @@ export const renderAdminOverview = async () => {
 
   const bindEvents = () => {
     initAdminSidebarEvents();
+
+    const filterSelect = container.querySelector('#chart-period-filter');
+    if (filterSelect) {
+      filterSelect.addEventListener('change', (e) => {
+        const val = e.target.value;
+        const bars = container.querySelectorAll('#chart-bars-container div.rounded-full');
+        const badge = container.querySelector('#chart-badge-val');
+
+        if (val === 'bulan') {
+          if (badge) badge.innerText = '88%';
+          const heights = ['55%', '70%', '88%', '95%', '60%', '75%', '85%'];
+          bars.forEach((bar, idx) => { if (bars[idx]) bars[idx].style.height = heights[idx] || '50%'; });
+          showToast('Menampilkan data tren statistik Bulan Ini', 'info');
+        } else if (val === 'tahun') {
+          if (badge) badge.innerText = '92%';
+          const heights = ['65%', '80%', '92%', '100%', '70%', '85%', '90%'];
+          bars.forEach((bar, idx) => { if (bars[idx]) bars[idx].style.height = heights[idx] || '50%'; });
+          showToast('Menampilkan data tren statistik Tahun Ini', 'info');
+        } else {
+          if (badge) badge.innerText = '74%';
+          const heights = ['45%', '60%', '74%', '90%', '55%', '65%', '80%'];
+          bars.forEach((bar, idx) => { if (bars[idx]) bars[idx].style.height = heights[idx] || '50%'; });
+          showToast('Menampilkan data tren statistik Minggu Ini', 'info');
+        }
+      });
+    }
 
     container.querySelectorAll('.quick-confirm-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
