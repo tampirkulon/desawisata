@@ -272,11 +272,11 @@ export const renderAdminOverview = async () => {
                 <!-- Footer Summary Legend -->
                 <div class="mt-4 pt-3 flex items-center justify-between text-xs font-medium text-slate-500 flex-wrap gap-2">
                   <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#316342]"></span>
+                    <span class="material-symbols-outlined text-[#316342] text-sm">analytics</span>
                     <span id="chart-avg-summary">Rata-rata: <strong>86 Pengunjung/Hari</strong></span>
                   </div>
                   <div class="flex items-center gap-2">
-                    <span class="text-amber-500">🌟</span>
+                    <span class="material-symbols-outlined text-amber-500 text-sm">star</span>
                     <span id="chart-peak-summary">Hari Puncak: <strong>Rabu (145 Pax)</strong></span>
                   </div>
                 </div>
@@ -320,41 +320,43 @@ export const renderAdminOverview = async () => {
                         } else if (s === 'dikonfirmasi') {
                           badgeStyle = 'bg-blue-50 text-blue-700 border-blue-200';
                           statusText = 'In Progress';
+                        } else if (s === 'dibatalkan') {
+                          badgeStyle = 'bg-rose-50 text-rose-700 border-rose-200';
+                          statusText = 'Cancelled';
                         }
 
-                        const cleanPhone = res.telepon ? res.telepon.replace(/[^0-9]/g, '') : '';
-                        const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}` : '#';
+                        const waMsg = encodeURIComponent(`Halo ${res.nama_pemesan}, kami dari pengelola Desa Wisata Tampirkulon mengonfirmasi reservasi Anda (${res.paket}) untuk tanggal ${res.tanggal}.`);
+                        const waUrl = res.telepon ? `https://wa.me/${res.telepon.replace(/^0/, '62')}?text=${waMsg}` : '#';
 
                         return `
-                          <tr class="border-b border-slate-100/70 hover:bg-slate-50/80 transition-colors">
+                          <tr class="border-b border-slate-50 hover:bg-slate-50/80 transition-colors">
                             <td class="py-3.5 px-3">
-                              <div class="flex items-center gap-2.5">
-                                <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs">
+                              <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs">
                                   ${res.nama_pemesan ? res.nama_pemesan.charAt(0) : 'T'}
                                 </div>
                                 <div>
                                   <div class="font-bold text-slate-800">${res.nama_pemesan}</div>
-                                  ${res.telepon ? `<div class="text-[10px] text-slate-400">${res.telepon}</div>` : ''}
+                                  <div class="text-[10px] text-slate-400">${res.telepon || 'No Contact'}</div>
                                 </div>
                               </div>
                             </td>
-                            <td class="py-3.5 px-3 font-medium text-slate-600">${res.paket}</td>
-                            <td class="py-3.5 px-3 text-slate-500">${res.tanggal}</td>
+                            <td class="py-3.5 px-3 font-semibold text-slate-700">${res.paket}</td>
+                            <td class="py-3.5 px-3 font-medium text-slate-500">${res.tanggal}</td>
                             <td class="py-3.5 px-3">
-                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${badgeStyle}">
+                              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${badgeStyle}">
                                 ${statusText}
                               </span>
                             </td>
                             <td class="py-3.5 px-3 text-right">
-                              <div class="inline-flex items-center gap-1.5 justify-end">
-                                ${cleanPhone ? `
-                                  <a href="${waUrl}" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[11px] transition-colors inline-flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-xs">chat</span>
-                                    WA
+                              <div class="flex items-center justify-end gap-2">
+                                ${res.telepon ? `
+                                  <a href="${waUrl}" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-[11px] font-semibold border border-emerald-200 transition-colors flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-xs">chat</span> WA
                                   </a>
                                 ` : ''}
-                                ${(s === 'baru' || s === 'pending') ? `
-                                  <button class="px-2.5 py-1 rounded-lg bg-[#316342] text-white hover:bg-[#254d33] font-bold text-[11px] transition-colors quick-confirm-btn" data-id="${res.rawId}">
+                                ${s === 'baru' || s === 'pending' ? `
+                                  <button class="quick-confirm-btn px-2.5 py-1 rounded-lg bg-[#316342] text-white hover:bg-[#254d33] text-[11px] font-semibold transition-colors shadow-2xs" data-id="${res.rawId}">
                                     Konfirmasi
                                   </button>
                                 ` : ''}
@@ -369,48 +371,46 @@ export const renderAdminOverview = async () => {
               </div>
             </div>
 
-            <!-- Right Column Widgets (4 cols) -->
+            <!-- Right Column (4 cols) -->
             <div class="lg:col-span-4 flex flex-col gap-8">
-              <!-- Reminders / Schedule Card -->
+              <!-- Reminders / Schedule Card Widget -->
               <div class="donezo-card p-6">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-400 font-label">Agenda Hari Ini</span>
-                <h4 class="text-base font-bold text-slate-800 m-0 mt-3">Rombongan Edukasi Wisata Durian</h4>
-                <p class="text-xs text-slate-400 m-0 mt-1">Waktu: 14.00 WIB - 16.30 WIB (35 Pax)</p>
-
-                <button class="w-full mt-5 py-3 rounded-full bg-[#316342] text-white font-bold text-xs hover:bg-[#254d33] transition-colors shadow-md flex items-center justify-center gap-2">
-                  <span class="material-symbols-outlined text-base">video_camera_front</span>
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-label">AGENDA HARI INI</span>
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                </div>
+                <h4 class="text-sm font-bold text-slate-800 m-0 mb-1">Rombongan Edukasi Wisata Durian</h4>
+                <p class="text-xs text-slate-400 m-0 mb-4">Waktu: 14.00 WIB - 16.30 WIB (35 Pax)</p>
+                <button id="sambut-wisatawan-btn" class="w-full py-2.5 px-4 rounded-xl bg-[#316342] hover:bg-[#254d33] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
+                  <span class="material-symbols-outlined text-sm">badge</span>
                   Mulai Sambut Wisatawan
                 </button>
               </div>
 
-              <!-- Project Progress Donut Gauge Widget -->
-              <div class="donezo-card p-6">
-                <h3 class="text-base font-bold text-slate-800 m-0 mb-4">Progres Kunjungan</h3>
-                <div class="flex flex-col items-center justify-center py-4 relative">
-                  <!-- Circular Donut Chart Visual -->
-                  <div class="w-36 h-36 rounded-full border-[14px] border-slate-100 border-t-[#316342] border-r-[#4ADE80] border-b-[#316342] flex flex-col items-center justify-center shadow-inner">
-                    <span class="text-2xl font-extrabold text-slate-800 leading-none">75%</span>
-                    <span class="text-[10px] font-semibold text-slate-400 mt-1">Kunjungan Selesai</span>
+              <!-- Circular Donut Gauge Progress Widget -->
+              <div class="donezo-card p-6 flex flex-col items-center justify-center text-center">
+                <h3 class="text-sm font-bold text-slate-800 m-0 mb-4 self-start">Progres Kunjungan</h3>
+                
+                <!-- Donut SVG Gauge -->
+                <div class="relative w-36 h-36 flex items-center justify-center my-2">
+                  <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                    <path class="text-slate-100" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path class="text-[#316342]" stroke-dasharray="75, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  </svg>
+                  <div class="absolute flex flex-col items-center justify-center">
+                    <span class="text-2xl font-extrabold text-slate-800">75%</span>
+                    <span class="text-[10px] font-semibold text-slate-400">Kunjungan Selesai</span>
                   </div>
                 </div>
 
-                <div class="flex items-center justify-between text-xs pt-4 border-t border-slate-100 font-medium text-slate-600">
-                  <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#316342]"></span>
-                    <span>Completed</span>
-                  </div>
-                  <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#4ADE80]"></span>
-                    <span>In Progress</span>
-                  </div>
-                  <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-slate-200"></span>
-                    <span>Pending</span>
-                  </div>
+                <div class="flex items-center justify-center gap-4 text-[11px] font-medium text-slate-500 mt-4 w-full border-t border-slate-100 pt-3">
+                  <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#316342]"></span> Completed</span>
+                  <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#4ADE80]"></span> In Progress</span>
+                  <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-slate-300"></span> Pending</span>
                 </div>
               </div>
 
-              <!-- Top Destinations & Packages List -->
+              <!-- Top Destinations / Services Card Widget -->
               <div class="donezo-card p-6">
                 <div class="flex items-center justify-between mb-4">
                   <h3 class="text-base font-bold text-slate-800 m-0">Destinasi Populer</h3>
@@ -423,7 +423,7 @@ export const renderAdminOverview = async () => {
                   <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100">
                     <div class="flex items-center gap-3">
                       <div class="w-8 h-8 rounded-lg bg-emerald-100 text-[#316342] flex items-center justify-center font-bold">
-                        🍃
+                        <span class="material-symbols-outlined text-sm">park</span>
                       </div>
                       <div>
                         <h4 class="text-xs font-bold text-slate-800 m-0">Kebun Durian Candimulyo</h4>
@@ -435,7 +435,7 @@ export const renderAdminOverview = async () => {
                   <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100">
                     <div class="flex items-center gap-3">
                       <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
-                        🌊
+                        <span class="material-symbols-outlined text-sm">water</span>
                       </div>
                       <div>
                         <h4 class="text-xs font-bold text-slate-800 m-0">Susur Sungai Tampir</h4>
@@ -447,7 +447,7 @@ export const renderAdminOverview = async () => {
                   <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100">
                     <div class="flex items-center gap-3">
                       <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
-                        🍱
+                        <span class="material-symbols-outlined text-sm">restaurant</span>
                       </div>
                       <div>
                         <h4 class="text-xs font-bold text-slate-800 m-0">Paket Kuliner Tradisional</h4>

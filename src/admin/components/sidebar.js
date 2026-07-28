@@ -22,7 +22,7 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
       <!-- Header Brand (Fixed Top) -->
       <div class="h-20 flex items-center px-6 border-b border-slate-100 gap-3 flex-shrink-0">
         <div class="w-9 h-9 rounded-xl bg-[#316342] text-white flex items-center justify-center font-bold text-lg shadow-sm">
-          🍃
+          <span class="material-symbols-outlined text-xl">forest</span>
         </div>
         <div>
           <h1 class="font-display-lg text-base font-bold text-slate-800 m-0 leading-tight">Tampirkulon</h1>
