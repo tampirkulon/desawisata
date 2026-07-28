@@ -225,50 +225,102 @@
 
 /* Form Styles */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .form-label {
   display: block;
   font-family: var(--font-label);
   font-weight: 600;
-  font-size: 0.875rem;
-  margin-bottom: 8px;
-  color: var(--neutral-800);
+  font-size: 0.8125rem;
+  margin-bottom: 6px;
+  color: #334155;
 }
 
-.form-control {
+.form-control,
+input[type="text"].form-control,
+input[type="number"].form-control,
+input[type="email"].form-control,
+input[type="password"].form-control,
+input[type="tel"].form-control,
+input[type="date"].form-control,
+input[type="time"].form-control,
+select.form-control,
+textarea.form-control,
+.admin-main input[type="text"],
+.admin-main input[type="number"],
+.admin-main input[type="email"],
+.admin-main select,
+.admin-main textarea,
+.modal-body input,
+.modal-body select,
+.modal-body textarea {
   width: 100%;
-  padding: 10px 14px;
-  border: 1.5px solid var(--outline-variant);
-  border-radius: var(--radius-md);
-  outline: none;
-  background-color: #ffffff;
-  color: var(--neutral-800);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  padding: 10px 14px !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 12px !important;
+  outline: none !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  font-size: 0.875rem !important;
+  font-family: var(--font-body) !important;
+  line-height: 1.5 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+  box-sizing: border-box !important;
 }
 
-.form-control:hover {
-  border-color: var(--neutral-400);
+.form-control:hover,
+select.form-control:hover,
+textarea.form-control:hover,
+.admin-main input:hover,
+.admin-main select:hover,
+.admin-main textarea:hover,
+.modal-body input:hover,
+.modal-body select:hover,
+.modal-body textarea:hover {
+  border-color: #94a3b8 !important;
 }
 
-.form-control:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3.5px rgba(49, 99, 66, 0.18);
-  background-color: #ffffff;
+.form-control:focus,
+select.form-control:focus,
+textarea.form-control:focus,
+.admin-main input:focus,
+.admin-main select:focus,
+.admin-main textarea:focus,
+.modal-body input:focus,
+.modal-body select:focus,
+.modal-body textarea:focus {
+  border-color: #316342 !important;
+  box-shadow: 0 0 0 3px rgba(49, 99, 66, 0.15) !important;
+  background-color: #ffffff !important;
 }
 
-select.form-control {
-  appearance: auto;
-  cursor: pointer;
+/* FIX DOUBLE DROPDOWN ARROWS FOR SELECT ELEMENTS */
+select.form-control,
+select,
+.admin-main select,
+.modal-body select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%2523475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  background-size: 16px 16px !important;
+  padding-right: 40px !important;
+  cursor: pointer !important;
 }
 
-textarea.form-control {
-  resize: vertical;
-  min-height: 100px;
+select.form-control::-ms-expand,
+select::-ms-expand {
+  display: none !important;
+}
+
+textarea.form-control,
+textarea {
+  resize: vertical !important;
+  min-height: 100px !important;
 }
 
 /* Dropzone Upload */
