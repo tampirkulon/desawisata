@@ -44,7 +44,7 @@ export const renderAdminPaket = async () => {
         <div class="admin-body">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h3 style="font-size: 1.2rem;">Daftar Paket Wisata</h3>
-            <button class="btn btn-primary" id="add-paket-btn">➕ Tambah Paket Baru</button>
+            <button class="btn btn-primary" id="add-paket-btn">Tambah Paket Baru</button>
           </div>
 
           ${renderDataTable({

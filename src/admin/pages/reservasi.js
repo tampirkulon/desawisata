@@ -93,10 +93,10 @@ export const renderAdminReservasi = async () => {
           <tr>
             <td>
               <strong>${item.nama}</strong>
-              <div style="font-size: 0.8rem; color: var(--neutral-600);">${item.email} | 📞 ${item.telepon}</div>
+              <div style="font-size: 0.8rem; color: var(--neutral-600);">${item.email} | ${item.telepon}</div>
             </td>
-            <td>📅 ${item.tanggal_kunjungan}</td>
-            <td>👥 ${item.jumlah_orang} Orang</td>
+            <td>${item.tanggal_kunjungan}</td>
+            <td>${item.jumlah_orang} Orang</td>
             <td>${pkt ? pkt.nama : 'Kunjungan Mandiri'}</td>
             <td><span class="badge ${badgeClass}">${item.status}</span></td>
             <td style="text-align: right;">
@@ -125,7 +125,7 @@ export const renderAdminReservasi = async () => {
           <h4 style="margin-bottom: 8px; font-size: 1.1rem;">Detail Pemesan</h4>
           <p><strong>Nama:</strong> ${item.nama}</p>
           <p><strong>Email:</strong> ${item.email}</p>
-          <p><strong>Telepon / WA:</strong> <a href="https://wa.me/${item.telepon?.replace(/[^0-9]/g,'')}" target="_blank" style="color: var(--primary-500); font-weight: 600;">${item.telepon} 💬 Chat WA</a></p>
+          <p><strong>Telepon / WA:</strong> <a href="https://wa.me/${item.telepon?.replace(/[^0-9]/g,'')}" target="_blank" style="color: var(--primary); font-weight: 600;">${item.telepon} (Chat WA)</a></p>
         </div>
 
         <div style="background: var(--neutral-50); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--neutral-200);">

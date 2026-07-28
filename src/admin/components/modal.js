@@ -13,7 +13,7 @@ export const openAdminModal = ({ title, bodyHtml, onSave, saveText = 'Simpan Dat
       <div class="modal-container">
         <div class="modal-header">
           <h3 style="font-size: 1.25rem;">${title}</h3>
-          <button id="admin-modal-close" style="font-size: 1.5rem; border: none; background: none; cursor: pointer;">✕</button>
+          <button id="admin-modal-close" style="font-size: 1.25rem; border: none; background: none; cursor: pointer; color: var(--neutral-600);"><span class="material-symbols-outlined">close</span></button>
         </div>
         <div class="modal-body">
           ${bodyHtml}

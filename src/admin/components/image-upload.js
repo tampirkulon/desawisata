@@ -9,7 +9,8 @@ export const renderImageUploader = (inputId, currentUrl = '') => {
       
       <div class="dropzone" id="${inputId}-dropzone">
         <p style="font-size: 0.9rem; color: var(--neutral-600); margin-bottom: 8px;">
-          📁 Drag & Drop file gambar di sini atau <span style="color: var(--primary-500); font-weight: 600;">Pilih File</span>
+          <span class="material-symbols-outlined text-xl align-middle mr-1">cloud_upload</span>
+          Drag & Drop file gambar di sini atau <span style="color: var(--primary); font-weight: 600;">Pilih File</span>
         </p>
         <span style="font-size: 0.75rem; color: var(--neutral-600);">Maksimal 5MB (JPG, PNG, WebP)</span>
         <input type="file" id="${inputId}-file-input" accept="image/*" style="display: none;" />

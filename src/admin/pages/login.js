@@ -73,7 +73,7 @@ export const renderAdminLogin = () => {
             window.location.hash = '#/admin/overview';
           } catch (err) {
             alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-rose-100 text-rose-800 border border-rose-300';
-            alertBox.innerHTML = '❌ Gagal masuk: ' + err.message + '. (Menggunakan mode bypass demo...)';
+            alertBox.innerHTML = 'Gagal masuk: ' + err.message + '. (Menggunakan mode bypass demo...)';
             alertBox.classList.remove('hidden');
             
             setTimeout(() => {

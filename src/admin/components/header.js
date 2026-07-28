@@ -9,7 +9,8 @@ export const renderAdminHeader = (pageTitle = 'Dashboard Overview') => {
 
       <div style="display: flex; align-items: center; gap: 16px;">
         <a href="#/" target="_blank" class="btn btn-sm btn-secondary" style="font-size: 0.85rem; font-weight: 600;">
-          🌐 Lihat Website Publik ↗
+          <span class="material-symbols-outlined text-sm">open_in_new</span>
+          Lihat Website Publik
         </a>
         <div style="display: flex; align-items: center; gap: 10px;">
           <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; shadow: var(--shadow-sm);">

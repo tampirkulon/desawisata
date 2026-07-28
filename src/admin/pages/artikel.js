@@ -40,7 +40,7 @@ export const renderAdminArtikel = async () => {
         <div class="admin-body">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h3 style="font-size: 1.2rem;">Daftar Artikel & Berita</h3>
-            <button class="btn btn-primary" id="add-art-btn">✍️ Tulis Artikel Baru</button>
+            <button class="btn btn-primary" id="add-art-btn">Tulis Artikel Baru</button>
           </div>
 
           ${renderDataTable({

@@ -44,7 +44,7 @@ export const renderAdminDestinasi = async () => {
         <div class="admin-body">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h3 style="font-size: 1.2rem;">Daftar Destinasi Wisata</h3>
-            <button class="btn btn-primary" id="add-destinasi-btn">➕ Tambah Destinasi Baru</button>
+            <button class="btn btn-primary" id="add-destinasi-btn">Tambah Destinasi Baru</button>
           </div>
 
           ${renderDataTable({
@@ -78,7 +78,7 @@ export const renderAdminDestinasi = async () => {
                 <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=100&q=80'}" style="width: 44px; height: 44px; border-radius: var(--radius-sm); object-fit: cover;" />
                 <div>
                   <strong>${item.nama}</strong>
-                  <div style="font-size: 0.8rem; color: var(--neutral-600);">📍 ${item.lokasi || '-'}</div>
+                  <div style="font-size: 0.8rem; color: var(--neutral-600);">${item.lokasi || '-'}</div>
                 </div>
               </div>
             </td>

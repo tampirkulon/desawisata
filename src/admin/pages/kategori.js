@@ -43,12 +43,12 @@ export const renderAdminKategori = async () => {
         <div class="admin-body">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h3 style="font-size: 1.2rem;">Daftar Kategori Wisata</h3>
-            <button class="btn btn-primary" id="add-kat-btn">➕ Tambah Kategori</button>
+            <button class="btn btn-primary" id="add-kat-btn">Tambah Kategori</button>
           </div>
 
           ${renderDataTable({
             columns: [
-              { label: 'Icon & Nama Kategori' },
+              { label: 'Nama Kategori' },
               { label: 'Deskripsi' },
               { label: 'Urutan' },
               { label: 'Jumlah Destinasi' }
@@ -73,7 +73,6 @@ export const renderAdminKategori = async () => {
         return `
           <tr>
             <td>
-              <span style="font-size: 1.5rem; margin-right: 8px;">${item.icon || '🍃'}</span>
               <strong>${item.nama}</strong>
             </td>
             <td style="color: var(--neutral-600);">${item.deskripsi || '-'}</td>
@@ -127,15 +126,9 @@ export const renderAdminKategori = async () => {
     const isEdit = !!kategori;
     const bodyHtml = `
       <form id="kategori-form">
-        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 16px;">
-          <div class="form-group">
-            <label class="form-label">Emoji Icon</label>
-            <input type="text" id="kat-icon" class="form-control" placeholder="🌱" value="${kategori?.icon || '🌱'}" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Nama Kategori *</label>
-            <input type="text" id="kat-nama" class="form-control" placeholder="Misal: Wisata Kuliner" value="${kategori?.nama || ''}" required />
-          </div>
+        <div class="form-group">
+          <label class="form-label">Nama Kategori *</label>
+          <input type="text" id="kat-nama" class="form-control" placeholder="Misal: Wisata Kuliner" value="${kategori?.nama || ''}" required />
         </div>
 
         <div class="form-group">
@@ -157,7 +150,6 @@ export const renderAdminKategori = async () => {
       onSave: async () => {
         const payload = {
           nama: document.getElementById('kat-nama').value.trim(),
-          icon: document.getElementById('kat-icon').value.trim() || '🌱',
           urutan: parseInt(document.getElementById('kat-urutan').value) || 1,
           deskripsi: document.getElementById('kat-deskripsi').value.trim(),
         };

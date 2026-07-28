@@ -39,7 +39,7 @@ export const renderAdminGaleri = async () => {
         <div class="admin-body">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
             <h3 style="font-size: 1.2rem;">Daftar Foto & Video</h3>
-            <button class="btn btn-primary" id="upload-galeri-btn">📤 Upload Media Baru</button>
+            <button class="btn btn-primary" id="upload-galeri-btn">Upload Media Baru</button>
           </div>
 
           <!-- Grid Thumbnail View -->

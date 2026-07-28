@@ -36,7 +36,7 @@ export const renderAdminProfil = async () => {
       <div class="admin-body">
         <form id="profil-desa-form" class="card" style="padding: 36px; max-width: 900px; margin: 0 auto;">
           <h3 style="font-size: 1.3rem; margin-bottom: 20px; border-bottom: 2px solid var(--primary-500); padding-bottom: 8px;">
-            🏛️ Identitas & Tagline Desa
+            Identitas & Tagline Desa
           </h3>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -51,7 +51,7 @@ export const renderAdminProfil = async () => {
           </div>
 
           <h3 style="font-size: 1.3rem; margin: 28px 0 20px; border-bottom: 2px solid var(--primary-500); padding-bottom: 8px;">
-            📖 Sejarah, Visi, & Misi
+            Sejarah, Visi, & Misi
           </h3>
 
           <div class="form-group">
@@ -70,7 +70,7 @@ export const renderAdminProfil = async () => {
           </div>
 
           <h3 style="font-size: 1.3rem; margin: 28px 0 20px; border-bottom: 2px solid var(--primary-500); padding-bottom: 8px;">
-            📞 Informasi Kontak & Operasional
+            Informasi Kontak & Operasional
           </h3>
 
           <div class="form-group">
@@ -114,7 +114,7 @@ export const renderAdminProfil = async () => {
           </div>
 
           <h3 style="font-size: 1.3rem; margin: 28px 0 20px; border-bottom: 2px solid var(--primary-500); padding-bottom: 8px;">
-            🌐 Media Sosial
+            Media Sosial
           </h3>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
@@ -134,7 +134,7 @@ export const renderAdminProfil = async () => {
 
           <div style="margin-top: 32px;">
             <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; padding: 14px; font-size: 1.05rem;" id="save-profil-btn">
-              💾 Simpan Seluruh Perubahan Profil
+              Simpan Seluruh Perubahan Profil
             </button>
           </div>
         </form>
@@ -187,7 +187,7 @@ export const renderAdminProfil = async () => {
         }
 
         saveBtn.disabled = false;
-        saveBtn.innerText = '💾 Simpan Seluruh Perubahan Profil';
+        saveBtn.innerText = 'Simpan Seluruh Perubahan Profil';
       });
     }
   }, 0);
