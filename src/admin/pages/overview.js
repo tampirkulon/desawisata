@@ -196,76 +196,76 @@ export const renderAdminOverview = async () => {
                 </div>
 
                 <!-- Pill Bar Chart Visual with Interactive Tooltips -->
-                <div id="chart-bars-container" class="flex items-end justify-between gap-3 h-52 pt-8 px-2 border-b border-slate-100">
-                  <!-- Day 1: Senin -->
+                <div id="chart-bars-container" class="flex items-end justify-between gap-2.5 h-52 pt-8 px-1 border-b border-slate-100">
+                  <!-- Date 1: 22 Jul -->
                   <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
                     <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>Senin: <strong>45 Wisatawan</strong></span>
+                      <span>22 Jul: <strong>45 Wisatawan</strong></span>
                       <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
                     </div>
                     <div class="chart-bar-el w-full max-w-[38px] h-[45%] bg-slate-200/80 group-hover:bg-[#316342]/60 rounded-full transition-all duration-300"></div>
-                    <span class="chart-label-el text-xs font-semibold text-slate-400 group-hover:text-slate-700">Sen</span>
+                    <span class="chart-label-el text-[11px] font-semibold text-slate-400 group-hover:text-slate-700">22 Jul</span>
                   </div>
 
-                  <!-- Day 2: Selasa -->
+                  <!-- Date 2: 23 Jul -->
                   <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
                     <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>Selasa: <strong>60 Wisatawan</strong></span>
+                      <span>23 Jul: <strong>60 Wisatawan</strong></span>
                       <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
                     </div>
                     <div class="chart-bar-el w-full max-w-[38px] h-[60%] bg-[#316342]/40 group-hover:bg-[#316342]/70 rounded-full transition-all duration-300"></div>
-                    <span class="chart-label-el text-xs font-semibold text-slate-400 group-hover:text-slate-700">Sel</span>
+                    <span class="chart-label-el text-[11px] font-semibold text-slate-400 group-hover:text-slate-700">23 Jul</span>
                   </div>
 
-                  <!-- Day 3: Rabu (Peak) -->
+                  <!-- Date 3: 24 Jul (Peak) -->
                   <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
                     <span id="chart-badge-val" class="absolute -top-7 px-2 py-0.5 rounded-md bg-emerald-50 text-[#316342] font-bold text-[10px] border border-emerald-200 shadow-2xs">Puncak</span>
                     <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-14 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>Rabu: <strong>145 Wisatawan</strong> (Peak)</span>
+                      <span>24 Jul: <strong>145 Wisatawan</strong> (Peak)</span>
                       <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
                     </div>
                     <div id="chart-main-bar" class="chart-bar-el w-full max-w-[38px] h-[92%] bg-[#316342] rounded-full shadow-md transition-all duration-300"></div>
-                    <span class="chart-label-el text-xs font-bold text-[#316342]">Rab</span>
+                    <span class="chart-label-el text-[11px] font-bold text-[#316342]">24 Jul</span>
                   </div>
 
-                  <!-- Day 4: Kamis -->
+                  <!-- Date 4: 25 Jul -->
                   <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
                     <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>Kamis: <strong>90 Wisatawan</strong></span>
+                      <span>25 Jul: <strong>90 Wisatawan</strong></span>
                       <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
                     </div>
                     <div class="chart-bar-el w-full max-w-[38px] h-[74%] bg-[#4ADE80] group-hover:bg-[#316342] rounded-full shadow-sm transition-all duration-300"></div>
-                    <span class="chart-label-el text-xs font-semibold text-slate-400 group-hover:text-slate-700">Kam</span>
+                    <span class="chart-label-el text-[11px] font-semibold text-slate-400 group-hover:text-slate-700">25 Jul</span>
                   </div>
 
-                  <!-- Day 5: Jumat -->
+                  <!-- Date 5: 26 Jul -->
                   <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
                     <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>Jumat: <strong>55 Wisatawan</strong></span>
+                      <span>26 Jul: <strong>55 Wisatawan</strong></span>
                       <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
                     </div>
                     <div class="chart-bar-el w-full max-w-[38px] h-[55%] bg-slate-200/80 group-hover:bg-[#316342]/60 rounded-full transition-all duration-300"></div>
-                    <span class="chart-label-el text-xs font-semibold text-slate-400 group-hover:text-slate-700">Jum</span>
+                    <span class="chart-label-el text-[11px] font-semibold text-slate-400 group-hover:text-slate-700">26 Jul</span>
                   </div>
 
-                  <!-- Day 6: Sabtu -->
+                  <!-- Date 6: 27 Jul -->
                   <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
                     <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>Sabtu: <strong>85 Wisatawan</strong></span>
+                      <span>27 Jul: <strong>85 Wisatawan</strong></span>
                       <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
                     </div>
                     <div class="chart-bar-el w-full max-w-[38px] h-[68%] bg-slate-300 group-hover:bg-[#316342]/70 rounded-full transition-all duration-300"></div>
-                    <span class="chart-label-el text-xs font-semibold text-slate-400 group-hover:text-slate-700">Sab</span>
+                    <span class="chart-label-el text-[11px] font-semibold text-slate-400 group-hover:text-slate-700">27 Jul</span>
                   </div>
 
-                  <!-- Day 7: Minggu -->
+                  <!-- Date 7: 28 Jul -->
                   <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
                     <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>Minggu: <strong>110 Wisatawan</strong></span>
+                      <span>28 Jul: <strong>110 Wisatawan</strong></span>
                       <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
                     </div>
                     <div class="chart-bar-el w-full max-w-[38px] h-[82%] bg-[#316342]/80 group-hover:bg-[#316342] rounded-full transition-all duration-300"></div>
-                    <span class="chart-label-el text-xs font-semibold text-slate-400 group-hover:text-slate-700">Min</span>
+                    <span class="chart-label-el text-[11px] font-semibold text-slate-400 group-hover:text-slate-700">28 Jul</span>
                   </div>
                 </div>
 
@@ -474,6 +474,7 @@ export const renderAdminOverview = async () => {
         const val = e.target.value;
         const bars = container.querySelectorAll('.chart-bar-el');
         const tooltips = container.querySelectorAll('.chart-tooltip span');
+        const labels = container.querySelectorAll('.chart-label-el');
         const avgSummary = container.querySelector('#chart-avg-summary');
         const peakSummary = container.querySelector('#chart-peak-summary');
 
@@ -482,9 +483,11 @@ export const renderAdminOverview = async () => {
           if (peakSummary) peakSummary.innerHTML = 'Minggu Puncak: <strong>Minggu ke-3 (420 Pax)</strong>';
           const heights = ['55%', '70%', '95%', '85%', '60%', '75%', '85%'];
           const counts = ['210 Pax', '290 Pax', '420 Pax (Peak)', '350 Pax', '240 Pax', '310 Pax', '380 Pax'];
+          const lbls = ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5', 'Wk 6', 'Wk 7'];
           bars.forEach((bar, idx) => {
             if (bar) bar.style.height = heights[idx] || '50%';
             if (tooltips[idx]) tooltips[idx].innerHTML = `Minggu ${idx + 1}: <strong>${counts[idx]}</strong>`;
+            if (labels[idx]) labels[idx].innerText = lbls[idx];
           });
           showToast('Menampilkan data tren statistik Bulan Ini', 'info');
         } else if (val === 'tahun') {
@@ -492,20 +495,23 @@ export const renderAdminOverview = async () => {
           if (peakSummary) peakSummary.innerHTML = 'Bulan Puncak: <strong>Agustus (2.100 Pax)</strong>';
           const heights = ['40%', '50%', '65%', '70%', '75%', '80%', '95%'];
           const counts = ['850 Pax', '1.100 Pax', '1.350 Pax', '1.500 Pax', '1.650 Pax', '1.800 Pax', '2.100 Pax (Peak)'];
+          const lbls = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'];
           bars.forEach((bar, idx) => {
             if (bar) bar.style.height = heights[idx] || '50%';
             if (tooltips[idx]) tooltips[idx].innerHTML = `Bulan ${idx + 1}: <strong>${counts[idx]}</strong>`;
+            if (labels[idx]) labels[idx].innerText = lbls[idx];
           });
           showToast('Menampilkan data tren statistik Tahun Ini', 'info');
         } else {
           if (avgSummary) avgSummary.innerHTML = 'Rata-rata: <strong>86 Pengunjung/Hari</strong>';
-          if (peakSummary) peakSummary.innerHTML = 'Hari Puncak: <strong>Rabu (145 Pax)</strong>';
+          if (peakSummary) peakSummary.innerHTML = 'Hari Puncak: <strong>24 Jul (145 Pax)</strong>';
           const heights = ['45%', '60%', '92%', '74%', '55%', '68%', '82%'];
-          const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+          const dates = ['22 Jul', '23 Jul', '24 Jul', '25 Jul', '26 Jul', '27 Jul', '28 Jul'];
           const counts = ['45 Pax', '60 Pax', '145 Pax (Peak)', '90 Pax', '55 Pax', '85 Pax', '110 Pax'];
           bars.forEach((bar, idx) => {
             if (bar) bar.style.height = heights[idx] || '50%';
-            if (tooltips[idx]) tooltips[idx].innerHTML = `${days[idx]}: <strong>${counts[idx]}</strong>`;
+            if (tooltips[idx]) tooltips[idx].innerHTML = `${dates[idx]}: <strong>${counts[idx]}</strong>`;
+            if (labels[idx]) labels[idx].innerText = dates[idx];
           });
           showToast('Menampilkan data tren statistik Minggu Ini', 'info');
         }
