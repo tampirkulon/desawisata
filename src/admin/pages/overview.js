@@ -1,7 +1,11 @@
-import { renderSidebar } from '../components/sidebar.js';
+import { auth } from '../../utils/auth.js';
+import { renderSidebar, initAdminSidebarEvents } from '../components/sidebar.js';
+import { renderAdminHeader } from '../components/header.js';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 
 export const renderAdminOverview = async () => {
+  const isAuthed = await auth.requireAuth();
+  if (!isAuthed) return document.createElement('div');
   let stats = { destinasi: 12, paket: 8, artikel: 24, reservasi: 15 };
   let recentReservations = [
     { id: '#RES-001', nama_pemesan: 'Budi Santoso', paket: 'Paket Jelajah Alam', tanggal: '12 Okt 2024', status: 'Baru' },
@@ -38,32 +42,15 @@ export const renderAdminOverview = async () => {
   }
 
   const container = document.createElement('div');
-  container.className = 'flex h-screen overflow-hidden font-body-md text-on-surface bg-slate-100 w-full';
+  container.className = 'dashboard-wrapper';
 
   container.innerHTML = `
     ${renderSidebar('overview')}
 
-    <main class="flex-grow flex flex-col overflow-hidden">
-      <!-- Top Header -->
-      <header class="h-20 bg-surface-container-lowest border-b border-outline-variant/30 flex items-center justify-between px-6 flex-shrink-0">
-        <h2 class="font-display-lg text-2xl font-bold text-primary m-0">Overview Dashboard</h2>
-        <div class="flex items-center gap-6">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-primary text-white font-bold flex items-center justify-center text-sm shadow-sm">AU</div>
-            <div class="flex flex-col">
-              <span class="font-body-sm text-sm font-semibold text-on-surface">Admin User</span>
-              <span class="font-label-caps text-xs text-on-surface-variant">Administrator</span>
-            </div>
-          </div>
-          <button id="logout-btn" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-variant hover:bg-rose-100 hover:text-rose-700 text-on-surface-variant transition-colors text-xs font-bold">
-            <span class="material-symbols-outlined text-sm">logout</span>
-            <span>Keluar</span>
-          </button>
-        </div>
-      </header>
+    <main class="admin-main">
+      ${renderAdminHeader('Overview Dashboard')}
 
-      <!-- Scrollable Main Dashboard Area -->
-      <div class="flex-grow p-6 overflow-y-auto">
+      <div class="admin-body overflow-y-auto">
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-level-1 flex items-center justify-between border border-outline-variant/20">
@@ -147,9 +134,9 @@ export const renderAdminOverview = async () => {
   `;
 
   setTimeout(() => {
+    initAdminSidebarEvents();
     container.querySelector('#logout-btn')?.addEventListener('click', () => {
-      localStorage.removeItem('admin_logged_in');
-      window.location.hash = '#/admin/login';
+      auth.logout();
     });
   }, 0);
 

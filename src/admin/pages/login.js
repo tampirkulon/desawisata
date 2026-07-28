@@ -68,7 +68,9 @@ export const renderAdminLogin = () => {
           try {
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;
-            window.location.hash = '#/admin/dashboard';
+            localStorage.setItem('admin_logged_in', 'true');
+            localStorage.setItem('mock_admin_logged', 'true');
+            window.location.hash = '#/admin/overview';
           } catch (err) {
             alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-rose-100 text-rose-800 border border-rose-300';
             alertBox.innerHTML = '❌ Gagal masuk: ' + err.message + '. (Menggunakan mode bypass demo...)';
@@ -76,12 +78,14 @@ export const renderAdminLogin = () => {
             
             setTimeout(() => {
               localStorage.setItem('admin_logged_in', 'true');
-              window.location.hash = '#/admin/dashboard';
+              localStorage.setItem('mock_admin_logged', 'true');
+              window.location.hash = '#/admin/overview';
             }, 1200);
           }
         } else {
           localStorage.setItem('admin_logged_in', 'true');
-          window.location.hash = '#/admin/dashboard';
+          localStorage.setItem('mock_admin_logged', 'true');
+          window.location.hash = '#/admin/overview';
         }
       });
     }

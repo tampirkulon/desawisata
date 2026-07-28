@@ -10,7 +10,6 @@ export const renderNavbar = (isSolid = false) => {
     { hash: '#/paket', label: 'Paket Wisata' },
     { hash: '#/galeri', label: 'Galeri' },
     { hash: '#/blog', label: 'Blog' },
-    { hash: '#/kontak', label: 'Kontak' },
   ];
 
   const initialClasses = isSolid 
@@ -34,7 +33,7 @@ export const renderNavbar = (isSolid = false) => {
               </li>
             `).join('')}
           </ul>
-          <a href="#/kontak" class="bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold text-xs hover:bg-primary-container transition-all shadow-level-1 hover:shadow-level-2 shrink-0">Pesan Sekarang</a>
+          <a href="#/kontak" class="bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold text-xs hover:bg-primary-container transition-all shadow-level-1 hover:shadow-level-2 shrink-0">Kontak & Reservasi</a>
         </div>
 
         <!-- Mobile Menu Hamburger -->
@@ -54,7 +53,7 @@ export const renderNavbar = (isSolid = false) => {
         ${navItems.map(item => `
           <a href="${item.hash}" class="py-2 px-3 rounded-lg font-body-md text-base transition-colors ${currentHash === item.hash ? 'bg-primary-fixed/50 text-primary font-bold' : 'text-on-surface hover:bg-surface-container-low'}">${item.label}</a>
         `).join('')}
-        <a href="#/kontak" class="bg-primary text-white font-bold text-center py-3 rounded-xl mt-4">Pesan Sekarang</a>
+        <a href="#/kontak" class="bg-primary text-white font-bold text-center py-3 rounded-xl mt-4">Kontak & Reservasi</a>
       </div>
     </div>
   `;

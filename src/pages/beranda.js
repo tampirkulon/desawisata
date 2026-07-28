@@ -29,22 +29,22 @@ export const renderBeranda = async () => {
     <header class="relative min-h-screen flex items-center justify-center text-center text-white pt-20" id="home">
       <div class="absolute inset-0 bg-cover bg-center z-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD1N3qfr45yGM4LIKsP1pNq68gNszE9t16hkBpSAprxngOlDrcG0fnvmNffH5_U3RwX7YxGgeOlCWIt60mzvtTAkHXSRU3RMPrM0PZPWZXRHy5uFNjikWcHVqhFhPFTHABTjT_6dRAAH5Te068QCo6Ow_7L92HcK4GXHyW-4fyN1UC0iCWWT5nWRx-gAnC6fVi8Ou7tiA-JBVZcPPWNXLY54akzStvnMQtGuydK-46gAGSErezw4ASK');"></div>
       <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-primary/80 z-0"></div>
-      <div class="relative z-10 max-w-4xl px-6 py-20 flex flex-col items-center">
-        <span class="bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
+      <div class="relative z-10 max-w-4xl px-6 py-20 flex flex-col items-center text-white">
+        <span class="bg-secondary/80 backdrop-blur-md text-white border border-white/30 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6 shadow-sm" style="color: #ffffff;">
           Welcome to Tampirkulon
         </span>
-        <h1 class="font-display-lg text-4xl md:text-6xl font-bold mb-6 leading-tight drop-shadow-md">
+        <h1 class="font-display-lg text-4xl md:text-6xl font-bold mb-6 leading-tight drop-shadow-md text-white" style="color: #ffffff;">
           ${profil.nama_desa || 'Jelajahi Warisan Alam Tampirkulon'}
         </h1>
-        <p class="font-body-md text-lg md:text-xl text-white/90 mb-10 max-w-2xl leading-relaxed">
+        <p class="font-body-md text-lg md:text-xl text-white mb-10 max-w-2xl leading-relaxed" style="color: #ffffff;">
           ${profil.tagline || 'Temukan keindahan tersembunyi, rasakan kehangatan budaya, dan ciptakan kenangan tak terlupakan di desa wisata kami.'}
         </p>
         <div class="flex flex-wrap gap-4 justify-center">
-          <a href="#/destinasi" class="bg-secondary text-white font-bold px-8 py-3.5 rounded-full hover:bg-secondary/90 transition-all transform hover:-translate-y-1 shadow-level-1">
+          <a href="#/destinasi" class="bg-secondary text-white font-bold px-8 py-3.5 rounded-full hover:bg-secondary/90 transition-all transform hover:-translate-y-1 shadow-level-1" style="color: #ffffff;">
             Mulai Petualangan
           </a>
-          <a href="#/kontak" class="bg-white/20 backdrop-blur-md border border-white/40 text-white font-bold px-8 py-3.5 rounded-full hover:bg-white/30 transition-all">
-            Reservasi Online
+          <a href="#/kontak" class="bg-white/20 backdrop-blur-md border border-white/40 text-white font-bold px-8 py-3.5 rounded-full hover:bg-white/30 transition-all" style="color: #ffffff;">
+            Kontak & Reservasi
           </a>
         </div>
       </div>
@@ -237,7 +237,7 @@ export const renderBeranda = async () => {
         </p>
         <a href="#/kontak" class="inline-flex items-center gap-2 bg-secondary text-white font-bold px-8 py-3.5 rounded-full hover:bg-secondary/90 transition-all shadow-level-1">
           <span class="material-symbols-outlined text-xl">calendar_month</span>
-          Pesan Sekarang
+          Kontak & Reservasi
         </a>
       </div>
     </section>

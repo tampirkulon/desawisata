@@ -32,6 +32,7 @@ router.addRoute('#/kontak', (params) => renderKontak(params));
 // Register Admin Routes
 router.addRoute('#/admin/login', (params) => renderAdminLogin(params));
 router.addRoute('#/admin/overview', (params) => renderAdminOverview(params));
+router.addRoute('#/admin/dashboard', (params) => renderAdminOverview(params));
 router.addRoute('#/admin/destinasi', (params) => renderAdminDestinasi(params));
 router.addRoute('#/admin/kategori', (params) => renderAdminKategori(params));
 router.addRoute('#/admin/paket', (params) => renderAdminPaket(params));
