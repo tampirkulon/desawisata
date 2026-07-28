@@ -15,10 +15,12 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
     { key: 'profil', hash: '#/admin/profil', label: 'Profil Desa', icon: 'settings' },
   ];
 
+  const normalizedRoute = (activeRoute || '').replace('#/admin/', '').replace('dashboard', 'overview');
+
   return `
-    <aside class="w-[260px] flex-shrink-0 flex flex-col bg-white border-r border-slate-200/80 min-h-screen">
+    <aside class="admin-sidebar w-[260px] flex-shrink-0 flex flex-col bg-white border-r border-slate-200/80 sticky top-0 h-screen overflow-y-auto z-40">
       <!-- Header Brand -->
-      <div class="h-20 flex items-center px-6 border-b border-slate-100 gap-3">
+      <div class="h-20 flex items-center px-6 border-b border-slate-100 gap-3 flex-shrink-0">
         <div class="w-9 h-9 rounded-xl bg-[#316342] text-white flex items-center justify-center font-bold text-lg shadow-sm">
           🍃
         </div>
@@ -35,7 +37,7 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
           <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 font-label">MENU</p>
           <div class="flex flex-col gap-1">
             ${mainMenuItems.map(item => {
-              const isActive = activeRoute === item.key || activeRoute === item.hash;
+              const isActive = normalizedRoute === item.key || activeRoute === item.key || activeRoute === item.hash;
               return `
                 <a class="donezo-sidebar-item ${isActive ? 'active' : ''}" href="${item.hash}">
                   <span class="material-symbols-outlined text-xl ${isActive ? 'text-[#316342]' : 'text-slate-400'}">${item.icon}</span>
@@ -51,7 +53,7 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
           <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 font-label">PENGATURAN</p>
           <div class="flex flex-col gap-1">
             ${settingMenuItems.map(item => {
-              const isActive = activeRoute === item.key || activeRoute === item.hash;
+              const isActive = normalizedRoute === item.key || activeRoute === item.key || activeRoute === item.hash;
               return `
                 <a class="donezo-sidebar-item ${isActive ? 'active' : ''}" href="${item.hash}">
                   <span class="material-symbols-outlined text-xl ${isActive ? 'text-[#316342]' : 'text-slate-400'}">${item.icon}</span>
@@ -68,7 +70,7 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
       </nav>
 
       <!-- Bottom Floating CTA Card -->
-      <div class="p-4 border-t border-slate-100">
+      <div class="p-4 border-t border-slate-100 flex-shrink-0">
         <div class="donezo-cta-card">
           <h4 class="text-sm font-bold text-white m-0 mb-1">Pratinjau Publik</h4>
           <p class="text-[11px] text-emerald-100/80 m-0 mb-3">Lihat tampilan website utama desa wisata secara langsung.</p>
