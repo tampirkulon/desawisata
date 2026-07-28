@@ -18,8 +18,8 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
   const normalizedRoute = (activeRoute || '').replace('#/admin/', '').replace('dashboard', 'overview');
 
   return `
-    <aside class="admin-sidebar w-[260px] flex-shrink-0 flex flex-col bg-white border-r border-slate-200/80 sticky top-0 h-screen overflow-y-auto z-40">
-      <!-- Header Brand -->
+    <aside class="admin-sidebar w-[260px] flex-shrink-0 flex flex-col bg-white border-r border-slate-200/80 sticky top-0 h-screen overflow-hidden z-40">
+      <!-- Header Brand (Fixed Top) -->
       <div class="h-20 flex items-center px-6 border-b border-slate-100 gap-3 flex-shrink-0">
         <div class="w-9 h-9 rounded-xl bg-[#316342] text-white flex items-center justify-center font-bold text-lg shadow-sm">
           🍃
@@ -30,8 +30,8 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
         </div>
       </div>
 
-      <!-- Navigation Menu -->
-      <nav class="flex-grow py-5 px-3 flex flex-col gap-6 overflow-y-auto">
+      <!-- Navigation Menu (Scrollable Middle) -->
+      <nav class="flex-1 py-5 px-3 flex flex-col gap-6 overflow-y-auto min-h-0">
         <!-- Main Menu Group -->
         <div>
           <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 font-label">MENU</p>
@@ -69,7 +69,7 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
         </div>
       </nav>
 
-      <!-- Bottom Floating CTA Card -->
+      <!-- Bottom Floating CTA Card (Fixed Bottom) -->
       <div class="p-4 border-t border-slate-100 flex-shrink-0">
         <div class="donezo-cta-card">
           <h4 class="text-sm font-bold text-white m-0 mb-1">Pratinjau Publik</h4>
