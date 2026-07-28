@@ -32,7 +32,7 @@ export const renderAdminReservasi = async () => {
   await loadData();
 
   const container = document.createElement('div');
-  container.className = 'dashboard-wrapper';
+  container.className = 'dashboard-wrapper donezo-bg';
 
   const renderPage = () => {
     const filteredReservasi = activeFilter === 'all' 
@@ -42,22 +42,30 @@ export const renderAdminReservasi = async () => {
     container.innerHTML = `
       ${renderAdminSidebar('#/admin/reservasi')}
 
-      <main class="admin-main">
+      <main class="admin-main donezo-bg min-h-screen">
         ${renderAdminHeader('Kelola Reservasi Wisatawan')}
 
-        <div class="admin-body">
+        <div class="p-8 max-w-7xl mx-auto w-full">
+          <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+            <div>
+              <h1 class="font-display-lg text-2xl font-bold text-slate-800 m-0">Reservasi Wisatawan</h1>
+              <p class="text-xs font-medium text-slate-400 m-0 mt-1">Kelola transaksi booking, status konfirmasi, dan kontak pengunjung.</p>
+            </div>
+          </div>
+
           <!-- Status Filter Tabs -->
-          <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+          <div class="flex items-center gap-2 mb-6 flex-wrap">
             ${['all', 'baru', 'dikonfirmasi', 'selesai', 'dibatalkan'].map(st => `
-              <button class="btn ${activeFilter === st ? 'btn-primary' : 'btn-secondary'} filter-rsv-btn" data-status="${st}">
+              <button class="px-4 py-2 rounded-full font-bold text-xs transition-colors filter-rsv-btn ${activeFilter === st ? 'bg-[#316342] text-white shadow-sm' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'}" data-status="${st}">
                 ${st === 'all' ? 'Semua Status' : st.toUpperCase()}
               </button>
             `).join('')}
           </div>
 
-          ${renderDataTable({
-            columns: [
-              { label: 'Pemesan' },
+          <div class="donezo-card p-6">
+            ${renderDataTable({
+              columns: [
+                { label: 'Pemesan' },
               { label: 'Tanggal Kunjungan' },
               { label: 'Jumlah Orang' },
               { label: 'Paket / Jenis' },
@@ -66,6 +74,7 @@ export const renderAdminReservasi = async () => {
             data: filteredReservasi,
             searchPlaceholder: 'Cari nama pemesan / email...'
           })}
+          </div>
         </div>
       </main>
     `;

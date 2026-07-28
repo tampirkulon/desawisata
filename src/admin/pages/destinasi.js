@@ -32,20 +32,28 @@ export const renderAdminDestinasi = async () => {
   await loadData();
 
   const container = document.createElement('div');
-  container.className = 'dashboard-wrapper';
+  container.className = 'dashboard-wrapper donezo-bg';
 
   const renderPage = () => {
     container.innerHTML = `
       ${renderAdminSidebar('#/admin/destinasi')}
 
-      <main class="admin-main">
+      <main class="admin-main donezo-bg min-h-screen">
         ${renderAdminHeader('Kelola Destinasi Wisata')}
 
-        <div class="admin-body">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h3 style="font-size: 1.2rem;">Daftar Destinasi Wisata</h3>
-            <button class="btn btn-primary" id="add-destinasi-btn">Tambah Destinasi Baru</button>
+        <div class="p-8 max-w-7xl mx-auto w-full">
+          <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+            <div>
+              <h1 class="font-display-lg text-2xl font-bold text-slate-800 m-0">Destinasi Wisata</h1>
+              <p class="text-xs font-medium text-slate-400 m-0 mt-1">Kelola daya tarik & objek wisata Desa Wisata Tampirkulon.</p>
+            </div>
+            <button class="px-5 py-2.5 rounded-full bg-[#316342] text-white font-bold text-xs hover:bg-[#254d33] transition-colors shadow-md flex items-center gap-2" id="add-destinasi-btn">
+              <span class="material-symbols-outlined text-sm">add</span>
+              Tambah Destinasi Baru
+            </button>
           </div>
+
+          <div class="donezo-card p-6">
 
           ${renderDataTable({
             columns: [
@@ -57,6 +65,7 @@ export const renderAdminDestinasi = async () => {
             data: destinasiList,
             searchPlaceholder: 'Cari destinasi...'
           })}
+          </div>
         </div>
       </main>
     `;

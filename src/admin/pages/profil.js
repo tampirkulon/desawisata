@@ -25,16 +25,21 @@ export const renderAdminProfil = async () => {
   await loadData();
 
   const container = document.createElement('div');
-  container.className = 'dashboard-wrapper';
+  container.className = 'dashboard-wrapper donezo-bg';
 
   container.innerHTML = `
     ${renderAdminSidebar('#/admin/profil')}
 
-    <main class="admin-main">
+    <main class="admin-main donezo-bg min-h-screen">
       ${renderAdminHeader('Edit Profil Desa Wisata')}
 
-      <div class="admin-body">
-        <form id="profil-desa-form" class="card" style="padding: 36px; max-width: 900px; margin: 0 auto;">
+      <div class="p-8 max-w-5xl mx-auto w-full">
+        <div class="mb-6">
+          <h1 class="font-display-lg text-2xl font-bold text-slate-800 m-0">Profil Desa Wisata</h1>
+          <p class="text-xs font-medium text-slate-400 m-0 mt-1">Kelola identitas resmi, sejarah, dan kontak pengelola Desa Wisata Tampirkulon.</p>
+        </div>
+
+        <form id="profil-desa-form" class="donezo-card p-8 shadow-sm">
           <h3 style="font-size: 1.3rem; margin-bottom: 20px; border-bottom: 2px solid var(--primary-500); padding-bottom: 8px;">
             Identitas & Tagline Desa
           </h3>
