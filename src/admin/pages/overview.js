@@ -2,17 +2,29 @@ import { auth } from '../../utils/auth.js';
 import { renderSidebar, initAdminSidebarEvents } from '../components/sidebar.js';
 import { renderAdminHeader } from '../components/header.js';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
+import { mockData } from '../../data/seed.js';
 
 export const renderAdminOverview = async () => {
   const isAuthed = await auth.requireAuth();
   if (!isAuthed) return document.createElement('div');
-  let stats = { destinasi: 12, paket: 8, artikel: 24, reservasi: 15 };
-  let recentReservations = [
-    { id: '#RES-001', nama_pemesan: 'Budi Santoso', paket: 'Paket Jelajah Alam', tanggal: '12 Okt 2024', status: 'Baru' },
-    { id: '#RES-002', nama_pemesan: 'Siti Aminah', paket: 'Paket Edukasi Budaya', tanggal: '14 Okt 2024', status: 'Selesai' },
-    { id: '#RES-003', nama_pemesan: 'Ahmad Yani', paket: 'Paket Jelajah Alam', tanggal: '15 Okt 2024', status: 'Baru' },
-    { id: '#RES-004', nama_pemesan: 'Lina Marlina', paket: 'Paket Kulinari Desa', tanggal: '18 Okt 2024', status: 'Baru' },
-  ];
+
+  let stats = {
+    destinasi: mockData.destinasi.length,
+    paket: mockData.paket_wisata.length,
+    artikel: mockData.artikel.length,
+    reservasi: mockData.reservasi.length
+  };
+
+  let recentReservations = mockData.reservasi.slice(0, 5).map((r, i) => {
+    const pkt = mockData.paket_wisata.find(p => p.id === r.paket_id);
+    return {
+      id: `#RES-${String(i + 1).padStart(3, '0')}`,
+      nama_pemesan: r.nama,
+      paket: pkt ? pkt.nama : 'Kunjungan Mandiri',
+      tanggal: r.tanggal_kunjungan,
+      status: r.status || 'baru'
+    };
+  });
 
   if (isSupabaseConfigured()) {
     try {
@@ -30,10 +42,10 @@ export const renderAdminOverview = async () => {
       if (resData && resData.length > 0) {
         recentReservations = resData.map((r, i) => ({
           id: `#RES-${String(i + 1).padStart(3, '0')}`,
-          nama_pemesan: r.nama_pemesan,
-          paket: r.paket_wisata?.nama || 'Paket General',
+          nama_pemesan: r.nama || r.nama_pemesan || 'Tamu',
+          paket: r.paket_wisata?.nama || 'Kunjungan Mandiri',
           tanggal: r.tanggal_kunjungan ? new Date(r.tanggal_kunjungan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Terbaru',
-          status: r.status === 'pending' ? 'Baru' : 'Selesai'
+          status: r.status || 'baru'
         }));
       }
     } catch (e) {
@@ -112,19 +124,25 @@ export const renderAdminOverview = async () => {
                 </tr>
               </thead>
               <tbody class="font-body-md text-sm text-on-surface">
-                ${recentReservations.map(res => `
-                  <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
-                    <td class="py-4 px-6 font-bold text-primary">${res.id}</td>
-                    <td class="py-4 px-6 font-semibold">${res.nama_pemesan}</td>
-                    <td class="py-4 px-6 text-on-surface-variant">${res.paket}</td>
-                    <td class="py-4 px-6">${res.tanggal}</td>
-                    <td class="py-4 px-6">
-                      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${res.status === 'Baru' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
-                        ${res.status}
-                      </span>
-                    </td>
-                  </tr>
-                `).join('')}
+                ${recentReservations.map(res => {
+                  const s = (res.status || '').toLowerCase();
+                  let badgeClass = 'badge-primary';
+                  if (s === 'dikonfirmasi') badgeClass = 'badge-warning';
+                  else if (s === 'selesai') badgeClass = 'badge-success';
+                  else if (s === 'dibatalkan') badgeClass = 'badge-danger';
+
+                  return `
+                    <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+                      <td class="py-4 px-6 font-bold text-primary">${res.id}</td>
+                      <td class="py-4 px-6 font-semibold">${res.nama_pemesan}</td>
+                      <td class="py-4 px-6 text-on-surface-variant">${res.paket}</td>
+                      <td class="py-4 px-6">${res.tanggal}</td>
+                      <td class="py-4 px-6">
+                        <span class="badge ${badgeClass}">${s.toUpperCase()}</span>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
               </tbody>
             </table>
           </div>
