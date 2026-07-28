@@ -272,11 +272,11 @@ export const renderAdminOverview = async () => {
                 <!-- Footer Summary Legend -->
                 <div class="mt-4 pt-3 flex items-center justify-between text-xs font-medium text-slate-500 flex-wrap gap-2">
                   <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[#316342] text-sm">analytics</span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#316342]"></span>
                     <span id="chart-avg-summary">Rata-rata: <strong>86 Pengunjung/Hari</strong></span>
                   </div>
                   <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-amber-500 text-sm">star</span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
                     <span id="chart-peak-summary">Hari Puncak: <strong>Rabu (145 Pax)</strong></span>
                   </div>
                 </div>
@@ -382,7 +382,6 @@ export const renderAdminOverview = async () => {
                 <h4 class="text-sm font-bold text-slate-800 m-0 mb-1">Rombongan Edukasi Wisata Durian</h4>
                 <p class="text-xs text-slate-400 m-0 mb-4">Waktu: 14.00 WIB - 16.30 WIB (35 Pax)</p>
                 <button id="sambut-wisatawan-btn" class="w-full py-2.5 px-4 rounded-xl bg-[#316342] hover:bg-[#254d33] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
-                  <span class="material-symbols-outlined text-sm">badge</span>
                   Mulai Sambut Wisatawan
                 </button>
               </div>
@@ -422,8 +421,8 @@ export const renderAdminOverview = async () => {
                 <div class="flex flex-col gap-3.5">
                   <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100">
                     <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 rounded-lg bg-emerald-100 text-[#316342] flex items-center justify-center font-bold">
-                        <span class="material-symbols-outlined text-sm">park</span>
+                      <div class="w-8 h-8 rounded-lg bg-emerald-100 text-[#316342] flex items-center justify-center font-bold text-xs">
+                        01
                       </div>
                       <div>
                         <h4 class="text-xs font-bold text-slate-800 m-0">Kebun Durian Candimulyo</h4>
@@ -434,8 +433,8 @@ export const renderAdminOverview = async () => {
 
                   <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100">
                     <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
-                        <span class="material-symbols-outlined text-sm">water</span>
+                      <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                        02
                       </div>
                       <div>
                         <h4 class="text-xs font-bold text-slate-800 m-0">Susur Sungai Tampir</h4>
@@ -446,8 +445,8 @@ export const renderAdminOverview = async () => {
 
                   <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100">
                     <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
-                        <span class="material-symbols-outlined text-sm">restaurant</span>
+                      <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs">
+                        03
                       </div>
                       <div>
                         <h4 class="text-xs font-bold text-slate-800 m-0">Paket Kuliner Tradisional</h4>
