@@ -1,19 +1,27 @@
-// Admin Top Header Component
+import { openAdminSearchModal, initGlobalSearchShortcut } from './search-modal.js';
 
 export const renderAdminHeader = (pageTitle = 'Dashboard') => {
+  setTimeout(() => {
+    const triggerBtn = document.getElementById('admin-global-search-trigger');
+    if (triggerBtn && !triggerBtn.dataset.bound) {
+      triggerBtn.dataset.bound = 'true';
+      triggerBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openAdminSearchModal();
+      });
+    }
+    initGlobalSearchShortcut();
+  }, 10);
+
   return `
     <header class="h-20 flex-shrink-0 bg-white border-b border-slate-200/80 px-8 flex items-center justify-between z-30 shadow-sm">
       <!-- Left: Search Pill Input -->
       <div class="flex items-center gap-4 flex-1 max-w-md">
-        <div class="relative w-full">
+        <button id="admin-global-search-trigger" class="relative w-full text-left bg-slate-100/80 hover:bg-slate-100 text-slate-400 text-xs font-medium pl-10 pr-12 py-2.5 rounded-full border border-slate-200/80 transition-all shadow-2xs flex items-center justify-between cursor-pointer">
           <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-          <input 
-            type="text" 
-            placeholder="Cari di admin..." 
-            class="w-full bg-slate-100/80 hover:bg-slate-100 text-slate-700 placeholder-slate-400 text-xs font-medium pl-10 pr-12 py-2.5 rounded-full outline-none border border-transparent focus:border-[#316342] focus:bg-white transition-all shadow-inner"
-          />
-          <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400 bg-white px-1.5 py-0.5 rounded-md border border-slate-200 shadow-2xs">⌘F</span>
-        </div>
+          <span class="text-slate-500">Cari di admin...</span>
+          <span class="text-[10px] font-bold text-slate-400 bg-white px-1.5 py-0.5 rounded-md border border-slate-200 shadow-2xs">⌘F</span>
+        </button>
       </div>
 
       <!-- Right: Action Buttons, Notifications & User Profile -->
