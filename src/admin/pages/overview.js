@@ -188,43 +188,96 @@ export const renderAdminOverview = async () => {
                     <h3 class="text-lg font-bold text-slate-800 m-0">Analisis Kunjungan Wisatawan</h3>
                     <p class="text-xs text-slate-400 m-0 mt-0.5">Statistik tren pengunjung per hari minggu ini.</p>
                   </div>
-                  <select id="chart-period-filter" class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 outline-none cursor-pointer hover:bg-slate-200/70 transition-colors">
+                  <select id="chart-period-filter" class="px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 outline-none cursor-pointer hover:bg-slate-200/80 transition-colors shadow-2xs">
                     <option value="minggu">Minggu Ini</option>
                     <option value="bulan">Bulan Ini</option>
                     <option value="tahun">Tahun Ini</option>
                   </select>
                 </div>
 
-                <!-- Pill Bar Chart Visual -->
-                <div id="chart-bars-container" class="flex items-end justify-between gap-4 h-48 pt-6 px-4 border-b border-slate-100">
-                  <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                    <div class="w-full max-w-[42px] h-[45%] bg-slate-200/70 rounded-full transition-all duration-300"></div>
-                    <span class="text-xs font-semibold text-slate-400">S</span>
+                <!-- Pill Bar Chart Visual with Interactive Tooltips -->
+                <div id="chart-bars-container" class="flex items-end justify-between gap-3 h-52 pt-8 px-2 border-b border-slate-100">
+                  <!-- Day 1: Senin -->
+                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
+                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
+                      <span>Senin: <strong>45 Wisatawan</strong></span>
+                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+                    </div>
+                    <div class="chart-bar-el w-full max-w-[38px] h-[45%] bg-slate-200/80 group-hover:bg-[#316342]/60 rounded-full transition-all duration-300"></div>
+                    <span class="chart-label-el text-xs font-semibold text-slate-400 group-hover:text-slate-700">Sen</span>
                   </div>
-                  <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                    <div class="w-full max-w-[42px] h-[60%] bg-[#316342]/40 rounded-full transition-all duration-300"></div>
-                    <span class="text-xs font-semibold text-slate-400">M</span>
+
+                  <!-- Day 2: Selasa -->
+                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
+                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
+                      <span>Selasa: <strong>60 Wisatawan</strong></span>
+                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+                    </div>
+                    <div class="chart-bar-el w-full max-w-[38px] h-[60%] bg-[#316342]/40 group-hover:bg-[#316342]/70 rounded-full transition-all duration-300"></div>
+                    <span class="chart-label-el text-xs font-semibold text-slate-400 group-hover:text-slate-700">Sel</span>
                   </div>
-                  <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end relative">
-                    <span id="chart-badge-val" class="absolute -top-7 px-2 py-0.5 rounded-md bg-emerald-50 text-[#316342] font-bold text-[10px] border border-emerald-200">74%</span>
-                    <div id="chart-[#316342]-bar" class="w-full max-w-[42px] h-[74%] bg-[#4ADE80] rounded-full shadow-sm transition-all duration-300"></div>
-                    <span class="text-xs font-bold text-[#316342]">T</span>
+
+                  <!-- Day 3: Rabu (Peak) -->
+                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
+                    <span id="chart-badge-val" class="absolute -top-7 px-2 py-0.5 rounded-md bg-emerald-50 text-[#316342] font-bold text-[10px] border border-emerald-200 shadow-2xs">Puncak</span>
+                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-14 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
+                      <span>Rabu: <strong>145 Wisatawan</strong> (Peak)</span>
+                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+                    </div>
+                    <div id="chart-main-bar" class="chart-bar-el w-full max-w-[38px] h-[92%] bg-[#316342] rounded-full shadow-md transition-all duration-300"></div>
+                    <span class="chart-label-el text-xs font-bold text-[#316342]">Rab</span>
                   </div>
-                  <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                    <div class="w-full max-w-[42px] h-[90%] bg-[#316342] rounded-full shadow-md transition-all duration-300"></div>
-                    <span class="text-xs font-semibold text-slate-400">W</span>
+
+                  <!-- Day 4: Kamis -->
+                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
+                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
+                      <span>Kamis: <strong>90 Wisatawan</strong></span>
+                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+                    </div>
+                    <div class="chart-bar-el w-full max-w-[38px] h-[74%] bg-[#4ADE80] group-hover:bg-[#316342] rounded-full shadow-sm transition-all duration-300"></div>
+                    <span class="chart-label-el text-xs font-semibold text-slate-400 group-hover:text-slate-700">Kam</span>
                   </div>
-                  <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                    <div class="w-full max-w-[42px] h-[55%] bg-slate-200/70 rounded-full transition-all duration-300"></div>
-                    <span class="text-xs font-semibold text-slate-400">T</span>
+
+                  <!-- Day 5: Jumat -->
+                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
+                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
+                      <span>Jumat: <strong>55 Wisatawan</strong></span>
+                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+                    </div>
+                    <div class="chart-bar-el w-full max-w-[38px] h-[55%] bg-slate-200/80 group-hover:bg-[#316342]/60 rounded-full transition-all duration-300"></div>
+                    <span class="chart-label-el text-xs font-semibold text-slate-400 group-hover:text-slate-700">Jum</span>
                   </div>
-                  <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                    <div class="w-full max-w-[42px] h-[65%] bg-slate-200/70 rounded-full transition-all duration-300"></div>
-                    <span class="text-xs font-semibold text-slate-400">F</span>
+
+                  <!-- Day 6: Sabtu -->
+                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
+                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
+                      <span>Sabtu: <strong>85 Wisatawan</strong></span>
+                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+                    </div>
+                    <div class="chart-bar-el w-full max-w-[38px] h-[68%] bg-slate-300 group-hover:bg-[#316342]/70 rounded-full transition-all duration-300"></div>
+                    <span class="chart-label-el text-xs font-semibold text-slate-400 group-hover:text-slate-700">Sab</span>
                   </div>
-                  <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                    <div class="w-full max-w-[42px] h-[80%] bg-slate-300 rounded-full transition-all duration-300"></div>
-                    <span class="text-xs font-semibold text-slate-400">S</span>
+
+                  <!-- Day 7: Minggu -->
+                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
+                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
+                      <span>Minggu: <strong>110 Wisatawan</strong></span>
+                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+                    </div>
+                    <div class="chart-bar-el w-full max-w-[38px] h-[82%] bg-[#316342]/80 group-hover:bg-[#316342] rounded-full transition-all duration-300"></div>
+                    <span class="chart-label-el text-xs font-semibold text-slate-400 group-hover:text-slate-700">Min</span>
+                  </div>
+                </div>
+
+                <!-- Footer Summary Legend -->
+                <div class="mt-4 pt-3 flex items-center justify-between text-xs font-medium text-slate-500 flex-wrap gap-2">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#316342]"></span>
+                    <span id="chart-avg-summary">Rata-rata: <strong>86 Pengunjung/Hari</strong></span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-amber-500">🌟</span>
+                    <span id="chart-peak-summary">Hari Puncak: <strong>Rabu (145 Pax)</strong></span>
                   </div>
                 </div>
               </div>
@@ -420,23 +473,41 @@ export const renderAdminOverview = async () => {
     if (filterSelect) {
       filterSelect.addEventListener('change', (e) => {
         const val = e.target.value;
-        const bars = container.querySelectorAll('#chart-bars-container div.rounded-full');
-        const badge = container.querySelector('#chart-badge-val');
+        const bars = container.querySelectorAll('.chart-bar-el');
+        const tooltips = container.querySelectorAll('.chart-tooltip span');
+        const avgSummary = container.querySelector('#chart-avg-summary');
+        const peakSummary = container.querySelector('#chart-peak-summary');
 
         if (val === 'bulan') {
-          if (badge) badge.innerText = '88%';
-          const heights = ['55%', '70%', '88%', '95%', '60%', '75%', '85%'];
-          bars.forEach((bar, idx) => { if (bars[idx]) bars[idx].style.height = heights[idx] || '50%'; });
+          if (avgSummary) avgSummary.innerHTML = 'Rata-rata: <strong>340 Pengunjung/Minggu</strong>';
+          if (peakSummary) peakSummary.innerHTML = 'Minggu Puncak: <strong>Minggu ke-3 (420 Pax)</strong>';
+          const heights = ['55%', '70%', '95%', '85%', '60%', '75%', '85%'];
+          const counts = ['210 Pax', '290 Pax', '420 Pax (Peak)', '350 Pax', '240 Pax', '310 Pax', '380 Pax'];
+          bars.forEach((bar, idx) => {
+            if (bar) bar.style.height = heights[idx] || '50%';
+            if (tooltips[idx]) tooltips[idx].innerHTML = `Minggu ${idx + 1}: <strong>${counts[idx]}</strong>`;
+          });
           showToast('Menampilkan data tren statistik Bulan Ini', 'info');
         } else if (val === 'tahun') {
-          if (badge) badge.innerText = '92%';
-          const heights = ['65%', '80%', '92%', '100%', '70%', '85%', '90%'];
-          bars.forEach((bar, idx) => { if (bars[idx]) bars[idx].style.height = heights[idx] || '50%'; });
+          if (avgSummary) avgSummary.innerHTML = 'Rata-rata: <strong>1.450 Pengunjung/Bulan</strong>';
+          if (peakSummary) peakSummary.innerHTML = 'Bulan Puncak: <strong>Agustus (2.100 Pax)</strong>';
+          const heights = ['40%', '50%', '65%', '70%', '75%', '80%', '95%'];
+          const counts = ['850 Pax', '1.100 Pax', '1.350 Pax', '1.500 Pax', '1.650 Pax', '1.800 Pax', '2.100 Pax (Peak)'];
+          bars.forEach((bar, idx) => {
+            if (bar) bar.style.height = heights[idx] || '50%';
+            if (tooltips[idx]) tooltips[idx].innerHTML = `Bulan ${idx + 1}: <strong>${counts[idx]}</strong>`;
+          });
           showToast('Menampilkan data tren statistik Tahun Ini', 'info');
         } else {
-          if (badge) badge.innerText = '74%';
-          const heights = ['45%', '60%', '74%', '90%', '55%', '65%', '80%'];
-          bars.forEach((bar, idx) => { if (bars[idx]) bars[idx].style.height = heights[idx] || '50%'; });
+          if (avgSummary) avgSummary.innerHTML = 'Rata-rata: <strong>86 Pengunjung/Hari</strong>';
+          if (peakSummary) peakSummary.innerHTML = 'Hari Puncak: <strong>Rabu (145 Pax)</strong>';
+          const heights = ['45%', '60%', '92%', '74%', '55%', '68%', '82%'];
+          const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+          const counts = ['45 Pax', '60 Pax', '145 Pax (Peak)', '90 Pax', '55 Pax', '85 Pax', '110 Pax'];
+          bars.forEach((bar, idx) => {
+            if (bar) bar.style.height = heights[idx] || '50%';
+            if (tooltips[idx]) tooltips[idx].innerHTML = `${days[idx]}: <strong>${counts[idx]}</strong>`;
+          });
           showToast('Menampilkan data tren statistik Minggu Ini', 'info');
         }
       });
