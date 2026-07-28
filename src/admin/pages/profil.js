@@ -30,10 +30,10 @@ export const renderAdminProfil = async () => {
   container.innerHTML = `
     ${renderAdminSidebar('#/admin/profil')}
 
-    <main class="admin-main donezo-bg min-h-screen">
+    <main class="admin-main donezo-bg h-full overflow-hidden flex flex-col">
       ${renderAdminHeader('Edit Profil Desa Wisata')}
 
-      <div class="p-8 max-w-5xl mx-auto w-full">
+      <div class="flex-1 overflow-y-auto p-8 w-full">
         <div class="mb-6">
           <h1 class="font-display-lg text-2xl font-bold text-slate-800 m-0">Profil Desa Wisata</h1>
           <p class="text-xs font-medium text-slate-400 m-0 mt-1">Kelola identitas resmi, sejarah, dan kontak pengelola Desa Wisata Tampirkulon.</p>

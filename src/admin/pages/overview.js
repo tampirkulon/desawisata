@@ -75,10 +75,10 @@ export const renderAdminOverview = async () => {
     container.innerHTML = `
       ${renderSidebar('overview')}
 
-      <main class="admin-main donezo-bg min-h-screen">
+      <main class="admin-main donezo-bg h-full overflow-hidden flex flex-col">
         ${renderAdminHeader('Dashboard Overview')}
 
-        <div class="p-8 overflow-y-auto max-w-7xl mx-auto w-full">
+        <div class="flex-1 overflow-y-auto p-8 w-full">
           <!-- Page Header & Action Buttons -->
           <div class="flex items-center justify-between flex-wrap gap-4 mb-8">
             <div>

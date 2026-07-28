@@ -33,10 +33,10 @@ export const renderAdminGaleri = async () => {
     container.innerHTML = `
       ${renderAdminSidebar('#/admin/galeri')}
 
-      <main class="admin-main donezo-bg min-h-screen">
+      <main class="admin-main donezo-bg h-full overflow-hidden flex flex-col">
         ${renderAdminHeader('Kelola Galeri Foto & Video')}
 
-        <div class="p-8 max-w-7xl mx-auto w-full">
+        <div class="flex-1 overflow-y-auto p-8 w-full">
           <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
             <div>
               <h1 class="font-display-lg text-2xl font-bold text-slate-800 m-0">Galeri Foto & Video</h1>

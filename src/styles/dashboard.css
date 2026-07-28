@@ -5,19 +5,21 @@
 .dashboard-wrapper {
   display: flex;
   width: 100%;
-  min-height: 100vh;
-  background-color: var(--surface-container-low);
-  overflow-x: hidden;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-donezo, #f4f6f5);
 }
 
 /* Admin Sidebar */
 .admin-sidebar {
   width: 260px;
-  background-color: #1A2332;
-  color: var(--surface-dim);
+  background-color: #ffffff;
+  color: var(--neutral-800);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  height: 100vh;
+  overflow: hidden;
   transition: transform var(--transition-normal);
 }
 
@@ -26,11 +28,11 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .sidebar-title {
-  color: #ffffff;
+  color: var(--neutral-900);
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 700;
@@ -51,7 +53,7 @@
   gap: 12px;
   padding: 12px 16px;
   border-radius: var(--radius-md);
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--neutral-600);
   font-family: var(--font-label);
   font-weight: 500;
   font-size: 0.95rem;
@@ -59,8 +61,8 @@
 }
 
 .menu-item a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background-color: var(--neutral-100);
+  color: var(--neutral-900);
 }
 
 .menu-item.active a {
@@ -71,7 +73,7 @@
 
 .sidebar-footer {
   padding: 16px 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--outline-variant);
 }
 
 /* Admin Main Content */
@@ -81,8 +83,9 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  width: 100%;
-  background-color: var(--surface-container-low);
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-donezo, #f4f6f5);
 }
 
 .admin-header {

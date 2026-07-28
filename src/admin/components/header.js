@@ -2,7 +2,7 @@
 
 export const renderAdminHeader = (pageTitle = 'Dashboard') => {
   return `
-    <header class="h-20 bg-white border-b border-slate-200/80 px-8 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+    <header class="h-20 flex-shrink-0 bg-white border-b border-slate-200/80 px-8 flex items-center justify-between z-30 shadow-sm">
       <!-- Left: Search Pill Input -->
       <div class="flex items-center gap-4 flex-1 max-w-md">
         <div class="relative w-full">
