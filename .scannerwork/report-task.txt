@@ -1,0 +1,6 @@
+projectKey=Desawisata
+serverUrl=http://localhost:9000
+serverVersion=26.7.0.124771
+dashboardUrl=http://localhost:9000/dashboard?id=Desawisata
+ceTaskId=1d813099-48e3-4c48-9417-ce480cf921e7
+ceTaskUrl=http://localhost:9000/api/ce/task?id=1d813099-48e3-4c48-9417-ce480cf921e7

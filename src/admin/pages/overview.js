@@ -15,6 +15,7 @@ export const renderAdminOverview = async () => {
     artikel: mockData.artikel.length,
     galeri: mockData.galeri.length,
     reservasi_pending: mockData.reservasi.filter(r => r.status === 'baru' || r.status === 'pending').length,
+    reservasi_dikonfirmasi: mockData.reservasi.filter(r => r.status === 'dikonfirmasi').length,
     reservasi_selesai: mockData.reservasi.filter(r => r.status === 'selesai').length,
     estimasi_pendapatan: 4250000
   };
@@ -40,6 +41,7 @@ export const renderAdminOverview = async () => {
         const { count: cBlog } = await supabase.from('artikel').select('*', { count: 'exact', head: true });
         const { count: cGal } = await supabase.from('galeri').select('*', { count: 'exact', head: true });
         const { count: cResPending } = await supabase.from('reservasi').select('*', { count: 'exact', head: true }).eq('status', 'baru');
+        const { count: cResDikonfirmasi } = await supabase.from('reservasi').select('*', { count: 'exact', head: true }).eq('status', 'dikonfirmasi');
         const { count: cResSelesai } = await supabase.from('reservasi').select('*', { count: 'exact', head: true }).eq('status', 'selesai');
 
         if (cDest !== null) stats.destinasi = cDest;
@@ -47,6 +49,7 @@ export const renderAdminOverview = async () => {
         if (cBlog !== null) stats.artikel = cBlog;
         if (cGal !== null) stats.galeri = cGal;
         if (cResPending !== null) stats.reservasi_pending = cResPending;
+        if (cResDikonfirmasi !== null) stats.reservasi_dikonfirmasi = cResDikonfirmasi;
         if (cResSelesai !== null) stats.reservasi_selesai = cResSelesai;
 
         const { data: resData } = await supabase.from('reservasi').select('*, paket_wisata(nama, harga)').order('created_at', { ascending: false }).limit(5);
@@ -86,6 +89,21 @@ export const renderAdminOverview = async () => {
   container.className = 'dashboard-wrapper donezo-bg';
 
   const renderPage = () => {
+    const nSelesai = stats.reservasi_selesai || 0;
+    const nProses = stats.reservasi_dikonfirmasi || 0;
+    const nPending = stats.reservasi_pending || 0;
+    const totalRes = nSelesai + nProses + nPending;
+
+    let pctSelesai = 0;
+    let pctProses = 0;
+    let pctPending = 0;
+
+    if (totalRes > 0) {
+      pctSelesai = Math.round((nSelesai / totalRes) * 100);
+      pctProses = Math.round((nProses / totalRes) * 100);
+      pctPending = Math.max(0, 100 - pctSelesai - pctProses);
+    }
+
     container.innerHTML = `
       ${renderSidebar('overview')}
 
@@ -393,19 +411,35 @@ export const renderAdminOverview = async () => {
                 <!-- Donut SVG Gauge -->
                 <div class="relative w-36 h-36 flex items-center justify-center my-2">
                   <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                    <path class="text-slate-100" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    <path class="text-[#316342]" stroke-dasharray="75, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <!-- Base Track -->
+                    <path class="text-slate-100" stroke-width="3.8" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    
+                    <!-- Segment 1: Selesai (Dark Green) -->
+                    ${pctSelesai > 0 ? `
+                      <path class="text-[#316342] transition-all duration-500 ease-out" stroke-width="3.8" stroke-dasharray="${pctSelesai} ${100 - pctSelesai}" stroke-dashoffset="0" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    ` : ''}
+
+                    <!-- Segment 2: Proses (Light Green) -->
+                    ${pctProses > 0 ? `
+                      <path class="text-[#4ADE80] transition-all duration-500 ease-out" stroke-width="3.8" stroke-dasharray="${pctProses} ${100 - pctProses}" stroke-dashoffset="-${pctSelesai}" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    ` : ''}
+
+                    <!-- Segment 3: Pending (Amber) -->
+                    ${pctPending > 0 ? `
+                      <path class="text-amber-400 transition-all duration-500 ease-out" stroke-width="3.8" stroke-dasharray="${pctPending} ${100 - pctPending}" stroke-dashoffset="-${pctSelesai + pctProses}" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    ` : ''}
                   </svg>
+
                   <div class="absolute flex flex-col items-center justify-center">
-                    <span class="text-2xl font-extrabold text-slate-800">75%</span>
-                    <span class="text-[10px] font-semibold text-slate-400">Kunjungan Selesai</span>
+                    <span class="text-3xl font-extrabold text-slate-800 tracking-tight">${totalRes}</span>
+                    <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Reservasi</span>
                   </div>
                 </div>
 
-                <div class="flex items-center justify-center gap-4 text-[11px] font-medium text-slate-500 mt-4 w-full border-t border-slate-100 pt-3">
-                  <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#316342]"></span> Completed</span>
-                  <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#4ADE80]"></span> In Progress</span>
-                  <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-slate-300"></span> Pending</span>
+                <div class="flex items-center justify-center gap-3 text-[11px] font-medium text-slate-500 mt-4 w-full border-t border-slate-100 pt-3 flex-wrap">
+                  <span class="flex items-center gap-1.5" title="Kunjungan Selesai"><span class="w-2.5 h-2.5 rounded-full bg-[#316342]"></span> Selesai (${nSelesai})</span>
+                  <span class="flex items-center gap-1.5" title="Dalam Proses / Dikonfirmasi"><span class="w-2.5 h-2.5 rounded-full bg-[#4ADE80]"></span> Proses (${nProses})</span>
+                  <span class="flex items-center gap-1.5" title="Pending / Perlu Konfirmasi"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Pending (${nPending})</span>
                 </div>
               </div>
 
