@@ -1,6 +1,6 @@
 // Reusable Modal Component for Admin CRUD Forms & Delete Confirmations
 
-export const openAdminModal = ({ title, bodyHtml, onSave, saveText = 'Simpan Data' }) => {
+export const openAdminModal = ({ title, bodyHtml, onSave, saveText = 'Simpan Data', onOpen = null }) => {
   let modalRoot = document.getElementById('admin-modal-root');
   if (!modalRoot) {
     modalRoot = document.createElement('div');
@@ -26,14 +26,33 @@ export const openAdminModal = ({ title, bodyHtml, onSave, saveText = 'Simpan Dat
     </div>
   `;
 
+  if (typeof onOpen === 'function') {
+    onOpen();
+  }
+
+  modalRoot.querySelector('form')?.addEventListener('submit', (e) => e.preventDefault());
+
+  let handleEsc;
+
   const closeModal = () => {
     modalRoot.innerHTML = '';
+    document.removeEventListener('keydown', handleEsc);
   };
+
+  handleEsc = (e) => {
+    if (e.key === 'Escape') closeModal();
+  };
+  document.addEventListener('keydown', handleEsc);
+
+  modalRoot.querySelector('#admin-modal-overlay')?.addEventListener('click', (e) => {
+    if (e.target.id === 'admin-modal-overlay') closeModal();
+  });
 
   modalRoot.querySelector('#admin-modal-close')?.addEventListener('click', closeModal);
   modalRoot.querySelector('#admin-modal-cancel')?.addEventListener('click', closeModal);
   
-  modalRoot.querySelector('#admin-modal-save')?.addEventListener('click', async () => {
+  modalRoot.querySelector('#admin-modal-save')?.addEventListener('click', async (e) => {
+    e.preventDefault();
     const saveBtn = modalRoot.querySelector('#admin-modal-save');
     saveBtn.disabled = true;
     saveBtn.innerText = 'Menyimpan...';
