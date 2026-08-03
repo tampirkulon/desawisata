@@ -133,6 +133,26 @@ export const renderAdminDestinasi = async () => {
         });
       });
     });
+
+    container.querySelectorAll('[data-action="toggle"]').forEach(badge => {
+      badge.addEventListener('click', async (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        const item = destinasiList.find(d => String(d.id) === String(id));
+        if (!item) return;
+
+        const newStatus = !item.is_published;
+
+        if (isSupabaseConfigured()) {
+          await supabase.from('destinasi').update({ is_published: newStatus }).eq('id', id);
+        } else {
+          item.is_published = newStatus;
+        }
+
+        showToast(newStatus ? 'Destinasi dipublikasikan!' : 'Destinasi dijadikan draft.', 'success');
+        await loadData();
+        renderPage();
+      });
+    });
   };
 
   const openFormModal = (destinasi = null) => {
@@ -148,10 +168,10 @@ export const renderAdminDestinasi = async () => {
           <label class="form-label">Kategori Wisata *</label>
           <select id="dest-kategori" class="form-control" required>
             ${kategoriList.map(k => `
-              <option value="${k.id}" ${destinasi?.kategori_id === k.id ? 'selected' : ''}>${k.nama}</option>
+              <option value="${k.id}" ${String(destinasi?.kategori_id) === String(k.id) ? 'selected' : ''}>${k.nama}</option>
             `).join('')}
           </select>
-        </div>
+        </div>`
 
         ${renderImageUploader('dest-gambar', destinasi?.gambar_url || '')}
 
