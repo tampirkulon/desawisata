@@ -171,7 +171,7 @@ export const renderAdminDestinasi = async () => {
               <option value="${k.id}" ${String(destinasi?.kategori_id) === String(k.id) ? 'selected' : ''}>${k.nama}</option>
             `).join('')}
           </select>
-        </div>`
+        </div>
 
         ${renderImageUploader('dest-gambar', destinasi?.gambar_url || '')}
 
