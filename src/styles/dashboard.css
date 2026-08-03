@@ -323,6 +323,19 @@ textarea {
   min-height: 100px !important;
 }
 
+/* Layout 2-kolom responsif untuk form dalam modal */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Dropzone Upload */
 .dropzone {
   border: 2px dashed #94a3b8;

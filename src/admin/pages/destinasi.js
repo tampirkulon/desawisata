@@ -175,7 +175,7 @@ export const renderAdminDestinasi = async () => {
 
         ${renderImageUploader('dest-gambar', destinasi?.gambar_url || '')}
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="form-grid-2">
           <div class="form-group">
             <label class="form-label">Harga Tiket Masuk</label>
             <input type="text" id="dest-harga" class="form-control" placeholder="Misal: Rp 10.000 / Gratis" value="${destinasi?.harga_tiket || ''}" />
