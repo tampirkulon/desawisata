@@ -252,7 +252,7 @@ textarea.form-control,
 .admin-main input[type="email"],
 .admin-main select,
 .admin-main textarea,
-.modal-body input,
+.modal-body input:not([type="checkbox"]):not([type="radio"]),
 .modal-body select,
 .modal-body textarea {
   width: 100%;
@@ -270,13 +270,25 @@ textarea.form-control,
   box-sizing: border-box !important;
 }
 
+.modal-body input[type="checkbox"],
+.modal-body input[type="radio"] {
+  width: 18px !important;
+  height: 18px !important;
+  padding: 0 !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  accent-color: #316342 !important;
+}
+
 .form-control:hover,
 select.form-control:hover,
 textarea.form-control:hover,
 .admin-main input:hover,
 .admin-main select:hover,
 .admin-main textarea:hover,
-.modal-body input:hover,
+.modal-body input:not([type="checkbox"]):not([type="radio"]):hover,
 .modal-body select:hover,
 .modal-body textarea:hover {
   border-color: #94a3b8 !important;
@@ -288,7 +300,7 @@ textarea.form-control:focus,
 .admin-main input:focus,
 .admin-main select:focus,
 .admin-main textarea:focus,
-.modal-body input:focus,
+.modal-body input:not([type="checkbox"]):not([type="radio"]):focus,
 .modal-body select:focus,
 .modal-body textarea:focus {
   border-color: #316342 !important;
