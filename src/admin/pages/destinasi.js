@@ -193,6 +193,7 @@ export const renderAdminDestinasi = async () => {
       title: isEdit ? 'Edit Destinasi Wisata' : 'Tambah Destinasi Baru',
       bodyHtml,
       saveText: isEdit ? 'Perbarui Destinasi' : 'Simpan Destinasi',
+      onOpen: () => initImageUploaderEvents('dest-gambar', 'destinasi'),
       onSave: async () => {
         const payload = {
           nama: document.getElementById('dest-nama').value.trim(),
@@ -231,8 +232,6 @@ export const renderAdminDestinasi = async () => {
         return true;
       }
     });
-
-    setTimeout(() => initImageUploaderEvents('dest-gambar', 'destinasi'), 100);
   };
 
   renderPage();
