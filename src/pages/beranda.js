@@ -1,3 +1,4 @@
+import { openDestinasiModal } from '../components/destinasi-modal.js';
 import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
@@ -6,6 +7,7 @@ import { mockData } from '../data/seed.js';
 export const renderBeranda = async () => {
   let profil = mockData.profil_desa;
   let destinasi = mockData.destinasi;
+  let testimoniList = mockData.testimoni;
 
   if (isSupabaseConfigured()) {
     try {
@@ -14,6 +16,9 @@ export const renderBeranda = async () => {
 
       const { data: destData } = await supabase.from('destinasi').select('*').eq('is_published', true).limit(3);
       if (destData && destData.length > 0) destinasi = destData;
+
+      const { data: testData } = await supabase.from('testimoni').select('*').eq('is_shown', true).limit(6);
+      if (testData && testData.length > 0) testimoniList = testData;
     } catch (e) {
       console.warn('Fallback seed:', e);
     }
@@ -99,11 +104,11 @@ export const renderBeranda = async () => {
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           ${destinasi.map(item => `
-            <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 flex flex-col">
+            <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 flex flex-col cursor-pointer beranda-destinasi-card" data-id="${item.id}">
               <div class="relative h-56 overflow-hidden">
                 <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${item.nama}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <span class="absolute top-4 right-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                  ${item.kategori_id || 'Alam'}
+                  ${item.harga_tiket || 'Gratis'}
                 </span>
               </div>
               <div class="p-6 flex flex-col flex-grow">
@@ -112,8 +117,8 @@ export const renderBeranda = async () => {
                   ${item.deskripsi ? item.deskripsi.substring(0, 110) + '...' : ''}
                 </p>
                 <div class="pt-4 border-t border-outline-variant/20 flex justify-between items-center mt-auto">
-                  <span class="font-bold text-primary text-base">${item.harga_tiket || 'Gratis'}</span>
-                  <a href="#/destinasi?id=${item.id}" class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-primary-container transition-colors">Lihat Detail</a>
+                  <span class="font-bold text-primary text-base">${item.lokasi || 'Tampirkulon'}</span>
+                  <button class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-primary-container transition-colors pointer-events-none">Lihat Detail</button>
                 </div>
               </div>
             </div>
@@ -148,20 +153,20 @@ export const renderBeranda = async () => {
 
           <div class="grid grid-cols-2 gap-6">
             <div class="bg-surface-container-low p-6 rounded-2xl text-center shadow-level-1">
-              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">150+</div>
-              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Ha Luas Area</div>
+              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">3.45</div>
+              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Km² Luas Wilayah</div>
             </div>
             <div class="bg-surface-container-low p-6 rounded-2xl text-center shadow-level-1">
-              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">2.5k</div>
+              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">2.8k</div>
               <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Populasi Penduduk</div>
             </div>
             <div class="bg-surface-container-low p-6 rounded-2xl text-center shadow-level-1">
-              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">12</div>
-              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Titik Wisata</div>
+              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">4+</div>
+              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Kategori Wisata</div>
             </div>
             <div class="bg-surface-container-low p-6 rounded-2xl text-center shadow-level-1">
-              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">50+</div>
-              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Mitra Homestay</div>
+              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">100%</div>
+              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Kearifan Lokal</div>
             </div>
           </div>
         </div>
@@ -177,53 +182,25 @@ export const renderBeranda = async () => {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="bg-surface-container-lowest p-8 rounded-2xl shadow-level-1 flex flex-col justify-between">
-            <div>
-              <div class="flex text-amber-500 mb-4">★★★★★</div>
-              <p class="font-body-md italic text-on-surface-variant text-sm mb-6 leading-relaxed">
-                "Pengalaman yang sangat luar biasa. Udaranya sejuk dan warga desanya sangat ramah. Homestay-nya juga bersih dan nyaman."
-              </p>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold">A</div>
+          ${testimoniList.map(t => `
+            <div class="bg-surface-container-lowest p-8 rounded-2xl shadow-level-1 flex flex-col justify-between">
               <div>
-                <h4 class="font-bold text-sm text-on-surface">Andi S.</h4>
-                <span class="text-xs text-on-surface-variant">Wisatawan Domestik</span>
+                <div class="flex text-amber-500 mb-4">${'★'.repeat(t.rating || 5)}${'☆'.repeat(5 - (t.rating || 5))}</div>
+                <p class="font-body-md italic text-on-surface-variant text-sm mb-6 leading-relaxed">
+                  "${t.pesan}"
+                </p>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold">
+                  ${(t.nama || 'A').charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <h4 class="font-bold text-sm text-on-surface">${t.nama}</h4>
+                  <span class="text-xs text-on-surface-variant">${t.asal || 'Pengunjung'}</span>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div class="bg-surface-container-lowest p-8 rounded-2xl shadow-level-1 flex flex-col justify-between">
-            <div>
-              <div class="flex text-amber-500 mb-4">★★★★★</div>
-              <p class="font-body-md italic text-on-surface-variant text-sm mb-6 leading-relaxed">
-                "Pemandangan di Curug Indah sangat memukau. Akses jalannya cukup menantang tapi sepadan dengan keindahannya."
-              </p>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-secondary text-white rounded-full flex items-center justify-center font-bold">B</div>
-              <div>
-                <h4 class="font-bold text-sm text-on-surface">Budi Raharjo</h4>
-                <span class="text-xs text-on-surface-variant">Travel Blogger</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-surface-container-lowest p-8 rounded-2xl shadow-level-1 flex flex-col justify-between">
-            <div>
-              <div class="flex text-amber-500 mb-4">★★★★★</div>
-              <p class="font-body-md italic text-on-surface-variant text-sm mb-6 leading-relaxed">
-                "Makanan khasnya enak sekali! Saya belajar banyak tentang budaya lokal. Sangat direkomendasikan untuk liburan keluarga."
-              </p>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-tertiary-container text-white rounded-full flex items-center justify-center font-bold">C</div>
-              <div>
-                <h4 class="font-bold text-sm text-on-surface">Citra L.</h4>
-                <span class="text-xs text-on-surface-variant">Karyawan Swasta</span>
-              </div>
-            </div>
-          </div>
+          `).join('')}
         </div>
       </div>
     </section>
@@ -245,6 +222,17 @@ export const renderBeranda = async () => {
     ${renderFooter(profil)}
   `;
 
-  setTimeout(() => initNavbarEvents(), 0);
+  setTimeout(() => {
+    initNavbarEvents();
+
+    container.querySelectorAll('.beranda-destinasi-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        const item = destinasi.find(d => d.id === id);
+        if (item) openDestinasiModal(item);
+      });
+    });
+  }, 0);
+
   return container;
 };

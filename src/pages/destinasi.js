@@ -1,3 +1,4 @@
+import { openDestinasiModal } from '../components/destinasi-modal.js';
 import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
@@ -70,7 +71,7 @@ export const renderDestinasi = async (queryParams) => {
       <section class="max-w-container-max mx-auto px-4 md:px-16 mb-20 flex-grow">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           ${filteredDestinasi.map(item => `
-            <div class="bg-surface-container-lowest rounded-xl shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden relative group cursor-pointer border border-outline-variant/30">
+            <div class="bg-surface-container-lowest rounded-xl shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden relative group cursor-pointer border border-outline-variant/30 destinasi-card-item" data-id="${item.id}">
               <div class="relative w-full aspect-[4/3] overflow-hidden">
                 <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${item.nama}" />
                 <span class="absolute top-4 left-4 bg-tertiary-fixed/90 text-primary font-label-caps text-xs px-3 py-1 rounded-full backdrop-blur-sm shadow-sm font-bold">
@@ -87,7 +88,7 @@ export const renderDestinasi = async (queryParams) => {
                     <span class="material-symbols-outlined text-sm text-primary">location_on</span>
                     ${item.lokasi || 'Tampirkulon'}
                   </span>
-                  <button class="detail-btn w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary hover:bg-secondary hover:text-on-secondary transition-colors duration-300" data-id="${item.id}">
+                  <button class="detail-btn w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary hover:bg-secondary hover:text-on-secondary transition-colors duration-300 pointer-events-none" data-id="${item.id}">
                     <span class="material-symbols-outlined">arrow_forward</span>
                   </button>
                 </div>
@@ -102,8 +103,6 @@ export const renderDestinasi = async (queryParams) => {
           </div>
         ` : ''}
       </section>
-
-      <div id="destinasi-modal-root"></div>
 
       ${renderFooter(profil)}
     `;
@@ -122,54 +121,21 @@ export const renderDestinasi = async (queryParams) => {
       });
     });
 
-    container.querySelectorAll('.detail-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    container.querySelectorAll('.destinasi-card-item').forEach(card => {
+      card.addEventListener('click', (e) => {
         const id = e.currentTarget.getAttribute('data-id');
-        openDetailModal(id);
+        const item = destinasiList.find(d => d.id === id);
+        if (item) openDestinasiModal(item);
       });
     });
   };
 
-  const openDetailModal = (id) => {
-    const item = destinasiList.find(d => d.id === id);
-    if (!item) return;
-
-    const modalRoot = container.querySelector('#destinasi-modal-root');
-    modalRoot.innerHTML = `
-      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" id="detail-modal">
-        <div class="bg-surface-container-lowest rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-outline-variant">
-          <div class="p-6 border-b border-outline-variant flex justify-between items-center">
-            <h3 class="font-display-lg text-2xl font-bold text-primary">${item.nama}</h3>
-            <button id="modal-close" class="text-2xl text-on-surface-variant hover:text-primary">✕</button>
-          </div>
-          <div class="p-6">
-            <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${item.nama}" class="w-full h-80 object-cover rounded-xl mb-6 shadow-sm" />
-            
-            <div class="grid grid-cols-3 gap-4 mb-6 bg-surface-container-low p-4 rounded-xl text-center text-sm font-semibold">
-              <div>📍 ${item.lokasi || 'Tampirkulon'}</div>
-              <div>⏰ ${item.jam_buka || '08:00 - 16:00'}</div>
-              <div>🎟️ ${item.harga_tiket || 'Gratis'}</div>
-            </div>
-
-            <h4 class="font-bold text-lg text-primary mb-2">Deskripsi Destinasi</h4>
-            <p class="text-on-surface-variant leading-relaxed text-base">${item.deskripsi || ''}</p>
-          </div>
-          <div class="p-6 border-t border-outline-variant flex justify-end gap-3">
-            <a href="#/kontak" class="bg-primary text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-primary-container">Pesan Paket Terkait</a>
-            <button id="modal-close-btn" class="bg-surface-container text-on-surface px-6 py-2.5 rounded-full font-semibold text-sm">Tutup</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    const closeModal = () => { modalRoot.innerHTML = ''; };
-    modalRoot.querySelector('#modal-close')?.addEventListener('click', closeModal);
-    modalRoot.querySelector('#modal-close-btn')?.addEventListener('click', closeModal);
-  };
-
   setTimeout(() => {
     bindEvents();
-    if (selectedId) openDetailModal(selectedId);
+    if (selectedId) {
+      const item = destinasiList.find(d => d.id === selectedId);
+      if (item) openDestinasiModal(item);
+    }
   }, 0);
 
   return container;

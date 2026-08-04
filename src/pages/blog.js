@@ -1,3 +1,4 @@
+import { openArticleModal } from '../components/article-modal.js';
 import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
@@ -42,7 +43,7 @@ export const renderBlog = async () => {
       <!-- Featured Article Hero Banner -->
       ${featuredArticle.judul ? `
         <section class="mb-16">
-          <div class="bg-surface-container-lowest rounded-2xl shadow-level-1 overflow-hidden flex flex-col lg:flex-row group transition-all duration-300 hover:shadow-level-2 border border-outline-variant/30">
+          <div class="bg-surface-container-lowest rounded-2xl shadow-level-1 overflow-hidden flex flex-col lg:flex-row group transition-all duration-300 hover:shadow-level-2 border border-outline-variant/30 cursor-pointer read-article-btn" data-id="${featuredArticle.id}">
             <div class="w-full lg:w-1/2 h-64 lg:h-auto overflow-hidden">
               <img src="${featuredArticle.gambar_url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80'}" alt="${featuredArticle.judul}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" />
             </div>
@@ -55,10 +56,10 @@ export const renderBlog = async () => {
               <p class="font-body-md text-sm text-on-surface-variant mb-6 line-clamp-3 leading-relaxed">
                 ${featuredArticle.ringkasan || (featuredArticle.konten ? featuredArticle.konten.substring(0, 180) + '...' : '')}
               </p>
-              <a href="#/blog" class="text-primary font-bold text-sm flex items-center gap-2 hover:text-primary-container transition-colors w-fit">
+              <button class="text-primary font-bold text-sm flex items-center gap-2 hover:text-primary-container transition-colors w-fit bg-transparent border-0 cursor-pointer p-0">
                 Baca Selengkapnya
                 <span class="material-symbols-outlined text-sm">arrow_forward</span>
-              </a>
+              </button>
             </div>
           </div>
         </section>
@@ -71,7 +72,7 @@ export const renderBlog = async () => {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           ${(recentArticles.length > 0 ? recentArticles : artikelList).map(article => `
-            <article class="bg-surface-container-lowest rounded-xl shadow-level-1 overflow-hidden hover:shadow-level-2 transition-all duration-300 group flex flex-col h-full border border-outline-variant/30 cursor-pointer">
+            <article class="bg-surface-container-lowest rounded-xl shadow-level-1 overflow-hidden hover:shadow-level-2 transition-all duration-300 group flex flex-col h-full border border-outline-variant/30 cursor-pointer read-article-btn" data-id="${article.id}">
               <div class="h-48 overflow-hidden">
                 <img src="${article.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${article.judul}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
               </div>
@@ -94,6 +95,17 @@ export const renderBlog = async () => {
     ${renderFooter(profil)}
   `;
 
-  setTimeout(() => initNavbarEvents(true), 0);
+  setTimeout(() => {
+    initNavbarEvents(true);
+
+    container.querySelectorAll('.read-article-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        const art = artikelList.find(a => a.id === id);
+        if (art) openArticleModal(art);
+      });
+    });
+  }, 0);
+
   return container;
 };
