@@ -1,6 +1,6 @@
 -- ==========================================
 -- SCHEMA DATABASE: DESA WISATA TAMPIRKULON
--- Execute this script in your Supabase SQL Editor
+-- Execute this script in your Supabase SQL Editor (100% Idempotent)
 -- ==========================================
 
 -- Enable UUID Extension
@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS kategori_wisata (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+DROP TRIGGER IF EXISTS update_kategori_wisata_updated_at ON kategori_wisata;
 CREATE TRIGGER update_kategori_wisata_updated_at
 BEFORE UPDATE ON kategori_wisata
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -47,6 +48,7 @@ CREATE TABLE IF NOT EXISTS destinasi (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+DROP TRIGGER IF EXISTS update_destinasi_updated_at ON destinasi;
 CREATE TRIGGER update_destinasi_updated_at
 BEFORE UPDATE ON destinasi
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -68,6 +70,7 @@ CREATE TABLE IF NOT EXISTS paket_wisata (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 ); 
 
+DROP TRIGGER IF EXISTS update_paket_wisata_updated_at ON paket_wisata;
 CREATE TRIGGER update_paket_wisata_updated_at
 BEFORE UPDATE ON paket_wisata
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -86,6 +89,7 @@ CREATE TABLE IF NOT EXISTS artikel (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+DROP TRIGGER IF EXISTS update_artikel_updated_at ON artikel;
 CREATE TRIGGER update_artikel_updated_at
 BEFORE UPDATE ON artikel
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -123,6 +127,7 @@ CREATE TABLE IF NOT EXISTS profil_desa (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+DROP TRIGGER IF EXISTS update_profil_desa_updated_at ON profil_desa;
 CREATE TRIGGER update_profil_desa_updated_at
 BEFORE UPDATE ON profil_desa
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -166,40 +171,55 @@ ALTER TABLE reservasi ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimoni ENABLE ROW LEVEL SECURITY;
 
 -- Kategori Wisata Policies
+DROP POLICY IF EXISTS "Public Read Kategori" ON kategori_wisata;
 CREATE POLICY "Public Read Kategori" ON kategori_wisata FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Admin Full Access Kategori" ON kategori_wisata;
 CREATE POLICY "Admin Full Access Kategori" ON kategori_wisata FOR ALL USING (auth.role() = 'authenticated');
 
 -- Destinasi Policies
+DROP POLICY IF EXISTS "Public Read Destinasi" ON destinasi;
 CREATE POLICY "Public Read Destinasi" ON destinasi FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Admin Full Access Destinasi" ON destinasi;
 CREATE POLICY "Admin Full Access Destinasi" ON destinasi FOR ALL USING (auth.role() = 'authenticated');
 
 -- Paket Wisata Policies
+DROP POLICY IF EXISTS "Public Read Paket" ON paket_wisata;
 CREATE POLICY "Public Read Paket" ON paket_wisata FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Admin Full Access Paket" ON paket_wisata;
 CREATE POLICY "Admin Full Access Paket" ON paket_wisata FOR ALL USING (auth.role() = 'authenticated');
 
 -- Artikel Policies
+DROP POLICY IF EXISTS "Public Read Artikel" ON artikel;
 CREATE POLICY "Public Read Artikel" ON artikel FOR SELECT USING (status = 'published');
+DROP POLICY IF EXISTS "Admin Full Access Artikel" ON artikel;
 CREATE POLICY "Admin Full Access Artikel" ON artikel FOR ALL USING (auth.role() = 'authenticated');
 
 -- Galeri Policies
+DROP POLICY IF EXISTS "Public Read Galeri" ON galeri;
 CREATE POLICY "Public Read Galeri" ON galeri FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Admin Full Access Galeri" ON galeri;
 CREATE POLICY "Admin Full Access Galeri" ON galeri FOR ALL USING (auth.role() = 'authenticated');
 
 -- Profil Desa Policies
+DROP POLICY IF EXISTS "Public Read Profil" ON profil_desa;
 CREATE POLICY "Public Read Profil" ON profil_desa FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Admin Full Access Profil" ON profil_desa;
 CREATE POLICY "Admin Full Access Profil" ON profil_desa FOR ALL USING (auth.role() = 'authenticated');
 
 -- Reservasi Policies
+DROP POLICY IF EXISTS "Public Insert Reservasi" ON reservasi;
 CREATE POLICY "Public Insert Reservasi" ON reservasi FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Admin Full Access Reservasi" ON reservasi;
 CREATE POLICY "Admin Full Access Reservasi" ON reservasi FOR ALL USING (auth.role() = 'authenticated');
 
 -- Testimoni Policies
+DROP POLICY IF EXISTS "Public Read Testimoni" ON testimoni;
 CREATE POLICY "Public Read Testimoni" ON testimoni FOR SELECT USING (is_shown = true);
+DROP POLICY IF EXISTS "Admin Full Access Testimoni" ON testimoni;
 CREATE POLICY "Admin Full Access Testimoni" ON testimoni FOR ALL USING (auth.role() = 'authenticated');
 
 -- ==========================================
 -- STORAGE BUCKET & RLS POLICIES CONFIGURATION
--- Execute this block in your Supabase SQL Editor to fix Storage RLS policy errors
 -- ==========================================
 
 -- 1. Create 'images' bucket if it doesn't exist
@@ -226,4 +246,3 @@ FOR UPDATE USING (bucket_id = 'images' AND (auth.role() = 'authenticated' OR aut
 DROP POLICY IF EXISTS "Admin Delete Images Storage" ON storage.objects;
 CREATE POLICY "Admin Delete Images Storage" ON storage.objects
 FOR DELETE USING (bucket_id = 'images' AND (auth.role() = 'authenticated' OR auth.role() = 'anon'));
-
