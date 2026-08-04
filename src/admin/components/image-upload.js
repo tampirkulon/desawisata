@@ -64,7 +64,17 @@ export const initImageUploaderEvents = (inputId, folderPath = 'uploads') => {
         showToast('Gambar berhasil diunggah!', 'success');
       } catch (err) {
         console.error('Storage error:', err);
-        showToast('Gagal upload gambar: ' + err.message, 'error');
+        
+        // Fallback convert to Data URL so user is never blocked from completing form
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          const dataUrl = evt.target.result;
+          hiddenInput.value = dataUrl;
+          previewImg.src = dataUrl;
+          previewContainer.style.display = 'block';
+          showToast('⚠️ Storage RLS diblokir. Gambar dikonversi ke format internal. Jalankan skrip RLS Storage di SQL Editor Supabase untuk upload publik.', 'warning');
+        };
+        reader.readAsDataURL(file);
       }
     } else {
       // Offline fallback: Use object URL

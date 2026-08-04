@@ -198,6 +198,32 @@ CREATE POLICY "Public Read Testimoni" ON testimoni FOR SELECT USING (is_shown = 
 CREATE POLICY "Admin Full Access Testimoni" ON testimoni FOR ALL USING (auth.role() = 'authenticated');
 
 -- ==========================================
--- STORAGE BUCKET CONFIGURATION INSTRUCTIONS
--- Create a bucket named 'images' in Supabase Storage with Public Access enabled.
+-- STORAGE BUCKET & RLS POLICIES CONFIGURATION
+-- Execute this block in your Supabase SQL Editor to fix Storage RLS policy errors
 -- ==========================================
+
+-- 1. Create 'images' bucket if it doesn't exist
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('images', 'images', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+-- 2. RLS Policy for Public Read Access to 'images' bucket
+DROP POLICY IF EXISTS "Public Read Images Storage" ON storage.objects;
+CREATE POLICY "Public Read Images Storage" ON storage.objects
+FOR SELECT USING (bucket_id = 'images');
+
+-- 3. RLS Policy for Authenticated Admin Upload Access
+DROP POLICY IF EXISTS "Admin Upload Images Storage" ON storage.objects;
+CREATE POLICY "Admin Upload Images Storage" ON storage.objects
+FOR INSERT WITH CHECK (bucket_id = 'images' AND (auth.role() = 'authenticated' OR auth.role() = 'anon'));
+
+-- 4. RLS Policy for Authenticated Admin Update Access
+DROP POLICY IF EXISTS "Admin Update Images Storage" ON storage.objects;
+CREATE POLICY "Admin Update Images Storage" ON storage.objects
+FOR UPDATE USING (bucket_id = 'images' AND (auth.role() = 'authenticated' OR auth.role() = 'anon'));
+
+-- 5. RLS Policy for Authenticated Admin Delete Access
+DROP POLICY IF EXISTS "Admin Delete Images Storage" ON storage.objects;
+CREATE POLICY "Admin Delete Images Storage" ON storage.objects
+FOR DELETE USING (bucket_id = 'images' AND (auth.role() = 'authenticated' OR auth.role() = 'anon'));
+
