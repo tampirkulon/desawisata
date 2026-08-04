@@ -1,4 +1,5 @@
 import { openDestinasiModal } from '../components/destinasi-modal.js';
+import { openTestimoniModal } from '../components/testimoni-modal.js';
 import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
@@ -176,9 +177,15 @@ export const renderBeranda = async () => {
     <!-- Testimonials Section -->
     <section class="py-16 md:py-24 bg-surface-container-low" id="testimonials">
       <div class="max-w-container-max mx-auto px-4 md:px-16">
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-3">Kata Mereka</h2>
-          <p class="font-body-md text-base text-on-surface-variant">Pengalaman tak terlupakan dari pengunjung kami.</p>
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
+          <div class="text-center md:text-left">
+            <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-2">Kata Mereka</h2>
+            <p class="font-body-md text-base text-on-surface-variant m-0">Pengalaman tak terlupakan dari pengunjung kami.</p>
+          </div>
+          <button id="write-testimonial-btn" class="px-6 py-3 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-level-1 transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">rate_review</span>
+            <span>Tulis Ulasan & Kesan</span>
+          </button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -224,6 +231,10 @@ export const renderBeranda = async () => {
 
   setTimeout(() => {
     initNavbarEvents();
+
+    container.querySelector('#write-testimonial-btn')?.addEventListener('click', () => {
+      openTestimoniModal();
+    });
 
     container.querySelectorAll('.beranda-destinasi-card').forEach(card => {
       card.addEventListener('click', (e) => {

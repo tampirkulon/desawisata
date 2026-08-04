@@ -33,14 +33,39 @@ export const renderAdminOverview = async () => {
     };
   });
 
+  let pendingTestimonials = [];
+
   const loadData = async () => {
-    if (isSupabaseConfigured()) {
+    // Refresh statistik dari mockData
+    stats.destinasi = mockData.destinasi.length;
+    stats.paket = mockData.paket_wisata.length;
+    stats.artikel = mockData.artikel.length;
+    stats.galeri = mockData.galeri.length;
+    stats.reservasi_pending = mockData.reservasi.filter(r => r.status === 'baru' || r.status === 'pending').length;
+    stats.reservasi_dikonfirmasi = mockData.reservasi.filter(r => r.status === 'dikonfirmasi').length;
+    stats.reservasi_selesai = mockData.reservasi.filter(r => r.status === 'selesai').length;
+    pendingTestimonials = mockData.testimoni.filter(t => !t.is_shown);
+
+    recentReservations = mockData.reservasi.slice(0, 5).map((r, i) => {
+      const pkt = mockData.paket_wisata.find(p => p.id === r.paket_id);
+      return {
+        rawId: r.id,
+        displayId: `#RES-${String(i + 1).padStart(3, '0')}`,
+        nama_pemesan: r.nama || r.nama_pemesan || 'Tamu',
+        telepon: r.telepon || '',
+        paket: pkt ? pkt.nama : 'Kunjungan Mandiri',
+        tanggal: r.tanggal_kunjungan,
+        status: (r.status || 'baru').toLowerCase()
+      };
+    });
+
+    if (isSupabaseConfigured() && supabase) {
       try {
         const { count: cDest } = await supabase.from('destinasi').select('*', { count: 'exact', head: true });
         const { count: cPaket } = await supabase.from('paket_wisata').select('*', { count: 'exact', head: true });
         const { count: cBlog } = await supabase.from('artikel').select('*', { count: 'exact', head: true });
         const { count: cGal } = await supabase.from('galeri').select('*', { count: 'exact', head: true });
-        const { count: cResPending } = await supabase.from('reservasi').select('*', { count: 'exact', head: true }).eq('status', 'baru');
+        const { count: cResPending } = await supabase.from('reservasi').select('*', { count: 'exact', head: true }).or('status.eq.baru,status.eq.pending');
         const { count: cResDikonfirmasi } = await supabase.from('reservasi').select('*', { count: 'exact', head: true }).eq('status', 'dikonfirmasi');
         const { count: cResSelesai } = await supabase.from('reservasi').select('*', { count: 'exact', head: true }).eq('status', 'selesai');
 
@@ -52,11 +77,14 @@ export const renderAdminOverview = async () => {
         if (cResDikonfirmasi !== null) stats.reservasi_dikonfirmasi = cResDikonfirmasi;
         if (cResSelesai !== null) stats.reservasi_selesai = cResSelesai;
 
+        const { data: pTest } = await supabase.from('testimoni').select('*').eq('is_shown', false).order('created_at', { ascending: false });
+        if (pTest) pendingTestimonials = pTest;
+
         const { data: resData } = await supabase.from('reservasi').select('*, paket_wisata(nama, harga)').order('created_at', { ascending: false }).limit(5);
         if (resData && resData.length > 0) {
           let totalRev = 0;
           recentReservations = resData.map((r, i) => {
-            const pax = r.jumlah_orang || 1;
+            const pax = r.jumlah_orang || r.jumlah_peserta || 1;
             const price = r.paket_wisata?.harga || 50000;
             if (r.status === 'selesai' || r.status === 'dikonfirmasi') {
               totalRev += pax * price;
@@ -387,6 +415,39 @@ export const renderAdminOverview = async () => {
                   </table>
                 </div>
               </div>
+
+              <!-- Testimonial Moderation Card Widget -->
+              <div class="donezo-card p-6 overflow-hidden">
+                <div class="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 class="text-lg font-bold text-slate-800 m-0">Moderasi Ulasan Pengunjung</h3>
+                    <p class="text-xs text-slate-400 m-0 mt-0.5">Ulasan baru dari pengunjung website yang memerlukan persetujuan.</p>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">${pendingTestimonials.length} Menunggu</span>
+                </div>
+                ${pendingTestimonials.length === 0 ? `
+                  <div class="py-6 text-center text-slate-400 text-xs font-medium">Tidak ada ulasan baru yang menunggu moderasi.</div>
+                ` : `
+                  <div class="space-y-3">
+                    ${pendingTestimonials.map(t => `
+                      <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div>
+                          <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-xs text-slate-800">${t.nama}</span>
+                            <span class="text-[10px] text-slate-400">(${t.asal || 'Pengunjung'})</span>
+                            <span class="text-amber-500 text-xs ml-2">${'★'.repeat(t.rating || 5)}</span>
+                          </div>
+                          <p class="text-xs text-slate-600 italic m-0">"${t.pesan}"</p>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                          <button class="approve-test-btn px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-colors shadow-2xs" data-id="${t.id}">Setujui & Tampilkan</button>
+                          <button class="reject-test-btn px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 transition-colors" data-id="${t.id}">Hapus</button>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                `}
+              </div>
             </div>
 
             <!-- Right Column (4 cols) -->
@@ -569,6 +630,53 @@ export const renderAdminOverview = async () => {
           const item = mockData.reservasi.find(r => r.id === rawId);
           if (item) item.status = 'dikonfirmasi';
           showToast('Reservasi dikonfirmasi (Demo mode)!', 'success');
+        }
+
+        await loadData();
+        renderPage();
+      });
+    });
+
+    container.querySelectorAll('.approve-test-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        btn.disabled = true;
+        btn.innerText = 'Menyetujui...';
+
+        if (isSupabaseConfigured() && supabase) {
+          try {
+            await supabase.from('testimoni').update({ is_shown: true }).eq('id', id);
+            showToast('Ulasan berhasil disetujui & ditampilkan di beranda!', 'success');
+          } catch (err) {
+            showToast('Gagal menyetujui ulasan: ' + err.message, 'error');
+          }
+        } else {
+          const item = mockData.testimoni.find(t => t.id === id);
+          if (item) item.is_shown = true;
+          showToast('Ulasan disetujui (Demo mode)!', 'success');
+        }
+
+        await loadData();
+        renderPage();
+      });
+    });
+
+    container.querySelectorAll('.reject-test-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        btn.disabled = true;
+
+        if (isSupabaseConfigured() && supabase) {
+          try {
+            await supabase.from('testimoni').delete().eq('id', id);
+            showToast('Ulasan berhasil dihapus.', 'info');
+          } catch (err) {
+            showToast('Gagal menghapus ulasan: ' + err.message, 'error');
+          }
+        } else {
+          const idx = mockData.testimoni.findIndex(t => t.id === id);
+          if (idx !== -1) mockData.testimoni.splice(idx, 1);
+          showToast('Ulasan dihapus (Demo mode).', 'info');
         }
 
         await loadData();
