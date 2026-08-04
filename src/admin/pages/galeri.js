@@ -92,8 +92,12 @@ export const renderAdminGaleri = async () => {
         openConfirmModal({
           message: 'Apakah Anda yakin ingin menghapus media ini dari galeri?',
           onConfirm: async () => {
-            if (isSupabaseConfigured()) {
-              await supabase.from('galeri').delete().eq('id', id);
+            if (isSupabaseConfigured() && supabase) {
+              const { error } = await supabase.from('galeri').delete().eq('id', id);
+              if (error) {
+                showToast('Gagal menghapus media: ' + error.message, 'error');
+                return;
+              }
             }
             showToast('Media berhasil dihapus.', 'success');
             await loadData();
@@ -148,11 +152,18 @@ export const renderAdminGaleri = async () => {
           return false;
         }
 
-        if (isSupabaseConfigured()) {
-          if (isEdit) {
-            await supabase.from('galeri').update(payload).eq('id', galeri.id);
-          } else {
-            await supabase.from('galeri').insert([payload]);
+        if (isSupabaseConfigured() && supabase) {
+          try {
+            if (isEdit) {
+              const { error } = await supabase.from('galeri').update(payload).eq('id', galeri.id);
+              if (error) throw error;
+            } else {
+              const { error } = await supabase.from('galeri').insert([payload]).select();
+              if (error) throw error;
+            }
+          } catch (err) {
+            showToast('Gagal menyimpan media: ' + err.message, 'error');
+            return false;
           }
         } else {
           if (isEdit) {

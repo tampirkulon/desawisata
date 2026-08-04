@@ -178,10 +178,15 @@ export const renderAdminProfil = async () => {
           youtube: document.getElementById('prof-yt').value.trim(),
         };
 
-        if (isSupabaseConfigured()) {
+        if (isSupabaseConfigured() && supabase) {
           try {
-            const { error } = await supabase.from('profil_desa').update(payload).eq('id', profil.id);
-            if (error) throw error;
+            if (profil?.id) {
+              const { error } = await supabase.from('profil_desa').update(payload).eq('id', profil.id);
+              if (error) throw error;
+            } else {
+              const { error } = await supabase.from('profil_desa').upsert([payload]);
+              if (error) throw error;
+            }
             showToast('Profil desa berhasil diperbarui!', 'success');
           } catch (err) {
             showToast('Gagal simpan profil: ' + err.message, 'error');

@@ -16,13 +16,16 @@ export const renderAdminReservasi = async () => {
   let activeFilter = 'all';
 
   const loadData = async () => {
+    reservasiList = mockData.reservasi;
+    paketList = mockData.paket_wisata;
+
     if (isSupabaseConfigured()) {
       try {
         const { data } = await supabase.from('reservasi').select('*').order('created_at', { ascending: false });
-        if (data) reservasiList = data;
+        if (data && data.length > 0) reservasiList = data;
 
         const { data: pkt } = await supabase.from('paket_wisata').select('id, nama');
-        if (pkt) paketList = pkt;
+        if (pkt && pkt.length > 0) paketList = pkt;
       } catch (e) {
         console.warn('Fallback:', e);
       }
@@ -101,13 +104,13 @@ export const renderAdminReservasi = async () => {
         return `
           <tr>
             <td>
-              <strong>${item.nama}</strong>
-              <div style="font-size: 0.8rem; color: var(--neutral-600);">${item.email} | ${item.telepon}</div>
+              <strong>${item.nama || item.nama_pemesan || 'Tamu'}</strong>
+              <div style="font-size: 0.8rem; color: var(--neutral-600);">${item.email || '-'} | ${item.telepon || '-'}</div>
             </td>
-            <td>${item.tanggal_kunjungan}</td>
-            <td>${item.jumlah_orang} Orang</td>
+            <td>${item.tanggal_kunjungan || '-'}</td>
+            <td>${item.jumlah_orang || item.jumlah_peserta || 1} Orang</td>
             <td>${pkt ? pkt.nama : 'Kunjungan Mandiri'}</td>
-            <td><span class="badge ${badgeClass}">${item.status}</span></td>
+            <td><span class="badge ${badgeClass}">${item.status || 'baru'}</span></td>
             <td style="text-align: right;">
               <button class="btn btn-sm btn-primary action-detail-rsv" data-id="${item.id}">Detail & Status</button>
             </td>
@@ -164,8 +167,14 @@ export const renderAdminReservasi = async () => {
       onSave: async () => {
         const newStatus = document.getElementById('update-rsv-status').value;
 
-        if (isSupabaseConfigured()) {
-          await supabase.from('reservasi').update({ status: newStatus }).eq('id', item.id);
+        if (isSupabaseConfigured() && supabase) {
+          try {
+            const { error } = await supabase.from('reservasi').update({ status: newStatus }).eq('id', item.id);
+            if (error) throw error;
+          } catch (err) {
+            showToast('Gagal update status reservasi: ' + err.message, 'error');
+            return false;
+          }
         } else {
           item.status = newStatus;
         }
