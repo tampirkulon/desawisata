@@ -151,5 +151,5 @@ INSERT INTO galeri (id, judul, url, tipe, kategori, urutan) VALUES
 
 -- 7. Testimoni
 INSERT INTO testimoni (id, nama, asal, pesan, rating, is_shown) VALUES
-('g0000000-0000-0000-0000-000000000001', 'Budi Santoso', 'Semarang', 'Durian Candimulyo di Tampirkulon luar biasa manis dan gurih! Udara desanya juga sangat sejuk.', 5, TRUE),
-('g0000000-0000-0000-0000-000000000002', 'Siti Rahmawati', 'Yogyakarta', 'Sangat senang bisa menyusuri terasering sawah bersama keluarga. Anak-anak sangat menikmati tarian budayanya.', 5, TRUE);
+('a1000000-0000-0000-0000-000000000001', 'Budi Santoso', 'Semarang', 'Durian Candimulyo di Tampirkulon luar biasa manis dan gurih! Udara desanya juga sangat sejuk.', 5, TRUE),
+('a1000000-0000-0000-0000-000000000002', 'Siti Rahmawati', 'Yogyakarta', 'Sangat senang bisa menyusuri terasering sawah bersama keluarga. Anak-anak sangat menikmati tarian budayanya.', 5, TRUE);
