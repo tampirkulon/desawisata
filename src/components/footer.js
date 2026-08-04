@@ -56,7 +56,10 @@ export const renderFooter = (profilData = {}) => {
             © ${currentYear} ${namaDesa}. Hak Cipta Dilindungi.
           </div>
           <div class="flex gap-6">
-            <a href="#/admin/login" class="text-on-primary-container/70 hover:text-tertiary-fixed transition-colors font-body-sm text-xs">Admin Login</a>
+            <a href="#/admin/login" class="text-on-primary-container/70 hover:text-tertiary-fixed transition-colors font-body-sm text-xs flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">admin_panel_settings</span>
+              <span>Portal Pengelola Desa</span>
+            </a>
           </div>
         </div>
       </div>

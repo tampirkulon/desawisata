@@ -48,8 +48,12 @@ export const renderAdminHeader = (pageTitle = 'Dashboard') => {
 
       <!-- Right: Action Buttons, Notifications & User Profile -->
       <div class="flex items-center gap-5">
-        <!-- Notification Icons -->
-        <div class="flex items-center gap-2 border-r border-slate-200 pr-5">
+        <!-- Notification & Quick Site Link -->
+        <div class="flex items-center gap-3 border-r border-slate-200 pr-5">
+          <a href="#/" target="_blank" title="Buka Halaman Publik Website" class="px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200/80 transition-all flex items-center gap-1.5 shadow-2xs">
+            <span>Situs Utama</span>
+            <span class="material-symbols-outlined text-sm">open_in_new</span>
+          </a>
           <a href="#/admin/reservasi" id="admin-notif-btn" title="Notifikasi Reservasi" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors relative">
             <span class="material-symbols-outlined text-lg">notifications</span>
             <span id="admin-notif-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-rose-500 text-white text-[10px] font-bold rounded-full items-center justify-center px-1 ring-2 ring-white shadow-xs"></span>
