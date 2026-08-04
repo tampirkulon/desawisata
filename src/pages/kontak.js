@@ -147,20 +147,44 @@ export const renderKontak = async (queryParams) => {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const payload = {
-          nama_pemesan: container.querySelector('#nama_pemesan').value,
-          email: container.querySelector('#email').value,
-          telepon: container.querySelector('#telepon').value,
-          tanggal_kunjungan: container.querySelector('#tanggal_kunjungan').value,
-          jumlah_peserta: parseInt(container.querySelector('#jumlah_peserta').value),
-          paket_id: container.querySelector('#paket_id').value || null,
-          catatan: container.querySelector('#catatan').value || '',
-          status: 'pending'
+        const namaInput = container.querySelector('#nama_pemesan').value;
+        const emailInput = container.querySelector('#email').value;
+        const teleponInput = container.querySelector('#telepon').value;
+        const tglInput = container.querySelector('#tanggal_kunjungan').value;
+        const paxInput = parseInt(container.querySelector('#jumlah_peserta').value) || 1;
+        const rawPaketId = container.querySelector('#paket_id').value;
+        const isValidUuid = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+        const paketIdInput = isValidUuid(rawPaketId) ? rawPaketId : null;
+
+        const newResObj = {
+          id: 'rsv-' + Date.now(),
+          nama: namaInput,
+          email: emailInput,
+          telepon: teleponInput,
+          tanggal_kunjungan: tglInput,
+          jumlah_orang: paxInput,
+          paket_id: paketIdInput,
+          pesan: catatanInput,
+          status: 'baru',
+          created_at: new Date().toISOString()
         };
 
-        if (isSupabaseConfigured()) {
+        // Simpan ke memori lokal
+        mockData.reservasi.unshift(newResObj);
+
+        if (isSupabaseConfigured() && supabase) {
           try {
-            const { error } = await supabase.from('reservasi').insert([payload]);
+            const { error } = await supabase.from('reservasi').insert([{
+              nama: namaInput,
+              email: emailInput,
+              telepon: teleponInput,
+              tanggal_kunjungan: tglInput,
+              jumlah_orang: paxInput,
+              paket_id: paketIdInput,
+              pesan: catatanInput,
+              status: 'baru'
+            }]).select();
+
             if (error) throw error;
 
             alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300';
