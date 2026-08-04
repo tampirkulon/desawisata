@@ -1,7 +1,8 @@
 import { openAdminSearchModal, initGlobalSearchShortcut } from './search-modal.js';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 
 export const renderAdminHeader = (pageTitle = 'Dashboard') => {
-  setTimeout(() => {
+  setTimeout(async () => {
     const triggerBtn = document.getElementById('admin-global-search-trigger');
     if (triggerBtn && !triggerBtn.dataset.bound) {
       triggerBtn.dataset.bound = 'true';
@@ -11,6 +12,27 @@ export const renderAdminHeader = (pageTitle = 'Dashboard') => {
       });
     }
     initGlobalSearchShortcut();
+
+    // Check live unread reservasi count for notification badge
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        const { count, error } = await supabase.from('reservasi').select('*', { count: 'exact', head: true }).eq('status', 'baru');
+        if (!error && count && count > 0) {
+          const notifBtn = document.getElementById('admin-notif-btn');
+          const notifBadge = document.getElementById('admin-notif-badge');
+          if (notifBadge) {
+            notifBadge.innerText = count > 9 ? '9+' : count;
+            notifBadge.classList.remove('hidden');
+            notifBadge.classList.add('flex');
+          }
+          if (notifBtn) {
+            notifBtn.title = `${count} Reservasi Baru Menunggu Konfirmasi`;
+          }
+        }
+      } catch (e) {
+        console.warn('Notification query error:', e);
+      }
+    }
   }, 10);
 
   return `
@@ -28,13 +50,10 @@ export const renderAdminHeader = (pageTitle = 'Dashboard') => {
       <div class="flex items-center gap-5">
         <!-- Notification Icons -->
         <div class="flex items-center gap-2 border-r border-slate-200 pr-5">
-          <button title="Pesan" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors relative">
-            <span class="material-symbols-outlined text-lg">mail</span>
-          </button>
-          <button title="Notifikasi" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors relative">
+          <a href="#/admin/reservasi" id="admin-notif-btn" title="Notifikasi Reservasi" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors relative">
             <span class="material-symbols-outlined text-lg">notifications</span>
-            <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white"></span>
-          </button>
+            <span id="admin-notif-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-rose-500 text-white text-[10px] font-bold rounded-full items-center justify-center px-1 ring-2 ring-white shadow-xs"></span>
+          </a>
         </div>
 
         <!-- User Profile Card -->

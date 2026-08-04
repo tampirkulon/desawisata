@@ -5,9 +5,11 @@ import { mockData } from '../data/seed.js';
 
 export const renderKontak = async (queryParams) => {
   const selectedPaketId = queryParams ? queryParams.get('paket_id') : null;
+  const selectedDestinasiId = queryParams ? queryParams.get('destinasi_id') : null;
 
   let profil = mockData.profil_desa;
   let paketList = mockData.paket_wisata;
+  let prefilledNotes = '';
 
   if (isSupabaseConfigured()) {
     try {
@@ -16,9 +18,19 @@ export const renderKontak = async (queryParams) => {
 
       const { data: pak } = await supabase.from('paket_wisata').select('*').eq('is_published', true);
       if (pak && pak.length > 0) paketList = pak;
+
+      if (selectedDestinasiId) {
+        const { data: dest } = await supabase.from('destinasi').select('nama').eq('id', selectedDestinasiId).single();
+        if (dest) prefilledNotes = `Rencana kunjungan ke destinasi: ${dest.nama}`;
+      }
     } catch (e) {
       console.warn('Fallback seed:', e);
     }
+  }
+
+  if (!prefilledNotes && selectedDestinasiId) {
+    const localDest = mockData.destinasi.find(d => d.id === selectedDestinasiId);
+    if (localDest) prefilledNotes = `Rencana kunjungan ke destinasi: ${localDest.nama}`;
   }
 
   const container = document.createElement('div');
@@ -81,7 +93,7 @@ export const renderKontak = async (queryParams) => {
 
             <div>
               <label class="block font-body-sm text-sm text-on-surface-variant font-semibold mb-2" for="catatan">Catatan / Pesan Tambahan</label>
-              <textarea class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none" id="catatan" placeholder="Permintaan khusus atau pertanyaan..." rows="4"></textarea>
+              <textarea class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none" id="catatan" placeholder="Permintaan khusus atau pertanyaan..." rows="4">${prefilledNotes}</textarea>
             </div>
 
             <button class="w-full md:w-auto bg-primary text-white px-8 py-3.5 rounded-full font-bold text-sm hover:bg-primary-container transition-all shadow-level-1" type="submit">
