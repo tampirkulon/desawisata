@@ -110,8 +110,12 @@ export const renderAdminArtikel = async () => {
         openConfirmModal({
           message: 'Apakah Anda yakin ingin menghapus artikel ini?',
           onConfirm: async () => {
-            if (isSupabaseConfigured()) {
-              await supabase.from('artikel').delete().eq('id', id);
+            if (isSupabaseConfigured() && supabase) {
+              const { error } = await supabase.from('artikel').delete().eq('id', id);
+              if (error) {
+                showToast('Gagal menghapus artikel: ' + error.message, 'error');
+                return;
+              }
             }
             showToast('Artikel berhasil dihapus.', 'success');
             await loadData();
@@ -186,11 +190,18 @@ export const renderAdminArtikel = async () => {
           return false;
         }
 
-        if (isSupabaseConfigured()) {
-          if (isEdit) {
-            await supabase.from('artikel').update(payload).eq('id', artikel.id);
-          } else {
-            await supabase.from('artikel').insert([payload]);
+        if (isSupabaseConfigured() && supabase) {
+          try {
+            if (isEdit) {
+              const { error } = await supabase.from('artikel').update(payload).eq('id', artikel.id);
+              if (error) throw error;
+            } else {
+              const { error } = await supabase.from('artikel').insert([payload]).select();
+              if (error) throw error;
+            }
+          } catch (err) {
+            showToast('Gagal menyimpan artikel: ' + err.message, 'error');
+            return false;
           }
         } else {
           if (isEdit) {

@@ -114,8 +114,12 @@ export const renderAdminPaket = async () => {
         openConfirmModal({
           message: 'Apakah Anda yakin ingin menghapus paket wisata ini?',
           onConfirm: async () => {
-            if (isSupabaseConfigured()) {
-              await supabase.from('paket_wisata').delete().eq('id', id);
+            if (isSupabaseConfigured() && supabase) {
+              const { error } = await supabase.from('paket_wisata').delete().eq('id', id);
+              if (error) {
+                showToast('Gagal menghapus paket: ' + error.message, 'error');
+                return;
+              }
             }
             showToast('Paket berhasil dihapus.', 'success');
             await loadData();
@@ -202,11 +206,18 @@ export const renderAdminPaket = async () => {
           return false;
         }
 
-        if (isSupabaseConfigured()) {
-          if (isEdit) {
-            await supabase.from('paket_wisata').update(payload).eq('id', paket.id);
-          } else {
-            await supabase.from('paket_wisata').insert([payload]);
+        if (isSupabaseConfigured() && supabase) {
+          try {
+            if (isEdit) {
+              const { error } = await supabase.from('paket_wisata').update(payload).eq('id', paket.id);
+              if (error) throw error;
+            } else {
+              const { error } = await supabase.from('paket_wisata').insert([payload]).select();
+              if (error) throw error;
+            }
+          } catch (err) {
+            showToast('Gagal menyimpan paket: ' + err.message, 'error');
+            return false;
           }
         } else {
           if (isEdit) {

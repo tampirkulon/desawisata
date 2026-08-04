@@ -118,8 +118,12 @@ export const renderAdminKategori = async () => {
         openConfirmModal({
           message: 'Apakah Anda yakin ingin menghapus kategori ini?',
           onConfirm: async () => {
-            if (isSupabaseConfigured()) {
-              await supabase.from('kategori_wisata').delete().eq('id', id);
+            if (isSupabaseConfigured() && supabase) {
+              const { error } = await supabase.from('kategori_wisata').delete().eq('id', id);
+              if (error) {
+                showToast('Gagal menghapus kategori: ' + error.message, 'error');
+                return;
+              }
             }
             showToast('Kategori berhasil dihapus.', 'success');
             await loadData();
@@ -167,11 +171,18 @@ export const renderAdminKategori = async () => {
           return false;
         }
 
-        if (isSupabaseConfigured()) {
-          if (isEdit) {
-            await supabase.from('kategori_wisata').update(payload).eq('id', kategori.id);
-          } else {
-            await supabase.from('kategori_wisata').insert([payload]);
+        if (isSupabaseConfigured() && supabase) {
+          try {
+            if (isEdit) {
+              const { error } = await supabase.from('kategori_wisata').update(payload).eq('id', kategori.id);
+              if (error) throw error;
+            } else {
+              const { error } = await supabase.from('kategori_wisata').insert([payload]).select();
+              if (error) throw error;
+            }
+          } catch (err) {
+            showToast('Gagal menyimpan kategori: ' + err.message, 'error');
+            return false;
           }
         } else {
           if (isEdit) {
