@@ -24,7 +24,7 @@ export const renderAdminLogin = () => {
               <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-outline">
                 <span class="material-symbols-outlined text-xl">mail</span>
               </span>
-              <input class="w-full pl-12 pr-4 py-3 bg-surface border border-outline-variant/50 rounded-xl text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" id="email" name="email" placeholder="admin@tampirkulon.com" required type="email" value="admin@tampirkulon.id" />
+              <input class="w-full pl-12 pr-4 py-3 bg-surface border border-outline-variant/50 rounded-xl text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" id="email" name="email" placeholder="admin@tampirkulon.com" required type="email" value="" />
             </div>
           </div>
 
@@ -34,7 +34,7 @@ export const renderAdminLogin = () => {
               <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-outline">
                 <span class="material-symbols-outlined text-xl">lock</span>
               </span>
-              <input class="w-full pl-12 pr-4 py-3 bg-surface border border-outline-variant/50 rounded-xl text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" id="password" name="password" placeholder="••••••••" required type="password" value="admin123" />
+              <input class="w-full pl-12 pr-4 py-3 bg-surface border border-outline-variant/50 rounded-xl text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" id="password" name="password" placeholder="••••••••" required type="password" value="" />
             </div>
           </div>
 
@@ -64,28 +64,20 @@ export const renderAdminLogin = () => {
         const email = container.querySelector('#email').value;
         const password = container.querySelector('#password').value;
 
-        if (isSupabaseConfigured()) {
+        if (isSupabaseConfigured() && supabase) {
           try {
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;
-            localStorage.setItem('admin_logged_in', 'true');
-            localStorage.setItem('mock_admin_logged', 'true');
             window.location.hash = '#/admin/overview';
           } catch (err) {
             alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-rose-100 text-rose-800 border border-rose-300';
-            alertBox.innerHTML = 'Gagal masuk: ' + err.message + '. (Menggunakan mode bypass demo...)';
+            alertBox.innerHTML = '❌ Gagal masuk: ' + err.message;
             alertBox.classList.remove('hidden');
-            
-            setTimeout(() => {
-              localStorage.setItem('admin_logged_in', 'true');
-              localStorage.setItem('mock_admin_logged', 'true');
-              window.location.hash = '#/admin/overview';
-            }, 1200);
           }
         } else {
-          localStorage.setItem('admin_logged_in', 'true');
-          localStorage.setItem('mock_admin_logged', 'true');
-          window.location.hash = '#/admin/overview';
+          alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-amber-100 text-amber-800 border border-amber-300';
+          alertBox.innerHTML = '⚠️ Supabase belum dikonfigurasi. Periksa file .env (VITE_SUPABASE_URL & VITE_SUPABASE_ANON_KEY).';
+          alertBox.classList.remove('hidden');
         }
       });
     }

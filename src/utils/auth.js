@@ -1,32 +1,22 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { router } from './router.js';
-import { mockData } from '../data/seed.js';
 
 export const auth = {
   async getSession() {
-    if (!isSupabaseConfigured()) {
-      // Mock session for preview/offline mode if logged in via localStorage
-      const mockLogged = localStorage.getItem('mock_admin_logged');
-      if (mockLogged === 'true') {
-        return { user: { email: 'admin@tampirkulon.desawisata.id', role: 'authenticated' } };
-      }
+    if (!isSupabaseConfigured() || !supabase) return null;
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      return session;
+    } catch (e) {
+      console.warn('Auth session check failed:', e);
       return null;
     }
-    const { data: { session }, error } = await supabase.auth.getSession();
-    if (error) return null;
-    return session;
   },
 
   async login(email, password) {
-    if (!isSupabaseConfigured()) {
-      // Mock auth check
-      if (email === 'admin@tampirkulon.desawisata.id' && password === 'admin123') {
-        localStorage.setItem('mock_admin_logged', 'true');
-        return { success: true, user: { email } };
-      }
-      // Allow any test password in mock mode
-      localStorage.setItem('mock_admin_logged', 'true');
-      return { success: true, user: { email } };
+    if (!isSupabaseConfigured() || !supabase) {
+      return { success: false, error: 'Supabase belum dikonfigurasi. Periksa file .env' };
     }
 
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -42,13 +32,13 @@ export const auth = {
   },
 
   async logout() {
-    if (!isSupabaseConfigured()) {
-      localStorage.removeItem('mock_admin_logged');
-      router.navigate('#/admin/login');
-      return;
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        console.warn('Sign out error:', e);
+      }
     }
-
-    await supabase.auth.signOut();
     router.navigate('#/admin/login');
   },
 
