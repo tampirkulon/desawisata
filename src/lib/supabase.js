@@ -1,10 +1,25 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project-ref.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key-here';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
 export const isSupabaseConfigured = () => {
-  return supabaseUrl && !supabaseUrl.includes('your-project-ref') && supabaseAnonKey && !supabaseAnonKey.includes('your-anon-key');
+  return Boolean(
+    supabaseUrl && 
+    !supabaseUrl.includes('your-project-ref') && 
+    supabaseAnonKey && 
+    !supabaseAnonKey.includes('your-anon-key')
+  );
 };
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+let supabaseClient = null;
+if (isSupabaseConfigured()) {
+  try {
+    supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+  } catch (e) {
+    console.warn('Gagal inisialisasi Supabase client:', e);
+  }
+}
+
+export const supabase = supabaseClient;
+

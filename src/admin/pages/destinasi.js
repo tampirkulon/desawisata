@@ -215,9 +215,12 @@ export const renderAdminDestinasi = async () => {
       saveText: isEdit ? 'Perbarui Destinasi' : 'Simpan Destinasi',
       onOpen: () => initImageUploaderEvents('dest-gambar', 'destinasi'),
       onSave: async () => {
+        const rawKategoriId = document.getElementById('dest-kategori').value;
+        const isValidUuid = (str) => typeof str === 'string' && /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(str);
+
         const payload = {
           nama: document.getElementById('dest-nama').value.trim(),
-          kategori_id: document.getElementById('dest-kategori').value,
+          kategori_id: isValidUuid(rawKategoriId) ? rawKategoriId : null,
           gambar_url: document.getElementById('dest-gambar').value,
           harga_tiket: document.getElementById('dest-harga').value.trim(),
           jam_buka: document.getElementById('dest-jambuka').value.trim(),
@@ -232,24 +235,49 @@ export const renderAdminDestinasi = async () => {
           return false;
         }
 
-        if (isSupabaseConfigured()) {
-          if (isEdit) {
-            await supabase.from('destinasi').update(payload).eq('id', destinasi.id);
-          } else {
-            await supabase.from('destinasi').insert([payload]);
+        let saveSuccess = true;
+
+        if (isSupabaseConfigured() && supabase) {
+          try {
+            if (isEdit) {
+              const { error } = await supabase.from('destinasi').update(payload).eq('id', destinasi.id);
+              if (error) {
+                console.error('Error update destinasi:', error);
+                showToast('Gagal memperbarui ke Supabase: ' + error.message, 'error');
+                saveSuccess = false;
+              }
+            } else {
+              const { data, error } = await supabase.from('destinasi').insert([payload]).select();
+              if (error) {
+                console.error('Error insert destinasi:', error);
+                showToast('Gagal menyimpan ke Supabase: ' + error.message, 'error');
+                saveSuccess = false;
+              } else if (data && data[0]) {
+                destinasiList.unshift(data[0]);
+              }
+            }
+          } catch (err) {
+            console.error('Exception saving destinasi:', err);
+            showToast('Terjadi kesalahan simpan: ' + err.message, 'error');
+            saveSuccess = false;
           }
-        } else {
+        }
+
+        if (!saveSuccess || !isSupabaseConfigured() || !supabase) {
           if (isEdit) {
             Object.assign(destinasi, payload);
-          } else {
+          } else if (!isSupabaseConfigured() || !supabase) {
             destinasiList.unshift({ id: 'dest-' + Date.now(), ...payload });
           }
         }
 
-        showToast(isEdit ? 'Destinasi diperbarui!' : 'Destinasi ditambahkan!', 'success');
+        if (saveSuccess) {
+          showToast(isEdit ? 'Destinasi berhasil diperbarui!' : 'Destinasi berhasil ditambahkan!', 'success');
+        }
+
         await loadData();
         renderPage();
-        return true;
+        return saveSuccess;
       }
     });
   };

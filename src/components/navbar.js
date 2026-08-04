@@ -1,7 +1,5 @@
 // Navbar Component with Stitch Modern Transparent Header Styling
 
-import { initFloatingAdminBar } from './admin-bar.js';
-
 export const renderNavbar = (isSolid = false) => {
   const currentHash = window.location.hash || '#/';
   
@@ -62,7 +60,6 @@ export const renderNavbar = (isSolid = false) => {
 };
 
 export const initNavbarEvents = (isSolid = false) => {
-  initFloatingAdminBar();
   const navbar = document.getElementById('main-navbar');
   const hamburger = document.getElementById('hamburger-toggle');
   const drawer = document.getElementById('mobile-drawer');

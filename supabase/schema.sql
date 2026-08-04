@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS paket_wisata (
     is_published BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+); 
 
 CREATE TRIGGER update_paket_wisata_updated_at
 BEFORE UPDATE ON paket_wisata
