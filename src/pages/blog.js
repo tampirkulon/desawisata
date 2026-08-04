@@ -9,7 +9,7 @@ export const renderBlog = async () => {
 
   if (isSupabaseConfigured()) {
     try {
-      const { data: art } = await supabase.from('artikel').select('*').eq('is_published', true).order('created_at', { ascending: false });
+      const { data: art } = await supabase.from('artikel').select('*').eq('status', 'published').order('created_at', { ascending: false });
       if (art && art.length > 0) artikelList = art;
 
       const { data: prof } = await supabase.from('profil_desa').select('*').single();
