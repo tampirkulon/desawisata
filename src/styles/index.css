@@ -1,4 +1,42 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #316342;
+  --color-primary-container: #4a7c59;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #e1ffe5;
+  --color-primary-fixed: #b9efc5;
+  --color-primary-fixed-dim: #9dd3aa;
+  --color-secondary: #7a5900;
+  --color-secondary-container: #fdce6c;
+  --color-on-secondary: #ffffff;
+  --color-tertiary: #306345;
+  --color-tertiary-container: #497c5c;
+  --color-tertiary-fixed: #c8f085;
+  --color-background: #fcf9f8;
+  --color-on-background: #1c1b1b;
+  --color-surface: #fcf9f8;
+  --color-surface-dim: #dcd9d9;
+  --color-surface-variant: #e5e2e1;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f6f3f2;
+  --color-surface-container: #f0eded;
+  --color-surface-container-high: #eae7e7;
+  --color-surface-container-highest: #e5e2e1;
+  --color-on-surface: #1c1b1b;
+  --color-on-surface-variant: #414942;
+  --color-outline: #717971;
+  --color-outline-variant: #c1c9bf;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+
+  --font-display-lg: "Outfit", sans-serif;
+  --font-headline-md: "Outfit", sans-serif;
+  --font-title-lg: "Outfit", sans-serif;
+  --font-body-md: "Inter", sans-serif;
+  --font-body-sm: "Inter", sans-serif;
+  --font-label-caps: "Inter", sans-serif;
+}
 
 /* ============================================================
    DESIGN SYSTEM TOKENS & STITCH UI STYLES - DESA WISATA TAMPIRKULON
