@@ -4,107 +4,18 @@ import { renderAdminHeader } from '../components/header.js';
 import { showToast } from '../../components/toast.js';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 import { mockData } from '../../data/seed.js';
+import { getDateRange, fetchDashboardStats } from '../services/dashboard-data.js';
 
 export const renderAdminOverview = async () => {
   const isAuthed = await auth.requireAuth();
   if (!isAuthed) return document.createElement('div');
 
-  let stats = {
-    destinasi: mockData.destinasi.length,
-    paket: mockData.paket_wisata.length,
-    artikel: mockData.artikel.length,
-    galeri: mockData.galeri.length,
-    reservasi_pending: mockData.reservasi.filter(r => r.status === 'baru' || r.status === 'pending').length,
-    reservasi_dikonfirmasi: mockData.reservasi.filter(r => r.status === 'dikonfirmasi').length,
-    reservasi_selesai: mockData.reservasi.filter(r => r.status === 'selesai').length,
-    estimasi_pendapatan: 4250000
-  };
-
-  let recentReservations = mockData.reservasi.slice(0, 5).map((r, i) => {
-    const pkt = mockData.paket_wisata.find(p => p.id === r.paket_id);
-    return {
-      rawId: r.id,
-      displayId: `#RES-${String(i + 1).padStart(3, '0')}`,
-      nama_pemesan: r.nama,
-      telepon: r.telepon || '',
-      paket: pkt ? pkt.nama : 'Kunjungan Mandiri',
-      tanggal: r.tanggal_kunjungan,
-      status: (r.status || 'baru').toLowerCase()
-    };
-  });
-
-  let pendingTestimonials = [];
+  let selectedPeriod = 'minggu'; // default
+  let dashboardData = null;
 
   const loadData = async () => {
-    // Refresh statistik dari mockData
-    stats.destinasi = mockData.destinasi.length;
-    stats.paket = mockData.paket_wisata.length;
-    stats.artikel = mockData.artikel.length;
-    stats.galeri = mockData.galeri.length;
-    stats.reservasi_pending = mockData.reservasi.filter(r => r.status === 'baru' || r.status === 'pending').length;
-    stats.reservasi_dikonfirmasi = mockData.reservasi.filter(r => r.status === 'dikonfirmasi').length;
-    stats.reservasi_selesai = mockData.reservasi.filter(r => r.status === 'selesai').length;
-    pendingTestimonials = mockData.testimoni.filter(t => !t.is_shown);
-
-    recentReservations = mockData.reservasi.slice(0, 5).map((r, i) => {
-      const pkt = mockData.paket_wisata.find(p => p.id === r.paket_id);
-      return {
-        rawId: r.id,
-        displayId: `#RES-${String(i + 1).padStart(3, '0')}`,
-        nama_pemesan: r.nama || r.nama_pemesan || 'Tamu',
-        telepon: r.telepon || '',
-        paket: pkt ? pkt.nama : 'Kunjungan Mandiri',
-        tanggal: r.tanggal_kunjungan,
-        status: (r.status || 'baru').toLowerCase()
-      };
-    });
-
-    if (isSupabaseConfigured() && supabase) {
-      try {
-        const { count: cDest } = await supabase.from('destinasi').select('*', { count: 'exact', head: true });
-        const { count: cPaket } = await supabase.from('paket_wisata').select('*', { count: 'exact', head: true });
-        const { count: cBlog } = await supabase.from('artikel').select('*', { count: 'exact', head: true });
-        const { count: cGal } = await supabase.from('galeri').select('*', { count: 'exact', head: true });
-        const { count: cResPending } = await supabase.from('reservasi').select('*', { count: 'exact', head: true }).or('status.eq.baru,status.eq.pending');
-        const { count: cResDikonfirmasi } = await supabase.from('reservasi').select('*', { count: 'exact', head: true }).eq('status', 'dikonfirmasi');
-        const { count: cResSelesai } = await supabase.from('reservasi').select('*', { count: 'exact', head: true }).eq('status', 'selesai');
-
-        if (cDest !== null) stats.destinasi = cDest;
-        if (cPaket !== null) stats.paket = cPaket;
-        if (cBlog !== null) stats.artikel = cBlog;
-        if (cGal !== null) stats.galeri = cGal;
-        if (cResPending !== null) stats.reservasi_pending = cResPending;
-        if (cResDikonfirmasi !== null) stats.reservasi_dikonfirmasi = cResDikonfirmasi;
-        if (cResSelesai !== null) stats.reservasi_selesai = cResSelesai;
-
-        const { data: pTest } = await supabase.from('testimoni').select('*').eq('is_shown', false).order('created_at', { ascending: false });
-        if (pTest) pendingTestimonials = pTest;
-
-        const { data: resData } = await supabase.from('reservasi').select('*, paket_wisata(nama, harga)').order('created_at', { ascending: false }).limit(5);
-        if (resData && resData.length > 0) {
-          let totalRev = 0;
-          recentReservations = resData.map((r, i) => {
-            const pax = r.jumlah_orang || r.jumlah_peserta || 1;
-            const price = r.paket_wisata?.harga || 50000;
-            if (r.status === 'selesai' || r.status === 'dikonfirmasi') {
-              totalRev += pax * price;
-            }
-            return {
-              rawId: r.id,
-              displayId: `#RES-${String(i + 1).padStart(3, '0')}`,
-              nama_pemesan: r.nama || r.nama_pemesan || 'Tamu',
-              telepon: r.telepon || '',
-              paket: r.paket_wisata?.nama || 'Kunjungan Mandiri',
-              tanggal: r.tanggal_kunjungan ? new Date(r.tanggal_kunjungan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Terbaru',
-              status: (r.status || 'baru').toLowerCase()
-            };
-          });
-          if (totalRev > 0) stats.estimasi_pendapatan = totalRev;
-        }
-      } catch (e) {
-        console.warn('Fallback seed stats:', e);
-      }
-    }
+    const { startDate, endDate } = getDateRange(selectedPeriod);
+    dashboardData = await fetchDashboardStats(startDate, endDate);
   };
 
   await loadData();
@@ -116,10 +27,77 @@ export const renderAdminOverview = async () => {
   const container = document.createElement('div');
   container.className = 'dashboard-wrapper donezo-bg';
 
+  // ============================================================
+  // CHART HELPER FUNCTIONS
+  // ============================================================
+
+  const _renderChartBars = (chartData) => {
+    if (!chartData || chartData.length === 0) {
+      return '<div class="flex-1 flex items-center justify-center text-xs text-slate-400 font-medium py-8">Belum ada data kunjungan di periode ini.</div>';
+    }
+    const maxVal = Math.max(...chartData.map(d => d.value), 1);
+    // Limit to 7 bars for display
+    const displayData = chartData.length > 7
+      ? _sampleEvenly(chartData, 7)
+      : chartData;
+
+    return displayData.map((item) => {
+      const pct = Math.max(5, Math.round((item.value / maxVal) * 92));
+      const isPeak = item.value === maxVal && item.value > 0;
+      const barColor = isPeak
+        ? 'bg-[#316342]'
+        : item.value > maxVal * 0.7
+          ? 'bg-[#316342]/80'
+          : item.value > maxVal * 0.4
+            ? 'bg-[#4ADE80]'
+            : 'bg-slate-200/80';
+
+      return `
+        <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
+          ${isPeak ? `<span class="absolute -top-7 px-2 py-0.5 rounded-md bg-emerald-50 text-[#316342] font-bold text-[10px] border border-emerald-200 shadow-2xs">Puncak</span>` : ''}
+          <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute ${isPeak ? '-top-14' : '-top-11'} left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
+            <span>${item.label}: <strong>${item.value} Wisatawan</strong></span>
+            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+          </div>
+          <div class="w-full max-w-[38px] ${barColor} group-hover:bg-[#316342] rounded-full transition-all duration-300 ${isPeak ? 'shadow-md' : ''}" style="height: ${pct}%"></div>
+          <span class="text-[11px] font-semibold ${isPeak ? 'text-[#316342] font-bold' : 'text-slate-400 group-hover:text-slate-700'}">${item.label}</span>
+        </div>
+      `;
+    }).join('');
+  };
+
+  const _sampleEvenly = (arr, count) => {
+    if (arr.length <= count) return arr;
+    const result = [];
+    const step = (arr.length - 1) / (count - 1);
+    for (let i = 0; i < count; i++) {
+      result.push(arr[Math.round(i * step)]);
+    }
+    return result;
+  };
+
+  const _getChartSummary = (chartData) => {
+    if (!chartData || chartData.length === 0) {
+      return { avgLabel: 'Rata-rata: <strong>0 Pengunjung</strong>', peakLabel: 'Belum ada data puncak' };
+    }
+    const total = chartData.reduce((s, d) => s + d.value, 0);
+    const avg = Math.round(total / chartData.length);
+    const peak = chartData.reduce((max, d) => d.value > max.value ? d : max, chartData[0]);
+    return {
+      avgLabel: `Rata-rata: <strong>${avg} Pengunjung</strong>`,
+      peakLabel: `Puncak: <strong>${peak.label} (${peak.value} Pax)</strong>`,
+    };
+  };
+
+  // ============================================================
+  // RENDER PAGE
+  // ============================================================
+
   const renderPage = () => {
-    const nSelesai = stats.reservasi_selesai || 0;
-    const nProses = stats.reservasi_dikonfirmasi || 0;
-    const nPending = stats.reservasi_pending || 0;
+    const d = dashboardData;
+    const nSelesai = d.reservasiSelesai || 0;
+    const nProses = d.reservasiDikonfirmasi || 0;
+    const nPending = d.reservasiPending || 0;
     const totalRes = nSelesai + nProses + nPending;
 
     let pctSelesai = 0;
@@ -132,6 +110,10 @@ export const renderAdminOverview = async () => {
       pctPending = Math.max(0, 100 - pctSelesai - pctProses);
     }
 
+    const { label: periodLabel } = getDateRange(selectedPeriod);
+    const periodButtons = ['hari', 'minggu', 'bulan', 'tahun', 'semua'];
+    const periodLabels = { hari: 'Hari Ini', minggu: '7 Hari', bulan: 'Bulan Ini', tahun: 'Tahun Ini', semua: 'Semua' };
+
     container.innerHTML = `
       ${renderSidebar('overview')}
 
@@ -139,26 +121,35 @@ export const renderAdminOverview = async () => {
         ${renderAdminHeader('Dashboard Overview')}
 
         <div class="flex-1 overflow-y-auto p-8 w-full">
-          <!-- Page Header & Action Buttons -->
+          <!-- Page Header & Global Period Filter -->
           <div class="flex items-center justify-between flex-wrap gap-4 mb-8">
             <div>
               <h1 class="font-display-lg text-3xl font-extrabold text-slate-800 m-0">Dashboard</h1>
               <p class="text-sm font-medium text-slate-400 m-0 mt-1">Kelola, pantau, dan selesaikan reservasi serta operasional desa wisata dengan mudah.</p>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 flex-wrap">
+              <!-- GLOBAL PERIOD FILTER (Pill Group) -->
+              <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-full px-1.5 py-1 shadow-2xs">
+                ${periodButtons.map(p => `
+                  <button class="global-period-btn px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 ${selectedPeriod === p
+                    ? 'bg-[#316342] text-white shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                  }" data-period="${p}">
+                    ${periodLabels[p]}
+                  </button>
+                `).join('')}
+              </div>
+
               <a href="#/admin/destinasi" class="px-5 py-2.5 rounded-full bg-[#316342] text-white font-bold text-xs hover:bg-[#254d33] transition-colors shadow-md flex items-center gap-2">
                 <span class="material-symbols-outlined text-sm">add</span>
                 Tambah Destinasi
-              </a>
-              <a href="#/admin/reservasi" class="px-5 py-2.5 rounded-full bg-white text-slate-700 font-bold text-xs border border-slate-200 hover:bg-slate-50 transition-colors shadow-2xs flex items-center gap-2">
-                Kelola Reservasi
               </a>
             </div>
           </div>
 
           <!-- Hero Stat Cards Grid (4 Cards) -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- Card 1: Featured Dark Green Card -->
+            <!-- Card 1: Reservasi Perlu Konfirmasi (Dark Hero) -->
             <div class="donezo-hero-card p-6 flex flex-col justify-between relative overflow-hidden">
               <div class="flex items-start justify-between">
                 <span class="text-xs font-bold uppercase tracking-wider text-emerald-100/90 font-label">Reservasi Perlu Konfirmasi</span>
@@ -167,14 +158,14 @@ export const renderAdminOverview = async () => {
                 </a>
               </div>
               <div class="mt-6">
-                <h2 class="text-4xl font-extrabold text-white m-0 tracking-tight">${stats.reservasi_pending}</h2>
+                <h2 class="text-4xl font-extrabold text-white m-0 tracking-tight">${nPending}</h2>
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/15 text-[11px] font-semibold text-emerald-100 mt-3">
-                  <span>↗ +12% dari bulan lalu</span>
+                  <span>Periode: ${periodLabel}</span>
                 </div>
               </div>
             </div>
 
-            <!-- Card 2: White Card -->
+            <!-- Card 2: Kunjungan Selesai -->
             <div class="donezo-card p-6 flex flex-col justify-between">
               <div class="flex items-start justify-between">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400 font-label">Kunjungan Selesai</span>
@@ -183,14 +174,14 @@ export const renderAdminOverview = async () => {
                 </a>
               </div>
               <div class="mt-6">
-                <h2 class="text-4xl font-extrabold text-slate-800 m-0 tracking-tight">${stats.reservasi_selesai}</h2>
+                <h2 class="text-4xl font-extrabold text-slate-800 m-0 tracking-tight">${nSelesai}</h2>
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-[11px] font-semibold text-emerald-700 mt-3 border border-emerald-100">
-                  <span>↗ +8% dari bulan lalu</span>
+                  <span>Periode: ${periodLabel}</span>
                 </div>
               </div>
             </div>
 
-            <!-- Card 3: White Card -->
+            <!-- Card 3: Total Destinasi -->
             <div class="donezo-card p-6 flex flex-col justify-between">
               <div class="flex items-start justify-between">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400 font-label">Total Destinasi</span>
@@ -199,14 +190,14 @@ export const renderAdminOverview = async () => {
                 </a>
               </div>
               <div class="mt-6">
-                <h2 class="text-4xl font-extrabold text-slate-800 m-0 tracking-tight">${stats.destinasi}</h2>
+                <h2 class="text-4xl font-extrabold text-slate-800 m-0 tracking-tight">${d.totalDestinasi}</h2>
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-[11px] font-semibold text-blue-700 mt-3 border border-blue-100">
-                  <span>↗ ${stats.destinasi} Objek Wisata Aktif</span>
+                  <span>↗ ${d.totalDestinasi} Objek Wisata Aktif</span>
                 </div>
               </div>
             </div>
 
-            <!-- Card 4: Revenue KPI Card -->
+            <!-- Card 4: Estimasi Pendapatan -->
             <div class="donezo-card p-6 flex flex-col justify-between">
               <div class="flex items-start justify-between">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400 font-label">Estimasi Pendapatan</span>
@@ -215,9 +206,9 @@ export const renderAdminOverview = async () => {
                 </a>
               </div>
               <div class="mt-6">
-                <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-800 m-0 tracking-tight">${formatRupiah(stats.estimasi_pendapatan)}</h2>
+                <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-800 m-0 tracking-tight">${formatRupiah(d.estimasiPendapatan)}</h2>
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-[11px] font-semibold text-emerald-700 mt-3 border border-emerald-100">
-                  <span>↗ Terkonfirmasi & Selesai</span>
+                  <span>↗ Terkonfirmasi & Selesai (${periodLabel})</span>
                 </div>
               </div>
             </div>
@@ -227,103 +218,29 @@ export const renderAdminOverview = async () => {
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <!-- Left Column (8 cols) -->
             <div class="lg:col-span-8 flex flex-col gap-8">
-              <!-- Analytics Bar Chart Widget -->
+              <!-- Analytics Bar Chart Widget (Dynamic) -->
               <div class="donezo-card p-6">
                 <div class="flex items-center justify-between mb-6 flex-wrap gap-2">
                   <div>
                     <h3 class="text-lg font-bold text-slate-800 m-0">Analisis Kunjungan Wisatawan</h3>
-                    <p class="text-xs text-slate-400 m-0 mt-0.5">Statistik tren pengunjung per hari minggu ini.</p>
+                    <p class="text-xs text-slate-400 m-0 mt-0.5">Statistik tren pengunjung — ${periodLabel}.</p>
                   </div>
-                  <select id="chart-period-filter" class="px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 outline-none cursor-pointer hover:bg-slate-200/80 transition-colors shadow-2xs">
-                    <option value="minggu">Minggu Ini</option>
-                    <option value="bulan">Bulan Ini</option>
-                    <option value="tahun">Tahun Ini</option>
-                  </select>
                 </div>
 
-                <!-- Pill Bar Chart Visual with Interactive Tooltips -->
-                <div id="chart-bars-container" class="flex items-end justify-between gap-2.5 h-52 pt-8 px-1 border-b border-slate-100">
-                  <!-- Date 1: 22 Jul -->
-                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
-                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>22 Jul: <strong>45 Wisatawan</strong></span>
-                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-                    </div>
-                    <div class="chart-bar-el w-full max-w-[38px] h-[45%] bg-slate-200/80 group-hover:bg-[#316342]/60 rounded-full transition-all duration-300"></div>
-                    <span class="chart-label-el text-[11px] font-semibold text-slate-400 group-hover:text-slate-700">22 Jul</span>
-                  </div>
-
-                  <!-- Date 2: 23 Jul -->
-                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
-                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>23 Jul: <strong>60 Wisatawan</strong></span>
-                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-                    </div>
-                    <div class="chart-bar-el w-full max-w-[38px] h-[60%] bg-[#316342]/40 group-hover:bg-[#316342]/70 rounded-full transition-all duration-300"></div>
-                    <span class="chart-label-el text-[11px] font-semibold text-slate-400 group-hover:text-slate-700">23 Jul</span>
-                  </div>
-
-                  <!-- Date 3: 24 Jul (Peak) -->
-                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
-                    <span id="chart-badge-val" class="absolute -top-7 px-2 py-0.5 rounded-md bg-emerald-50 text-[#316342] font-bold text-[10px] border border-emerald-200 shadow-2xs">Puncak</span>
-                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-14 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>24 Jul: <strong>145 Wisatawan</strong> (Peak)</span>
-                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-                    </div>
-                    <div id="chart-main-bar" class="chart-bar-el w-full max-w-[38px] h-[92%] bg-[#316342] rounded-full shadow-md transition-all duration-300"></div>
-                    <span class="chart-label-el text-[11px] font-bold text-[#316342]">24 Jul</span>
-                  </div>
-
-                  <!-- Date 4: 25 Jul -->
-                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
-                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>25 Jul: <strong>90 Wisatawan</strong></span>
-                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-                    </div>
-                    <div class="chart-bar-el w-full max-w-[38px] h-[74%] bg-[#4ADE80] group-hover:bg-[#316342] rounded-full shadow-sm transition-all duration-300"></div>
-                    <span class="chart-label-el text-[11px] font-semibold text-slate-400 group-hover:text-slate-700">25 Jul</span>
-                  </div>
-
-                  <!-- Date 5: 26 Jul -->
-                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
-                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>26 Jul: <strong>55 Wisatawan</strong></span>
-                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-                    </div>
-                    <div class="chart-bar-el w-full max-w-[38px] h-[55%] bg-slate-200/80 group-hover:bg-[#316342]/60 rounded-full transition-all duration-300"></div>
-                    <span class="chart-label-el text-[11px] font-semibold text-slate-400 group-hover:text-slate-700">26 Jul</span>
-                  </div>
-
-                  <!-- Date 6: 27 Jul -->
-                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
-                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>27 Jul: <strong>85 Wisatawan</strong></span>
-                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-                    </div>
-                    <div class="chart-bar-el w-full max-w-[38px] h-[68%] bg-slate-300 group-hover:bg-[#316342]/70 rounded-full transition-all duration-300"></div>
-                    <span class="chart-label-el text-[11px] font-semibold text-slate-400 group-hover:text-slate-700">27 Jul</span>
-                  </div>
-
-                  <!-- Date 7: 28 Jul -->
-                  <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
-                    <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-                      <span>28 Jul: <strong>110 Wisatawan</strong></span>
-                      <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-                    </div>
-                    <div class="chart-bar-el w-full max-w-[38px] h-[82%] bg-[#316342]/80 group-hover:bg-[#316342] rounded-full transition-all duration-300"></div>
-                    <span class="chart-label-el text-[11px] font-semibold text-slate-400 group-hover:text-slate-700">28 Jul</span>
-                  </div>
+                <!-- Dynamic Pill Bar Chart -->
+                <div id="chart-bars-container" class="flex items-end justify-between gap-2.5 pt-8 px-1 border-b border-slate-100" style="height: 220px;">
+                  ${_renderChartBars(d.chartData)}
                 </div>
 
                 <!-- Footer Summary Legend -->
                 <div class="mt-4 pt-3 flex items-center justify-between text-xs font-medium text-slate-500 flex-wrap gap-2">
                   <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-[#316342]"></span>
-                    <span id="chart-avg-summary">Rata-rata: <strong>86 Pengunjung/Hari</strong></span>
+                    <span>${_getChartSummary(d.chartData).avgLabel}</span>
                   </div>
                   <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                    <span id="chart-peak-summary">Hari Puncak: <strong>Rabu (145 Pax)</strong></span>
+                    <span>${_getChartSummary(d.chartData).peakLabel}</span>
                   </div>
                 </div>
               </div>
@@ -333,7 +250,7 @@ export const renderAdminOverview = async () => {
                 <div class="flex items-center justify-between mb-6">
                   <div>
                     <h3 class="text-lg font-bold text-slate-800 m-0">Reservasi Terbaru</h3>
-                    <p class="text-xs text-slate-400 m-0 mt-0.5">Daftar transaksi wisatawan terbaru yang memerlukan aksi.</p>
+                    <p class="text-xs text-slate-400 m-0 mt-0.5">Daftar transaksi wisatawan terbaru — ${periodLabel}.</p>
                   </div>
                   <a href="#/admin/reservasi" class="px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors">
                     Lihat Semua ↗
@@ -352,11 +269,11 @@ export const renderAdminOverview = async () => {
                       </tr>
                     </thead>
                     <tbody class="text-xs text-slate-700">
-                      ${recentReservations.length === 0 ? `
+                      ${d.recentReservations.length === 0 ? `
                         <tr>
-                          <td colspan="5" class="py-8 text-center text-slate-400">Belum ada reservasi masuk.</td>
+                          <td colspan="5" class="py-8 text-center text-slate-400">Belum ada reservasi di periode ini.</td>
                         </tr>
-                      ` : recentReservations.map(res => {
+                      ` : d.recentReservations.map(res => {
                         const s = res.status;
                         let badgeStyle = 'bg-emerald-50 text-emerald-700 border-emerald-200';
                         let statusText = 'Completed';
@@ -423,13 +340,13 @@ export const renderAdminOverview = async () => {
                     <h3 class="text-lg font-bold text-slate-800 m-0">Moderasi Ulasan Pengunjung</h3>
                     <p class="text-xs text-slate-400 m-0 mt-0.5">Ulasan baru dari pengunjung website yang memerlukan persetujuan.</p>
                   </div>
-                  <span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">${pendingTestimonials.length} Menunggu</span>
+                  <span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">${d.pendingTestimonials.length} Menunggu</span>
                 </div>
-                ${pendingTestimonials.length === 0 ? `
+                ${d.pendingTestimonials.length === 0 ? `
                   <div class="py-6 text-center text-slate-400 text-xs font-medium">Tidak ada ulasan baru yang menunggu moderasi.</div>
                 ` : `
                   <div class="space-y-3">
-                    ${pendingTestimonials.map(t => `
+                    ${d.pendingTestimonials.map(t => `
                       <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div>
                           <div class="flex items-center gap-2 mb-1">
@@ -452,22 +369,38 @@ export const renderAdminOverview = async () => {
 
             <!-- Right Column (4 cols) -->
             <div class="lg:col-span-4 flex flex-col gap-8">
-              <!-- Reminders / Schedule Card Widget -->
+              <!-- Agenda Hari Ini Widget (Dynamic) -->
               <div class="donezo-card p-6">
                 <div class="flex items-center justify-between mb-4">
                   <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-label">AGENDA HARI INI</span>
-                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span class="w-2 h-2 rounded-full ${d.agendaHariIni.length > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}"></span>
                 </div>
-                <h4 class="text-sm font-bold text-slate-800 m-0 mb-1">Rombongan Edukasi Wisata Durian</h4>
-                <p class="text-xs text-slate-400 m-0 mb-4">Waktu: 14.00 WIB - 16.30 WIB (35 Pax)</p>
-                <button id="sambut-wisatawan-btn" class="w-full py-2.5 px-4 rounded-xl bg-[#316342] hover:bg-[#254d33] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
-                  Mulai Sambut Wisatawan
-                </button>
+                ${d.agendaHariIni.length > 0 ? `
+                  <div class="flex flex-col gap-3">
+                    ${d.agendaHariIni.map(a => `
+                      <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+                        <div>
+                          <h4 class="text-sm font-bold text-slate-800 m-0">${a.paket}</h4>
+                          <p class="text-xs text-slate-400 m-0 mt-0.5">${a.nama} — ${a.jumlah_orang} Pax</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${a.status === 'dikonfirmasi' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">${a.status}</span>
+                      </div>
+                    `).join('')}
+                  </div>
+                  <button id="sambut-wisatawan-btn" class="w-full mt-4 py-2.5 px-4 rounded-xl bg-[#316342] hover:bg-[#254d33] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
+                    Mulai Sambut Wisatawan
+                  </button>
+                ` : `
+                  <div class="py-6 text-center">
+                    <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">event_available</span>
+                    <p class="text-xs text-slate-400 font-medium m-0">Tidak ada kunjungan terjadwal hari ini.</p>
+                  </div>
+                `}
               </div>
 
               <!-- Circular Donut Gauge Progress Widget -->
               <div class="donezo-card p-6 flex flex-col items-center justify-center text-center">
-                <h3 class="text-sm font-bold text-slate-800 m-0 mb-4 self-start">Progres Kunjungan</h3>
+                <h3 class="text-sm font-bold text-slate-800 m-0 mb-4 self-start">Progres Kunjungan (${periodLabel})</h3>
                 
                 <!-- Donut SVG Gauge -->
                 <div class="relative w-36 h-36 flex items-center justify-center my-2">
@@ -504,7 +437,7 @@ export const renderAdminOverview = async () => {
                 </div>
               </div>
 
-              <!-- Top Destinations / Services Card Widget -->
+              <!-- Destinasi Populer Widget (Dynamic) -->
               <div class="donezo-card p-6">
                 <div class="flex items-center justify-between mb-4">
                   <h3 class="text-base font-bold text-slate-800 m-0">Destinasi Populer</h3>
@@ -514,41 +447,28 @@ export const renderAdminOverview = async () => {
                 </div>
 
                 <div class="flex flex-col gap-3.5">
-                  <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100">
-                    <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 rounded-lg bg-emerald-100 text-[#316342] flex items-center justify-center font-bold text-xs">
-                        01
+                  ${d.destinasiPopuler.length > 0 ? d.destinasiPopuler.map((dest, idx) => {
+                    const colors = [
+                      'bg-emerald-100 text-[#316342]',
+                      'bg-blue-100 text-blue-700',
+                      'bg-amber-100 text-amber-700',
+                    ];
+                    return `
+                      <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100">
+                        <div class="flex items-center gap-3">
+                          <div class="w-8 h-8 rounded-lg ${colors[idx] || colors[2]} flex items-center justify-center font-bold text-xs">
+                            ${String(idx + 1).padStart(2, '0')}
+                          </div>
+                          <div>
+                            <h4 class="text-xs font-bold text-slate-800 m-0">${dest.nama}</h4>
+                            <p class="text-[10px] text-slate-400 m-0">${dest.kategori} • ${dest.totalPengunjung} pengunjung</p>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <h4 class="text-xs font-bold text-slate-800 m-0">Kebun Durian Candimulyo</h4>
-                        <p class="text-[10px] text-slate-400 m-0">Wisata Edukasi • 1.2k pengunjung</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100">
-                    <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
-                        02
-                      </div>
-                      <div>
-                        <h4 class="text-xs font-bold text-slate-800 m-0">Susur Sungai Tampir</h4>
-                        <p class="text-[10px] text-slate-400 m-0">Wisata Alam • 850 pengunjung</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100">
-                    <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs">
-                        03
-                      </div>
-                      <div>
-                        <h4 class="text-xs font-bold text-slate-800 m-0">Paket Kuliner Tradisional</h4>
-                        <p class="text-[10px] text-slate-400 m-0">Paket Wisata • 620 pemesan</p>
-                      </div>
-                    </div>
-                  </div>
+                    `;
+                  }).join('') : `
+                    <div class="py-4 text-center text-xs text-slate-400 font-medium">Belum ada data kunjungan di periode ini.</div>
+                  `}
                 </div>
               </div>
             </div>
@@ -560,59 +480,27 @@ export const renderAdminOverview = async () => {
     bindEvents();
   };
 
+  // ============================================================
+  // BIND EVENTS
+  // ============================================================
+
   const bindEvents = () => {
     initAdminSidebarEvents();
 
-    const filterSelect = container.querySelector('#chart-period-filter');
-    if (filterSelect) {
-      filterSelect.addEventListener('change', (e) => {
-        const val = e.target.value;
-        const bars = container.querySelectorAll('.chart-bar-el');
-        const tooltips = container.querySelectorAll('.chart-tooltip span');
-        const labels = container.querySelectorAll('.chart-label-el');
-        const avgSummary = container.querySelector('#chart-avg-summary');
-        const peakSummary = container.querySelector('#chart-peak-summary');
-
-        if (val === 'bulan') {
-          if (avgSummary) avgSummary.innerHTML = 'Rata-rata: <strong>340 Pengunjung/Minggu</strong>';
-          if (peakSummary) peakSummary.innerHTML = 'Minggu Puncak: <strong>Minggu ke-3 (420 Pax)</strong>';
-          const heights = ['55%', '70%', '95%', '85%', '60%', '75%', '85%'];
-          const counts = ['210 Pax', '290 Pax', '420 Pax (Peak)', '350 Pax', '240 Pax', '310 Pax', '380 Pax'];
-          const lbls = ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5', 'Wk 6', 'Wk 7'];
-          bars.forEach((bar, idx) => {
-            if (bar) bar.style.height = heights[idx] || '50%';
-            if (tooltips[idx]) tooltips[idx].innerHTML = `Minggu ${idx + 1}: <strong>${counts[idx]}</strong>`;
-            if (labels[idx]) labels[idx].innerText = lbls[idx];
-          });
-          showToast('Menampilkan data tren statistik Bulan Ini', 'info');
-        } else if (val === 'tahun') {
-          if (avgSummary) avgSummary.innerHTML = 'Rata-rata: <strong>1.450 Pengunjung/Bulan</strong>';
-          if (peakSummary) peakSummary.innerHTML = 'Bulan Puncak: <strong>Agustus (2.100 Pax)</strong>';
-          const heights = ['40%', '50%', '65%', '70%', '75%', '80%', '95%'];
-          const counts = ['850 Pax', '1.100 Pax', '1.350 Pax', '1.500 Pax', '1.650 Pax', '1.800 Pax', '2.100 Pax (Peak)'];
-          const lbls = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'];
-          bars.forEach((bar, idx) => {
-            if (bar) bar.style.height = heights[idx] || '50%';
-            if (tooltips[idx]) tooltips[idx].innerHTML = `Bulan ${idx + 1}: <strong>${counts[idx]}</strong>`;
-            if (labels[idx]) labels[idx].innerText = lbls[idx];
-          });
-          showToast('Menampilkan data tren statistik Tahun Ini', 'info');
-        } else {
-          if (avgSummary) avgSummary.innerHTML = 'Rata-rata: <strong>86 Pengunjung/Hari</strong>';
-          if (peakSummary) peakSummary.innerHTML = 'Hari Puncak: <strong>24 Jul (145 Pax)</strong>';
-          const heights = ['45%', '60%', '92%', '74%', '55%', '68%', '82%'];
-          const dates = ['22 Jul', '23 Jul', '24 Jul', '25 Jul', '26 Jul', '27 Jul', '28 Jul'];
-          const counts = ['45 Pax', '60 Pax', '145 Pax (Peak)', '90 Pax', '55 Pax', '85 Pax', '110 Pax'];
-          bars.forEach((bar, idx) => {
-            if (bar) bar.style.height = heights[idx] || '50%';
-            if (tooltips[idx]) tooltips[idx].innerHTML = `${dates[idx]}: <strong>${counts[idx]}</strong>`;
-            if (labels[idx]) labels[idx].innerText = dates[idx];
-          });
-          showToast('Menampilkan data tren statistik Minggu Ini', 'info');
-        }
+    // --- GLOBAL PERIOD FILTER ---
+    container.querySelectorAll('.global-period-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const period = e.currentTarget.getAttribute('data-period');
+        if (period === selectedPeriod) return;
+        selectedPeriod = period;
+        const { label } = getDateRange(period);
+        showToast(`Menampilkan data periode: ${label}`, 'info');
+        await loadData();
+        renderPage();
       });
-    }
+    });
 
+    // --- Quick Confirm Reservasi ---
     container.querySelectorAll('.quick-confirm-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const rawId = e.currentTarget.getAttribute('data-id');
@@ -637,6 +525,15 @@ export const renderAdminOverview = async () => {
       });
     });
 
+    // --- Sambut Wisatawan Button ---
+    const sambutBtn = container.querySelector('#sambut-wisatawan-btn');
+    if (sambutBtn) {
+      sambutBtn.addEventListener('click', () => {
+        showToast('Selamat datang para wisatawan! 🎉 Semoga menikmati kunjungan hari ini.', 'success');
+      });
+    }
+
+    // --- Testimonial Moderation ---
     container.querySelectorAll('.approve-test-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const id = e.currentTarget.getAttribute('data-id');
@@ -688,5 +585,3 @@ export const renderAdminOverview = async () => {
   renderPage();
   return container;
 };
-
-
