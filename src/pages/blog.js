@@ -74,7 +74,7 @@ export const renderBlog = async () => {
           ${(recentArticles.length > 0 ? recentArticles : artikelList).map(article => `
             <article class="bg-surface-container-lowest rounded-xl shadow-level-1 overflow-hidden hover:shadow-level-2 transition-all duration-300 group flex flex-col h-full border border-outline-variant/30 cursor-pointer read-article-btn" data-id="${article.id}">
               <div class="h-48 overflow-hidden">
-                <img src="${article.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${article.judul}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
+                <img src="${article.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${article.judul}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
               </div>
               <div class="p-6 flex flex-col flex-grow bg-surface">
                 <div class="flex items-center gap-3 mb-3">

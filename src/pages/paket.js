@@ -52,7 +52,7 @@ export const renderPaket = async () => {
             ` : ''}
 
             <div class="-mx-6 -mt-6 mb-6 h-48 overflow-hidden rounded-t-xl">
-              <img src="${paket.gambar_url || (index === 0 ? 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80' : index === 1 ? 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80' : 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80')}" alt="${paket.nama}" class="w-full h-full object-cover" />
+              <img src="${paket.gambar_url || (index === 0 ? 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80' : index === 1 ? 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80' : 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80')}" alt="${paket.nama}" class="w-full h-full object-cover" loading="lazy" decoding="async" />
             </div>
 
             <div class="mb-4">
