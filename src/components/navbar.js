@@ -18,9 +18,9 @@ export const renderNavbar = (isSolid = false) => {
 
   return `
     <nav class="fixed top-0 left-0 w-full z-50 transition-all duration-300 ${initialClasses}" id="main-navbar" ${isSolid ? 'data-solid="true"' : ''}>
-      <div class="flex justify-between items-center px-6 md:px-16 max-w-container-max mx-auto h-20">
+      <div class="flex justify-between items-center px-4 sm:px-6 md:px-12 max-w-container-max mx-auto h-20 w-full">
         <!-- Rata Kiri: Logo -->
-        <a href="#/" class="font-display-lg text-2xl font-bold nav-brand flex items-center gap-2">
+        <a href="#/" class="font-display-lg text-xl sm:text-2xl font-bold nav-brand flex items-center gap-2 shrink-0">
           <span>Tampirkulon</span>
         </a>
 

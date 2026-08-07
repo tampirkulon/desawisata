@@ -9,7 +9,7 @@ export const renderFooter = (profilData = {}) => {
 
   return `
     <footer class="bg-primary-container text-on-primary w-full border-t border-outline-variant/20 mt-auto">
-      <div class="py-12 px-4 md:px-16 max-w-container-max mx-auto">
+      <div class="py-12 px-4 sm:px-6 md:px-12 max-w-container-max mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           <!-- Column 1: About -->
           <div class="flex flex-col gap-4">

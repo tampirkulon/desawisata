@@ -30,7 +30,7 @@ export const renderProfil = async () => {
     </section>
 
     <!-- Main Content Section -->
-    <section class="max-w-container-max mx-auto px-4 md:px-16 py-16 flex-grow w-full">
+    <section class="max-w-container-max mx-auto px-4 sm:px-6 md:px-12 py-16 flex-grow w-full">
       <div class="flex flex-col lg:flex-row gap-12">
         <!-- Left Column (60%) -->
         <div class="lg:w-[60%] flex flex-col gap-10">
