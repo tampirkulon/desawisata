@@ -32,7 +32,7 @@ export const mockData = {
       nama: 'Kebun Durian Candimulyo Tampir',
       deskripsi: 'Nikmati pengalaman langsung memetik dan mencicipi durian khas Candimulyo yang terkenal manis legit.',
       kategori_id: 'cat-2',
-      gambar_url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1000&q=80',
+      gambar_url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1000&q=80&fm=webp',
       lokasi: 'Dusun Tampir 1, Tampirkulon',
       jam_buka: '08:00 - 16:00 WIB',
       harga_tiket: 'Rp 10.000',
@@ -44,7 +44,7 @@ export const mockData = {
       nama: 'Terasering Sawah Asri Tampir',
       deskripsi: 'Pemandangan terasering sawah hijau berlatar belakang Gunung Merbabu & Merapi.',
       kategori_id: 'cat-1',
-      gambar_url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80',
+      gambar_url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80&fm=webp',
       lokasi: 'Dusun Tampir 2, Tampirkulon',
       jam_buka: '06:00 - 18:00 WIB',
       harga_tiket: 'Gratis',
@@ -56,7 +56,7 @@ export const mockData = {
       nama: 'Sanggar Seni Tarian Dayakan',
       deskripsi: 'Sanggar kebudayaan tempat menyaksikan tarian tradisional seperti Kesenian Dayakan.',
       kategori_id: 'cat-3',
-      gambar_url: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1000&q=80',
+      gambar_url: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1000&q=80&fm=webp',
       lokasi: 'Balai Desa Tampirkulon',
       jam_buka: '13:00 - 17:00 WIB',
       harga_tiket: 'Rp 15.000',
@@ -74,7 +74,7 @@ export const mockData = {
       kapasitas_min: 4,
       kapasitas_max: 20,
       fasilitas: ['Tiket Masuk Kebun', '1 Buah Durian Pilihan', 'Makan Siang Tradisional', 'Pemandu Lokal'],
-      gambar_url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1000&q=80',
+      gambar_url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1000&q=80&fm=webp',
       is_published: true
     },
     {
@@ -86,7 +86,7 @@ export const mockData = {
       kapasitas_min: 5,
       kapasitas_max: 30,
       fasilitas: ['Trekking Sawah', 'Workshop Tarian Tradisional', 'Susur Sungai Guide', 'Makan Siang & Snack'],
-      gambar_url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80',
+      gambar_url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80&fm=webp',
       is_published: true
     }
   ],
@@ -96,15 +96,15 @@ export const mockData = {
       judul: 'Festival Durian Candimulyo 2026 Segera Digelar di Tampirkulon',
       konten: 'Desa Tampirkulon bersiap menjadi tuan rumah pesta panen durian tahunan. Pengunjung dapat menikmati aneka ragam jenis durian lokal favorit.',
       ringkasan: 'Sambut kelezatan panen durian tahunan di Desa Tampirkulon Candimulyo dengan aneka promo.',
-      gambar_url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1000&q=80',
+      gambar_url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1000&q=80&fm=webp',
       kategori: 'Berita Desa',
       status: 'published',
       published_at: '2026-07-20T10:00:00Z'
     }
   ],
   galeri: [
-    { id: 'gal-1', judul: 'Kebun Durian Candimulyo', url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1000&q=80', tipe: 'foto', kategori: 'Kuliner' },
-    { id: 'gal-2', judul: 'Pemandangan Terasering Sawah', url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80', tipe: 'foto', kategori: 'Alam' }
+    { id: 'gal-1', judul: 'Kebun Durian Candimulyo', url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1000&q=80&fm=webp', tipe: 'foto', kategori: 'Kuliner' },
+    { id: 'gal-2', judul: 'Pemandangan Terasering Sawah', url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80&fm=webp', tipe: 'foto', kategori: 'Alam' }
   ],
   testimoni: [
     { id: 'test-1', nama: 'Budi Santoso', asal: 'Semarang', pesan: 'Durian Candimulyo di Tampirkulon luar biasa manis dan gurih!', rating: 5, is_shown: true },

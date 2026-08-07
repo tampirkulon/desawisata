@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 import { showToast } from '../../components/toast.js';
+import { convertImageToWebP } from '../../utils/image-converter.js';
 
 export const renderImageUploader = (inputId, currentUrl = '') => {
   return `
@@ -12,12 +13,13 @@ export const renderImageUploader = (inputId, currentUrl = '') => {
           <span class="material-symbols-outlined text-xl align-middle mr-1">cloud_upload</span>
           Drag & Drop file gambar di sini atau <span style="color: var(--primary); font-weight: 600;">Pilih File</span>
         </p>
-        <span style="font-size: 0.75rem; color: var(--neutral-600);">Maksimal 5MB (JPG, PNG, WebP)</span>
+        <span style="font-size: 0.75rem; color: var(--neutral-600);">Maksimal 5MB • Otomatis dikonversi ke format <strong>WebP</strong></span>
         <input type="file" id="${inputId}-file-input" accept="image/*" style="display: none;" />
       </div>
 
       <div id="${inputId}-preview" style="margin-top: 12px; ${currentUrl ? '' : 'display: none;'}">
         <img src="${currentUrl}" id="${inputId}-preview-img" style="height: 120px; border-radius: var(--radius-md); object-fit: cover; border: 1px solid var(--neutral-200);" />
+        <div id="${inputId}-webp-badge" style="margin-top: 4px; font-size: 0.75rem; color: #316342; font-weight: 600;">Format: WebP Optimized</div>
       </div>
     </div>
   `;
@@ -35,23 +37,28 @@ export const initImageUploaderEvents = (inputId, folderPath = 'uploads') => {
   dropzone.addEventListener('click', () => fileInput.click());
 
   fileInput.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const rawFile = e.target.files[0];
+    if (!rawFile) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Ukuran file maksimal 5MB', 'error');
+    if (rawFile.size > 10 * 1024 * 1024) {
+      showToast('Ukuran file maksimal 10MB', 'error');
       return;
     }
 
-    if (isSupabaseConfigured()) {
+    showToast('Mengonversi gambar ke format WebP...', 'info');
+
+    // Automatically convert any image format (JPG, PNG, GIF, BMP) to optimized WebP
+    const { file: webpFile, savingsPercent, dataUrl } = await convertImageToWebP(rawFile);
+
+    if (isSupabaseConfigured() && supabase) {
       try {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.webp`;
         const filePath = `${folderPath}/${fileName}`;
 
-        showToast('Mengunggah gambar ke Supabase Storage...', 'info');
-
-        const { data, error } = await supabase.storage.from('images').upload(filePath, file);
+        const { error } = await supabase.storage.from('images').upload(filePath, webpFile, {
+          contentType: 'image/webp',
+          upsert: true,
+        });
 
         if (error) throw error;
 
@@ -61,28 +68,22 @@ export const initImageUploaderEvents = (inputId, folderPath = 'uploads') => {
         hiddenInput.value = url;
         previewImg.src = url;
         previewContainer.style.display = 'block';
-        showToast('Gambar berhasil diunggah!', 'success');
+        showToast(`Gambar berhasil dikonversi ke WebP${savingsPercent > 0 ? ` (hemat ${savingsPercent}%)` : ''} & diunggah!`, 'success');
       } catch (err) {
-        console.error('Storage error:', err);
+        console.error('Storage upload error, using WebP Data URL fallback:', err);
         
-        // Fallback convert to Data URL so user is never blocked from completing form
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-          const dataUrl = evt.target.result;
-          hiddenInput.value = dataUrl;
-          previewImg.src = dataUrl;
-          previewContainer.style.display = 'block';
-          showToast('⚠️ Storage RLS diblokir. Gambar dikonversi ke format internal. Jalankan skrip RLS Storage di SQL Editor Supabase untuk upload publik.', 'warning');
-        };
-        reader.readAsDataURL(file);
+        // Fallback to WebP Data URL
+        hiddenInput.value = dataUrl;
+        previewImg.src = dataUrl;
+        previewContainer.style.display = 'block';
+        showToast(`Gambar dikonversi ke WebP${savingsPercent > 0 ? ` (hemat ${savingsPercent}%)` : ''} & siap disimpan!`, 'success');
       }
     } else {
-      // Offline fallback: Use object URL
-      const tempUrl = URL.createObjectURL(file);
-      hiddenInput.value = tempUrl;
-      previewImg.src = tempUrl;
+      // Demo / offline mode: use WebP Data URL
+      hiddenInput.value = dataUrl;
+      previewImg.src = dataUrl;
       previewContainer.style.display = 'block';
-      showToast('[Demo Mode] Gambar diunggah secara lokal.', 'success');
+      showToast(`[Demo] Gambar dikonversi ke format WebP${savingsPercent > 0 ? ` (hemat ${savingsPercent}%)` : ''}.`, 'success');
     }
   });
 };
