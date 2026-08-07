@@ -59,7 +59,7 @@ export const initTableSearch = (container, options = {}) => {
 
     const excludedIndices = new Set();
     headers.forEach((h, idx) => {
-      if (h === 'status' || h === 'aksi' || h === 'action') {
+      if (h === 'status' || h === 'aksi' || h === 'action' || h === 'durasi' || h.includes('durasi')) {
         excludedIndices.add(idx);
       }
     });
