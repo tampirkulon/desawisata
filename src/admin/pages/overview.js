@@ -4,7 +4,7 @@ import { renderAdminHeader } from '../components/header.js';
 import { showToast } from '../../components/toast.js';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 import { mockData } from '../../data/seed.js';
-import { getDateRange, fetchDashboardStats } from '../services/dashboard-data.js';
+import { getDateRange, fetchDashboardStats, exportDashboardReport } from '../services/dashboard-data.js';
 
 export const renderAdminOverview = async () => {
   const isAuthed = await auth.requireAuth();
@@ -15,7 +15,7 @@ export const renderAdminOverview = async () => {
 
   const loadData = async () => {
     const { startDate, endDate } = getDateRange(selectedPeriod);
-    dashboardData = await fetchDashboardStats(startDate, endDate);
+    dashboardData = await fetchDashboardStats(startDate, endDate, selectedPeriod);
   };
 
   await loadData();
@@ -137,6 +137,11 @@ export const renderAdminOverview = async () => {
               </button>
             `).join('')}
           </div>
+
+          <button id="export-report-btn" class="px-4 py-2 rounded-full bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200 transition-colors flex items-center gap-1.5 shadow-2xs">
+            <span class="material-symbols-outlined text-sm">download</span>
+            Ekspor Laporan
+          </button>
         </div>
       </div>
 
@@ -153,7 +158,7 @@ export const renderAdminOverview = async () => {
           <div class="mt-6">
             <h2 class="text-4xl font-extrabold text-white m-0 tracking-tight">${nPending}</h2>
             <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/15 text-[11px] font-semibold text-emerald-100 mt-3">
-              <span>Periode: ${periodLabel}</span>
+              <span>${d.growth.growthPending >= 0 ? '▲ +' : '▼ '}${d.growth.growthPending}% ${d.growth.periodComparisonLabel}</span>
             </div>
           </div>
         </div>
@@ -168,8 +173,8 @@ export const renderAdminOverview = async () => {
           </div>
           <div class="mt-6">
             <h2 class="text-4xl font-extrabold text-slate-800 m-0 tracking-tight">${nSelesai}</h2>
-            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-[11px] font-semibold text-emerald-700 mt-3 border border-emerald-100">
-              <span>Periode: ${periodLabel}</span>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full ${d.growth.growthSelesai >= 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-rose-50 text-rose-700 border-rose-100'} text-[11px] font-semibold mt-3 border">
+              <span>${d.growth.growthSelesai >= 0 ? '▲ +' : '▼ '}${d.growth.growthSelesai}% ${d.growth.periodComparisonLabel}</span>
             </div>
           </div>
         </div>
@@ -200,8 +205,8 @@ export const renderAdminOverview = async () => {
           </div>
           <div class="mt-6">
             <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-800 m-0 tracking-tight">${formatRupiah(d.estimasiPendapatan)}</h2>
-            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-[11px] font-semibold text-emerald-700 mt-3 border border-emerald-100">
-              <span>↗ Terkonfirmasi & Selesai (${periodLabel})</span>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full ${d.growth.growthPendapatan >= 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-rose-50 text-rose-700 border-rose-100'} text-[11px] font-semibold mt-3 border">
+              <span>${d.growth.growthPendapatan >= 0 ? '▲ +' : '▼ '}${d.growth.growthPendapatan}% ${d.growth.periodComparisonLabel}</span>
             </div>
           </div>
         </div>
@@ -314,6 +319,11 @@ export const renderAdminOverview = async () => {
                             ${s === 'baru' || s === 'pending' ? `
                               <button class="quick-confirm-btn px-2.5 py-1 rounded-lg bg-[#316342] text-white hover:bg-[#254d33] text-[11px] font-semibold transition-colors shadow-2xs" data-id="${res.rawId}">
                                 Konfirmasi
+                              </button>
+                            ` : ''}
+                            ${s === 'dikonfirmasi' ? `
+                              <button class="quick-complete-btn px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold transition-colors shadow-2xs" data-id="${res.rawId}">
+                                Selesai
                               </button>
                             ` : ''}
                           </div>
@@ -503,6 +513,16 @@ export const renderAdminOverview = async () => {
       });
     });
 
+    // --- EXPORT REPORT BUTTON ---
+    const exportBtn = viewContent.querySelector('#export-report-btn');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => {
+        const periodLabels = { hari: 'Hari Ini', minggu: '7 Hari Terakhir', bulan: 'Bulan Ini', tahun: 'Tahun Ini', semua: 'Semua Waktu' };
+        exportDashboardReport(dashboardData, periodLabels[selectedPeriod] || selectedPeriod);
+        showToast('Laporan ringkasan dashboard berhasil diunduh!', 'success');
+      });
+    }
+
     // --- Quick Confirm Reservasi ---
     viewContent.querySelectorAll('.quick-confirm-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
@@ -528,13 +548,119 @@ export const renderAdminOverview = async () => {
       });
     });
 
-    // --- Sambut Wisatawan Button ---
+    // --- Quick Complete Reservasi ---
+    viewContent.querySelectorAll('.quick-complete-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const rawId = e.currentTarget.getAttribute('data-id');
+        btn.disabled = true;
+        btn.innerText = 'Updating...';
+
+        if (isSupabaseConfigured()) {
+          try {
+            await supabase.from('reservasi').update({ status: 'selesai' }).eq('id', rawId);
+            showToast('Reservasi ditandai selesai!', 'success');
+          } catch (err) {
+            showToast('Gagal update status: ' + err.message, 'error');
+          }
+        } else {
+          const item = mockData.reservasi.find(r => r.id === rawId);
+          if (item) item.status = 'selesai';
+          showToast('Reservasi ditandai selesai (Demo mode)!', 'success');
+        }
+
+        await loadData();
+        renderDashboardContent();
+      });
+    });
+
+    // --- Sambut Wisatawan Button (Interactive Check-In Modal) ---
     const sambutBtn = viewContent.querySelector('#sambut-wisatawan-btn');
     if (sambutBtn) {
       sambutBtn.addEventListener('click', () => {
-        showToast('Selamat datang para wisatawan! 🎉 Semoga menikmati kunjungan hari ini.', 'success');
+        _showSambutModal();
       });
     }
+
+  const _showSambutModal = () => {
+    const agenda = dashboardData.agendaHariIni || [];
+    const modalDiv = document.createElement('div');
+    modalDiv.className = 'fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 transition-all duration-300';
+    modalDiv.innerHTML = `
+      <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 text-[#316342] flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-lg">waving_hand</span>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-slate-800 m-0">Sambut Wisatawan Hari Ini</h3>
+              <p class="text-xs text-slate-400 m-0">Daftar kedatangan wisatawan (${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })})</p>
+            </div>
+          </div>
+          <button id="close-sambut-modal" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+
+        <div class="py-4 space-y-3 max-h-[350px] overflow-y-auto">
+          ${agenda.length === 0 ? `
+            <div class="py-8 text-center text-slate-400 text-xs">Belum ada wisatawan yang terjadwal hari ini.</div>
+          ` : agenda.map(item => `
+            <div class="p-3.5 rounded-xl border border-slate-100 bg-slate-50/80 flex items-center justify-between gap-3">
+              <div>
+                <div class="font-bold text-xs text-slate-800">${item.nama}</div>
+                <div class="text-[11px] text-slate-500 mt-0.5">${item.paket} • <strong>${item.jumlah_orang} Pax</strong></div>
+              </div>
+              ${item.status === 'selesai' ? `
+                <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-200 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">check_circle</span> Sudah Hadir
+                </span>
+              ` : `
+                <button class="checkin-btn px-3 py-1.5 rounded-lg bg-[#316342] hover:bg-[#254d33] text-white text-xs font-bold transition-colors shadow-2xs flex items-center gap-1" data-id="${item.id}">
+                  <span class="material-symbols-outlined text-xs">how_to_reg</span> Check-In
+                </button>
+              `}
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex justify-end">
+          <button id="done-sambut-modal" class="px-5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors">Tutup</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modalDiv);
+
+    const closeModal = () => modalDiv.remove();
+    modalDiv.querySelector('#close-sambut-modal')?.addEventListener('click', closeModal);
+    modalDiv.querySelector('#done-sambut-modal')?.addEventListener('click', closeModal);
+
+    modalDiv.querySelectorAll('.checkin-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const resId = e.currentTarget.getAttribute('data-id');
+        btn.disabled = true;
+        btn.innerHTML = 'Memproses...';
+
+        if (isSupabaseConfigured() && supabase) {
+          try {
+            await supabase.from('reservasi').update({ status: 'selesai' }).eq('id', resId);
+            showToast('Wisatawan berhasil Check-In!', 'success');
+          } catch (err) {
+            showToast('Gagal Check-In: ' + err.message, 'error');
+          }
+        } else {
+          const item = mockData.reservasi.find(r => r.id === resId);
+          if (item) item.status = 'selesai';
+          showToast('Wisatawan berhasil Check-In (Demo)!', 'success');
+        }
+
+        closeModal();
+        await loadData();
+        renderDashboardContent();
+      });
+    });
+  };
 
     // --- Testimonial Moderation ---
     viewContent.querySelectorAll('.approve-test-btn').forEach(btn => {
