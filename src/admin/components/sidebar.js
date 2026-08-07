@@ -20,10 +20,7 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
   return `
     <aside class="admin-sidebar w-[260px] h-full flex-shrink-0 flex flex-col bg-white border-r border-slate-200/80 overflow-hidden">
       <!-- Header Brand (Fixed Top) -->
-      <div class="h-20 flex items-center px-6 border-b border-slate-100 gap-3 flex-shrink-0">
-        <div class="w-9 h-9 rounded-xl bg-[#316342] text-white flex items-center justify-center font-bold text-xs shadow-sm tracking-widest">
-          TK
-        </div>
+      <div class="h-20 flex items-center px-6 border-b border-slate-100 flex-shrink-0">
         <div>
           <h1 class="font-display-lg text-base font-bold text-slate-800 m-0 leading-tight">Tampirkulon</h1>
           <p class="text-[11px] font-medium text-slate-400 m-0">Admin Dashboard</p>
