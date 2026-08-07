@@ -53,11 +53,24 @@ export const initTableSearch = (container, options = {}) => {
     const query = e.target.value.trim().toLowerCase();
     const rows = Array.from(tbody.querySelectorAll('tr:not(.no-search-results)'));
 
+    // Find table header titles to exclude "Status" and "Aksi" columns
+    const table = tbody.closest('table');
+    const headers = table ? Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim().toLowerCase()) : [];
+
+    const excludedIndices = new Set();
+    headers.forEach((h, idx) => {
+      if (h === 'status' || h === 'aksi' || h === 'action') {
+        excludedIndices.add(idx);
+      }
+    });
+
     let visibleCount = 0;
 
     rows.forEach(row => {
-      const cells = Array.from(row.querySelectorAll('td')).slice(0, -1);
-      const text = (cells.length > 0 ? cells.map(c => c.textContent).join(' ') : row.textContent).toLowerCase();
+      const cells = Array.from(row.querySelectorAll('td'));
+      const searchableCells = cells.filter((_, idx) => !excludedIndices.has(idx));
+
+      const text = (searchableCells.length > 0 ? searchableCells.map(c => c.textContent).join(' ') : row.textContent).toLowerCase();
       const match = text.includes(query);
       row.style.display = match ? '' : 'none';
       if (match) visibleCount++;
