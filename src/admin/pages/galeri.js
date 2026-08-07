@@ -71,6 +71,18 @@ export const renderAdminGaleri = async () => {
               </div>
             `).join('')}
           </div>
+
+          <!-- Pagination Footer -->
+          <div class="data-table-pagination flex items-center justify-between px-6 py-4 mt-6 bg-white rounded-2xl border border-slate-200/80 flex-wrap gap-4 text-xs font-medium text-slate-500 shadow-2xs">
+            <div>
+              Menampilkan <span id="gal-start" class="font-bold text-slate-800">1</span> - <span id="gal-end" class="font-bold text-slate-800">7</span> dari <span id="gal-total" class="font-bold text-slate-800">${galeriList.length}</span> media
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button id="gal-prev-btn" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed font-bold text-slate-700 transition-colors cursor-pointer">Prev</button>
+              <div id="gal-pages" class="flex items-center gap-1"></div>
+              <button id="gal-next-btn" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed font-bold text-slate-700 transition-colors cursor-pointer">Next</button>
+            </div>
+          </div>
         </div>
       </main>
     `;
@@ -81,16 +93,85 @@ export const renderAdminGaleri = async () => {
   const bindEvents = () => {
     initAdminSidebarEvents();
 
+    const pageSize = 7;
+    let currentPage = 1;
+    let currentQuery = '';
+
+    const renderGaleriPagination = () => {
+      const items = Array.from(container.querySelectorAll('.galeri-card-item'));
+      const matching = items.filter(card => {
+        if (!currentQuery) return true;
+        return card.textContent.toLowerCase().includes(currentQuery);
+      });
+
+      const totalMatching = matching.length;
+      const totalPages = Math.max(1, Math.ceil(totalMatching / pageSize));
+
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const startIdx = (currentPage - 1) * pageSize;
+      const endIdx = Math.min(startIdx + pageSize, totalMatching);
+
+      items.forEach(c => c.style.display = 'none');
+      matching.slice(startIdx, endIdx).forEach(c => c.style.display = '');
+
+      const galStart = container.querySelector('#gal-start');
+      const galEnd = container.querySelector('#gal-end');
+      const galTotal = container.querySelector('#gal-total');
+      const prevBtn = container.querySelector('#gal-prev-btn');
+      const nextBtn = container.querySelector('#gal-next-btn');
+      const pagesContainer = container.querySelector('#gal-pages');
+
+      if (galStart) galStart.innerText = totalMatching === 0 ? 0 : startIdx + 1;
+      if (galEnd) galEnd.innerText = endIdx;
+      if (galTotal) galTotal.innerText = totalMatching;
+
+      if (prevBtn) prevBtn.disabled = currentPage <= 1;
+      if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+
+      if (pagesContainer) {
+        pagesContainer.innerHTML = '';
+        for (let p = 1; p <= totalPages; p++) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.innerText = p;
+          btn.className = `w-7 h-7 rounded-lg font-bold text-xs transition-colors cursor-pointer flex items-center justify-center ${
+            p === currentPage
+              ? 'bg-[#316342] text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100 border border-slate-200'
+          }`;
+          btn.addEventListener('click', () => {
+            currentPage = p;
+            renderGaleriPagination();
+          });
+          pagesContainer.appendChild(btn);
+        }
+      }
+    };
+
     const searchInput = container.querySelector('#galeri-search');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
-        const q = e.target.value.trim().toLowerCase();
-        container.querySelectorAll('.galeri-card-item').forEach(card => {
-          const text = card.textContent.toLowerCase();
-          card.style.display = text.includes(q) ? '' : 'none';
-        });
+        currentQuery = e.target.value.trim().toLowerCase();
+        currentPage = 1;
+        renderGaleriPagination();
       });
     }
+
+    container.querySelector('#gal-prev-btn')?.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderGaleriPagination();
+      }
+    });
+
+    container.querySelector('#gal-next-btn')?.addEventListener('click', () => {
+      currentPage++;
+      renderGaleriPagination();
+    });
+
+    setTimeout(() => renderGaleriPagination(), 0);
 
     container.querySelector('#upload-galeri-btn')?.addEventListener('click', () => openUploadModal());
 
