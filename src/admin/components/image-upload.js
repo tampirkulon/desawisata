@@ -34,10 +34,7 @@ export const initImageUploaderEvents = (inputId, folderPath = 'uploads') => {
 
   if (!dropzone || !fileInput) return;
 
-  dropzone.addEventListener('click', () => fileInput.click());
-
-  fileInput.addEventListener('change', async (e) => {
-    const rawFile = e.target.files[0];
+  const processFile = async (rawFile) => {
     if (!rawFile) return;
 
     if (rawFile.size > 10 * 1024 * 1024) {
@@ -85,5 +82,54 @@ export const initImageUploaderEvents = (inputId, folderPath = 'uploads') => {
       previewContainer.style.display = 'block';
       showToast(`[Demo] Gambar dikonversi ke format WebP${savingsPercent > 0 ? ` (hemat ${savingsPercent}%)` : ''}.`, 'success');
     }
+  };
+
+  dropzone.addEventListener('click', () => fileInput.click());
+
+  // --- DRAG & DROP EVENT LISTENERS ---
+  const setDragHighlight = (active) => {
+    if (active) {
+      dropzone.style.borderColor = '#316342';
+      dropzone.style.backgroundColor = '#ecfdf5';
+      dropzone.style.transform = 'scale(1.02)';
+      dropzone.style.boxShadow = '0 10px 25px -5px rgba(49, 99, 66, 0.15)';
+    } else {
+      dropzone.style.borderColor = '';
+      dropzone.style.backgroundColor = '';
+      dropzone.style.transform = '';
+      dropzone.style.boxShadow = '';
+    }
+  };
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropzone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragHighlight(true);
+    });
+  });
+
+  ['dragleave', 'dragend'].forEach(eventName => {
+    dropzone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragHighlight(false);
+    });
+  });
+
+  dropzone.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragHighlight(false);
+
+    const files = e.dataTransfer?.files;
+    if (files && files.length > 0) {
+      await processFile(files[0]);
+    }
+  });
+
+  fileInput.addEventListener('change', async (e) => {
+    const rawFile = e.target.files[0];
+    await processFile(rawFile);
   });
 };

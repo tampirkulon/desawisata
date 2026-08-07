@@ -166,12 +166,43 @@ export const renderAdminGaleri = async () => {
       }
     });
 
-    container.querySelector('#gal-next-btn')?.addEventListener('click', () => {
-      currentPage++;
-      renderGaleriPagination();
-    });
+    // Drag & Drop reordering for galeri card items
+    const grid = container.querySelector('#galeri-grid');
+    if (grid) {
+      let draggedCard = null;
+      grid.querySelectorAll('.galeri-card-item').forEach(card => {
+        card.draggable = true;
+        card.style.cursor = 'grab';
 
-    setTimeout(() => renderGaleriPagination(), 0);
+        card.addEventListener('dragstart', (e) => {
+          draggedCard = card;
+          card.classList.add('opacity-40');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        card.addEventListener('dragend', () => {
+          draggedCard = null;
+          grid.querySelectorAll('.galeri-card-item').forEach(c => {
+            c.classList.remove('opacity-40');
+            c.style.cursor = 'grab';
+          });
+        });
+
+        card.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          if (draggedCard && card !== draggedCard) {
+            const bounding = card.getBoundingClientRect();
+            const offset = bounding.x + bounding.width / 2;
+            if (e.clientX - offset > 0) {
+              card.after(draggedCard);
+            } else {
+              card.before(draggedCard);
+            }
+          }
+        });
+      });
+    }
 
     container.querySelector('#upload-galeri-btn')?.addEventListener('click', () => openUploadModal());
 

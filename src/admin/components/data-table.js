@@ -207,7 +207,60 @@ export const initTablePagination = (container, options = {}) => {
   }
 
   // Initial render
-  setTimeout(() => renderPagination(), 0);
+  setTimeout(() => {
+    renderPagination();
+    initTableDragAndDrop(container);
+  }, 0);
 };
 
 export const initTableSearch = initTablePagination;
+
+/**
+ * Enables interactive Drag & Drop row reordering for table rows.
+ * @param {HTMLElement} container - Page container element
+ * @param {Function} [onReorder] - Callback called with reordered row elements / IDs
+ */
+export const initTableDragAndDrop = (container, onReorder) => {
+  const tbody = container.querySelector('#table-body-element');
+  if (!tbody) return;
+
+  let draggedRow = null;
+
+  const rows = Array.from(tbody.querySelectorAll('tr:not(.no-search-results)'));
+  rows.forEach(row => {
+    row.draggable = true;
+    row.style.cursor = 'grab';
+
+    row.addEventListener('dragstart', (e) => {
+      draggedRow = row;
+      row.classList.add('opacity-40', 'bg-emerald-50/50');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+
+    row.addEventListener('dragend', () => {
+      draggedRow = null;
+      rows.forEach(r => {
+        r.classList.remove('opacity-40', 'bg-emerald-50/50', 'border-t-2', 'border-emerald-600');
+        r.style.cursor = 'grab';
+      });
+      if (onReorder) {
+        const newOrder = Array.from(tbody.querySelectorAll('tr:not(.no-search-results)'));
+        onReorder(newOrder);
+      }
+    });
+
+    row.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (draggedRow && row !== draggedRow) {
+        const bounding = row.getBoundingClientRect();
+        const offset = bounding.y + bounding.height / 2;
+        if (e.clientY - offset > 0) {
+          row.after(draggedRow);
+        } else {
+          row.before(draggedRow);
+        }
+      }
+    });
+  });
+};
