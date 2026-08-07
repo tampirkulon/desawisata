@@ -36,7 +36,7 @@ export const renderAdminProfil = async () => {
       <main class="admin-main donezo-bg h-full overflow-hidden flex flex-col">
         ${renderAdminHeader('Pengaturan Profil Desa')}
 
-        <div class="flex-1 overflow-y-auto p-8 w-full max-w-5xl mx-auto">
+        <div class="flex-1 overflow-y-auto p-8 w-full">
           <!-- Page Header -->
           <div class="flex items-center justify-between flex-wrap gap-4 mb-8">
             <div>
