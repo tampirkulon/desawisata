@@ -140,7 +140,10 @@ export const renderKontak = async (queryParams) => {
 
           <!-- Map Box -->
           <div class="bg-surface-variant rounded-2xl h-64 w-full relative overflow-hidden shadow-level-1 border border-outline-variant/50 flex items-center justify-center">
-            <iframe class="w-full h-full border-0" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>
+            ${profil.google_maps_embed
+              ? profil.google_maps_embed.replace('<iframe', '<iframe class="w-full h-full border-0"')
+              : `<iframe class="w-full h-full border-0" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
+            }
           </div>
         </div>
       </div>

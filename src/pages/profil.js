@@ -18,14 +18,20 @@ export const renderProfil = async () => {
   const container = document.createElement('div');
   container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background';
 
+  const heroBg = profil.banner_url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80&fm=webp';
+  const namaDesa = profil.nama_desa || 'Desa Wisata Tampirkulon';
+  const tagline = profil.tagline || 'Mengenal lebih dekat warisan budaya, keindahan alam, dan visi pembangunan berkelanjutan di jantung Jawa Tengah.';
+  const sejarahParagraphs = (profil.sejarah || 'Desa Tampirkulon memiliki sejarah panjang yang terjalin erat dengan perkembangan peradaban agraris di lereng pegunungan.').split('\n').filter(p => p.trim());
+  const misiItems = (profil.misi || 'Melestarikan nilai-nilai budaya lokal.\nMenjaga keseimbangan ekosistem dan kebersihan lingkungan.\nMeningkatkan kesejahteraan ekonomi masyarakat.').split('\n').filter(m => m.trim());
+
   container.innerHTML = `
     ${renderNavbar()}
 
     <!-- Header Page Section -->
-    <section class="w-full bg-primary relative flex items-center justify-center overflow-hidden text-center text-white px-6 pt-20" style="min-height: 391px; background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center;">
+    <section class="w-full bg-primary relative flex items-center justify-center overflow-hidden text-center text-white px-6 pt-20" style="min-height: 391px; background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('${heroBg}'); background-size: cover; background-position: center;">
       <div class="max-w-container-max mx-auto text-center relative z-10 py-8">
-        <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Profil Desa Wisata Tampirkulon</h1>
-        <p class="text-primary-fixed-dim max-w-2xl mx-auto font-body-md text-base md:text-lg text-white/90">Mengenal lebih dekat warisan budaya, keindahan alam, dan visi pembangunan berkelanjutan di jantung Jawa Tengah.</p>
+        <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Profil ${namaDesa}</h1>
+        <p class="text-primary-fixed-dim max-w-2xl mx-auto font-body-md text-base md:text-lg text-white/90">${tagline}</p>
       </div>
     </section>
 
@@ -37,15 +43,7 @@ export const renderProfil = async () => {
           <article>
             <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-primary mb-4 border-b border-outline-variant/30 pb-3">Sejarah Desa</h2>
             <div class="font-body-md text-on-surface-variant leading-relaxed flex flex-col gap-4 text-base">
-              <p>
-                Desa Tampirkulon memiliki sejarah panjang yang terjalin erat dengan perkembangan peradaban agraris di lereng pegunungan. Berawal dari pemukiman kecil yang mengandalkan sumber air alami dan kesuburan tanah vulkanik, desa ini perlahan berkembang menjadi pusat komunitas yang memegang teguh tradisi leluhur.
-              </p>
-              <p>
-                Nama 'Tampirkulon' sendiri diyakini berasal dari alat tradisional penampi beras (tampah/tampir) yang melambangkan kemakmuran dan 'kulon' yang menunjukkan posisi geografis di sebelah barat. Warisan budaya ini dijaga turun-temurun, tercermin dalam arsitektur rumah tua, upacara adat panen, dan semangat gotong royong yang masih kental terasa di setiap sudut desa.
-              </p>
-              <p>
-                Transformasi menjadi Desa Wisata dimulai pada awal dekade 2000-an, didorong oleh inisiatif pemuda lokal yang menyadari potensi alam dan budaya mereka. Dengan pendekatan eko-pariwisata, Tampirkulon kini tidak hanya melestarikan warisannya tetapi juga membagikan keindahannya dengan dunia.
-              </p>
+              ${sejarahParagraphs.map(p => `<p>${p}</p>`).join('')}
             </div>
           </article>
 
@@ -57,18 +55,12 @@ export const renderProfil = async () => {
               
               <h3 class="font-display-lg text-xl font-bold text-primary mb-4">Misi</h3>
               <ul class="list-none flex flex-col gap-3 p-0">
-                <li class="flex items-start gap-3 text-sm text-on-surface-variant">
-                  <span class="material-symbols-outlined text-primary text-xl mt-0.5">check_circle</span>
-                  <span>Melestarikan nilai-nilai budaya dan tradisi lokal sebagai daya tarik utama wisata edukasi.</span>
-                </li>
-                <li class="flex items-start gap-3 text-sm text-on-surface-variant">
-                  <span class="material-symbols-outlined text-primary text-xl mt-0.5">eco</span>
-                  <span>Menjaga keseimbangan ekosistem dan kebersihan lingkungan melalui pengelolaan tata ruang yang ramah alam.</span>
-                </li>
-                <li class="flex items-start gap-3 text-sm text-on-surface-variant">
-                  <span class="material-symbols-outlined text-primary text-xl mt-0.5">group</span>
-                  <span>Meningkatkan kesejahteraan ekonomi masyarakat melalui pemberdayaan UMKM lokal dan pengelolaan pariwisata terpadu.</span>
-                </li>
+                ${misiItems.map(item => `
+                  <li class="flex items-start gap-3 text-sm text-on-surface-variant">
+                    <span class="material-symbols-outlined text-primary text-xl mt-0.5">check_circle</span>
+                    <span>${item.replace(/^[0-9]+[.)]\s*/, '')}</span>
+                  </li>
+                `).join('')}
               </ul>
             </div>
           </article>
@@ -80,10 +72,10 @@ export const renderProfil = async () => {
             <h3 class="font-display-lg text-2xl font-bold text-primary mb-6">Informasi Desa</h3>
             
             <div class="w-full h-48 bg-surface-variant rounded-xl mb-6 flex items-center justify-center overflow-hidden relative border border-outline-variant/30">
-              <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80" alt="Peta Lokasi" class="w-full h-full object-cover opacity-80" />
+              <img src="${heroBg}" alt="Foto Profil Desa" class="w-full h-full object-cover opacity-80" />
               <div class="absolute inset-0 bg-primary/20 backdrop-blur-[1px] flex flex-col items-center justify-center text-white">
                 <span class="material-symbols-outlined text-4xl mb-1 text-tertiary-fixed">location_on</span>
-                <span class="font-bold text-xs bg-black/50 px-3 py-1 rounded-full">Tampirkulon, Magelang</span>
+                <span class="font-bold text-xs bg-black/50 px-3 py-1 rounded-full">${namaDesa}</span>
               </div>
             </div>
 
@@ -94,7 +86,7 @@ export const renderProfil = async () => {
                 </div>
                 <div>
                   <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold">Luas Wilayah</p>
-                  <p class="font-display-lg text-lg font-bold text-primary">150+ Hektar</p>
+                  <p class="font-display-lg text-lg font-bold text-primary">${profil.luas_wilayah || '3.45 km²'}</p>
                 </div>
               </li>
               <li class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
@@ -103,7 +95,7 @@ export const renderProfil = async () => {
                 </div>
                 <div>
                   <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold">Populasi</p>
-                  <p class="font-display-lg text-lg font-bold text-primary">2.500+ Jiwa</p>
+                  <p class="font-display-lg text-lg font-bold text-primary">${profil.populasi || '2.850+ Jiwa'}</p>
                 </div>
               </li>
               <li class="flex items-start gap-4 p-4 bg-surface-container-low rounded-xl">
