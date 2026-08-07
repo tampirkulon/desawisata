@@ -34,13 +34,13 @@ export const getDateRange = (period) => {
 };
 
 /**
- * Fetch all dashboard statistics filtered by date range.
- * Falls back to mockData when Supabase is not configured.
+ * Fetch all dashboard statistics filtered by date range and calculate previous period growth.
  * @param {string|null} startDate - ISO date string (YYYY-MM-DD) or null for all time
  * @param {string} endDate - ISO date string (YYYY-MM-DD)
+ * @param {'hari'|'minggu'|'bulan'|'tahun'|'semua'} [period='minggu']
  * @returns {Promise<object>} DashboardStats
  */
-export const fetchDashboardStats = async (startDate, endDate) => {
+export const fetchDashboardStats = async (startDate, endDate, period = 'minggu') => {
   const stats = {
     reservasiPending: 0,
     reservasiDikonfirmasi: 0,
@@ -55,6 +55,12 @@ export const fetchDashboardStats = async (startDate, endDate) => {
     destinasiPopuler: [],
     chartData: [],
     pendingTestimonials: [],
+    growth: {
+      growthSelesai: 0,
+      growthPending: 0,
+      growthPendapatan: 0,
+      periodComparisonLabel: 'vs periode sebelumnya',
+    },
   };
 
   if (isSupabaseConfigured() && supabase) {
@@ -68,7 +74,68 @@ export const fetchDashboardStats = async (startDate, endDate) => {
     _fetchFromMock(stats, startDate, endDate);
   }
 
+  // Calculate dynamic growth rate compared to previous period
+  const prevRange = _getPreviousPeriodRange(period);
+  if (prevRange.startDate && prevRange.endDate) {
+    const prevStats = {
+      reservasiPending: 0,
+      reservasiDikonfirmasi: 0,
+      reservasiSelesai: 0,
+      estimasiPendapatan: 0,
+    };
+
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        await _fetchPreviousFromSupabase(prevStats, prevRange.startDate, prevRange.endDate);
+      } catch (e) {
+        _fetchPreviousFromMock(prevStats, prevRange.startDate, prevRange.endDate);
+      }
+    } else {
+      _fetchPreviousFromMock(prevStats, prevRange.startDate, prevRange.endDate);
+    }
+
+    stats.growth.growthSelesai = _calcPctGrowth(stats.reservasiSelesai, prevStats.reservasiSelesai);
+    stats.growth.growthPending = _calcPctGrowth(stats.reservasiPending, prevStats.reservasiPending);
+    stats.growth.growthPendapatan = _calcPctGrowth(stats.estimasiPendapatan, prevStats.estimasiPendapatan);
+    stats.growth.periodComparisonLabel = prevRange.comparisonLabel;
+  }
+
   return stats;
+};
+
+/**
+ * Export dashboard statistics and latest reservations to a CSV file.
+ * @param {object} stats 
+ * @param {string} periodLabel 
+ */
+export const exportDashboardReport = (stats, periodLabel) => {
+  const lines = [
+    `"LAPORAN RINGKASAN DASHBOARD DESA WISATA TAMPIRKULON"`,
+    `"Periode: ${periodLabel}"`,
+    `"Tanggal Cetak: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}"`,
+    ``,
+    `"METRIK UTAMA", "JUMLAH / NILAI"`,
+    `"Kunjungan Selesai", "${stats.reservasiSelesai}"`,
+    `"Reservasi Dalam Proses", "${stats.reservasiDikonfirmasi}"`,
+    `"Reservasi Perlu Konfirmasi", "${stats.reservasiPending}"`,
+    `"Estimasi Pendapatan", "Rp ${stats.estimasiPendapatan.toLocaleString('id-ID')}"`,
+    `"Total Destinasi Aktif", "${stats.totalDestinasi}"`,
+    ``,
+    `"DAFTAR RESERVASI TERBARU"`,
+    `"ID", "Tamu", "Telepon", "Paket Wisata", "Tanggal", "Jumlah Pax", "Status"`,
+    ...stats.recentReservations.map(r =>
+      `"${r.displayId}", "${r.nama_pemesan}", "${r.telepon}", "${r.paket}", "${r.tanggal}", "${r.jumlah_orang}", "${r.status}"`
+    ),
+  ];
+
+  const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + lines.join('\n');
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute('download', `Laporan-Dashboard-DesaWisata-${periodLabel.replace(/\s+/g, '_')}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
 
 // ============================================================
@@ -485,4 +552,100 @@ const _groupByMonthAllTime = (records, maxMonths) => {
     });
   }
   return result;
+};
+
+/** Get date range for previous comparison period. @private */
+const _getPreviousPeriodRange = (period) => {
+  const now = new Date();
+  switch (period) {
+    case 'hari': {
+      const yesterday = new Date(now);
+      yesterday.setDate(now.getDate() - 1);
+      const str = yesterday.toISOString().split('T')[0];
+      return { startDate: str, endDate: str, comparisonLabel: 'vs kemarin' };
+    }
+    case 'minggu': {
+      const prevEnd = new Date(now);
+      prevEnd.setDate(now.getDate() - 7);
+      const prevStart = new Date(prevEnd);
+      prevStart.setDate(prevEnd.getDate() - 6);
+      return {
+        startDate: prevStart.toISOString().split('T')[0],
+        endDate: prevEnd.toISOString().split('T')[0],
+        comparisonLabel: 'vs 7 hari sebelumnya',
+      };
+    }
+    case 'bulan': {
+      const prevStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const prevEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+      return {
+        startDate: prevStart.toISOString().split('T')[0],
+        endDate: prevEnd.toISOString().split('T')[0],
+        comparisonLabel: 'vs bulan lalu',
+      };
+    }
+    case 'tahun': {
+      const prevStart = new Date(now.getFullYear() - 1, 0, 1);
+      const prevEnd = new Date(now.getFullYear() - 1, 11, 31);
+      return {
+        startDate: prevStart.toISOString().split('T')[0],
+        endDate: prevEnd.toISOString().split('T')[0],
+        comparisonLabel: 'vs tahun lalu',
+      };
+    }
+    case 'semua':
+    default:
+      return { startDate: null, endDate: null, comparisonLabel: 'vs periode lalu' };
+  }
+};
+
+/** Calculate percentage growth between current and previous values. @private */
+const _calcPctGrowth = (currentVal, previousVal) => {
+  if (!previousVal || previousVal === 0) {
+    return currentVal > 0 ? 100 : 0;
+  }
+  return Math.round(((currentVal - previousVal) / previousVal) * 100);
+};
+
+/** Fetch summary stats for previous period from Supabase. @private */
+const _fetchPreviousFromSupabase = async (prevStats, startDate, endDate) => {
+  const buildCountQuery = (statusFilter) => {
+    let q = supabase.from('reservasi').select('*', { count: 'exact', head: true });
+    if (startDate) q = q.gte('tanggal_kunjungan', startDate);
+    q = q.lte('tanggal_kunjungan', endDate);
+    if (statusFilter === 'pending') {
+      q = q.or('status.eq.baru,status.eq.pending');
+    } else if (statusFilter) {
+      q = q.eq('status', statusFilter);
+    }
+    return q;
+  };
+
+  let revQuery = supabase.from('reservasi')
+    .select('jumlah_orang, paket_wisata(harga)')
+    .or('status.eq.selesai,status.eq.dikonfirmasi');
+  if (startDate) revQuery = revQuery.gte('tanggal_kunjungan', startDate);
+  revQuery = revQuery.lte('tanggal_kunjungan', endDate);
+
+  const [resPending, resSelesai, { data: revData }] = await Promise.all([
+    buildCountQuery('pending'),
+    buildCountQuery('selesai'),
+    revQuery,
+  ]);
+
+  prevStats.reservasiPending = resPending.count || 0;
+  prevStats.reservasiSelesai = resSelesai.count || 0;
+  if (revData) {
+    prevStats.estimasiPendapatan = revData.reduce((sum, r) => sum + ((r.jumlah_orang || 1) * (r.paket_wisata?.harga || 50000)), 0);
+  }
+};
+
+/** Fetch summary stats for previous period from mock. @private */
+const _fetchPreviousFromMock = (prevStats, startDate, endDate) => {
+  const filtered = _filterByDateRange(mockData.reservasi, 'tanggal_kunjungan', startDate, endDate);
+  prevStats.reservasiPending = filtered.filter(r => r.status === 'baru' || r.status === 'pending').length;
+  prevStats.reservasiSelesai = filtered.filter(r => r.status === 'selesai').length;
+  prevStats.estimasiPendapatan = filtered
+    .filter(r => r.status === 'selesai' || r.status === 'dikonfirmasi')
+    .reduce((sum, r) => sum + ((r.jumlah_orang || 1) * 50000), 0);
 };
