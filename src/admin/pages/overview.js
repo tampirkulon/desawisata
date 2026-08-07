@@ -36,10 +36,7 @@ export const renderAdminOverview = async () => {
       return '<div class="flex-1 flex items-center justify-center text-xs text-slate-400 font-medium py-8">Belum ada data kunjungan di periode ini.</div>';
     }
     const maxVal = Math.max(...chartData.map(d => d.value), 1);
-    // Limit to 7 bars for display
-    const displayData = chartData.length > 7
-      ? _sampleEvenly(chartData, 7)
-      : chartData;
+    const displayData = chartData; // Display all grouped buckets (5 hours, 7 days, 4 weeks, 12 months)
 
     return displayData.map((item) => {
       const pct = Math.max(5, Math.round((item.value / maxVal) * 92));
@@ -53,27 +50,17 @@ export const renderAdminOverview = async () => {
             : 'bg-slate-200/80';
 
       return `
-        <div class="group flex flex-col items-center gap-2 flex-1 h-full justify-end relative cursor-pointer">
-          ${isPeak ? `<span class="absolute -top-7 px-2 py-0.5 rounded-md bg-emerald-50 text-[#316342] font-bold text-[10px] border border-emerald-200 shadow-2xs">Puncak</span>` : ''}
+        <div class="group flex flex-col items-center gap-1.5 flex-1 h-full justify-end relative cursor-pointer min-w-0">
+          ${isPeak ? `<span class="absolute -top-7 px-1.5 py-0.5 rounded-md bg-emerald-50 text-[#316342] font-bold text-[9px] sm:text-[10px] border border-emerald-200 shadow-2xs whitespace-nowrap">Puncak</span>` : ''}
           <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute ${isPeak ? '-top-14' : '-top-11'} left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
             <span>${item.label}: <strong>${item.value} Wisatawan</strong></span>
             <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
           </div>
-          <div class="w-full max-w-[38px] ${barColor} group-hover:bg-[#316342] rounded-full transition-all duration-300 ${isPeak ? 'shadow-md' : ''}" style="height: ${pct}%"></div>
-          <span class="text-[11px] font-semibold ${isPeak ? 'text-[#316342] font-bold' : 'text-slate-400 group-hover:text-slate-700'}">${item.label}</span>
+          <div class="w-full max-w-[32px] sm:max-w-[38px] ${barColor} group-hover:bg-[#316342] rounded-full transition-all duration-300 ${isPeak ? 'shadow-md' : ''}" style="height: ${pct}%"></div>
+          <span class="text-[10px] sm:text-[11px] font-semibold text-center whitespace-nowrap truncate w-full ${isPeak ? 'text-[#316342] font-bold' : 'text-slate-400 group-hover:text-slate-700'}" title="${item.label}">${item.label}</span>
         </div>
       `;
     }).join('');
-  };
-
-  const _sampleEvenly = (arr, count) => {
-    if (arr.length <= count) return arr;
-    const result = [];
-    const step = (arr.length - 1) / (count - 1);
-    for (let i = 0; i < count; i++) {
-      result.push(arr[Math.round(i * step)]);
-    }
-    return result;
   };
 
   const _getChartSummary = (chartData) => {
