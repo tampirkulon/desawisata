@@ -6,14 +6,20 @@ import { mockData } from '../data/seed.js';
 export const renderProfil = async () => {
   let profil = mockData.profil_desa;
 
-  if (isSupabaseConfigured()) {
+  if (isSupabaseConfigured() && supabase) {
     try {
       const { data: prof } = await supabase.from('profil_desa').select('*').single();
-      if (prof) profil = prof;
+      if (prof) Object.assign(profil, prof);
     } catch (e) {
       console.warn('Fallback seed:', e);
     }
   }
+
+  try {
+    const extra = JSON.parse(localStorage.getItem('desa_wisata_profil_extra') || '{}');
+    if (extra.banner_url) profil.banner_url = extra.banner_url;
+    if (extra.logo_url) profil.logo_url = extra.logo_url;
+  } catch (_) {}
 
   const container = document.createElement('div');
   container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background';

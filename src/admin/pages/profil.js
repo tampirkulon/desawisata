@@ -17,11 +17,17 @@ export const renderAdminProfil = async () => {
     if (isSupabaseConfigured() && supabase) {
       try {
         const { data } = await supabase.from('profil_desa').select('*').single();
-        if (data) profil = data;
+        if (data) Object.assign(profil, data);
       } catch (e) {
         console.warn('Fallback:', e);
       }
     }
+
+    try {
+      const extra = JSON.parse(localStorage.getItem('desa_wisata_profil_extra') || '{}');
+      if (extra.banner_url) profil.banner_url = extra.banner_url;
+      if (extra.logo_url) profil.logo_url = extra.logo_url;
+    } catch (_) {}
   };
 
   await loadData();
@@ -277,8 +283,8 @@ export const renderAdminProfil = async () => {
         const payload = {
           nama_desa: document.getElementById('prof-nama')?.value.trim() || profil.nama_desa,
           tagline: document.getElementById('prof-tagline')?.value.trim() || profil.tagline,
-          logo_url: document.getElementById('prof-logo')?.value || profil.logo_url,
-          banner_url: document.getElementById('prof-banner')?.value || profil.banner_url,
+          logo_url: document.getElementById('prof-logo')?.value || profil.logo_url || '',
+          banner_url: document.getElementById('prof-banner')?.value || profil.banner_url || '',
           luas_wilayah: document.getElementById('prof-luas')?.value.trim() || profil.luas_wilayah,
           populasi: document.getElementById('prof-populasi')?.value.trim() || profil.populasi,
           sejarah: document.getElementById('prof-sejarah')?.value.trim() || profil.sejarah,
@@ -294,6 +300,14 @@ export const renderAdminProfil = async () => {
           google_maps_embed: document.getElementById('prof-maps')?.value.trim() || profil.google_maps_embed,
         };
 
+        // Always save complete payload to local cache & in-memory object
+        Object.assign(profil, payload);
+        Object.assign(mockData.profil_desa, payload);
+        localStorage.setItem('desa_wisata_profil_extra', JSON.stringify({
+          banner_url: payload.banner_url,
+          logo_url: payload.logo_url,
+        }));
+
         if (isSupabaseConfigured() && supabase) {
           try {
             if (profil?.id) {
@@ -305,12 +319,32 @@ export const renderAdminProfil = async () => {
             }
             showToast('Profil desa berhasil diperbarui & disinkronkan!', 'success');
           } catch (err) {
-            console.error('Save profile error:', err);
-            showToast('Gagal simpan profil: ' + err.message, 'error');
+            console.warn('Primary save failed, trying fallback schema without missing columns:', err);
+            
+            // If banner_url / logo_url column doesn't exist yet in remote schema, retry without those columns
+            if (err.message && (err.message.includes('banner_url') || err.message.includes('logo_url') || err.message.includes('schema cache'))) {
+              const sanitizedPayload = { ...payload };
+              delete sanitizedPayload.banner_url;
+              delete sanitizedPayload.logo_url;
+
+              try {
+                if (profil?.id) {
+                  const { error: retryErr } = await supabase.from('profil_desa').update(sanitizedPayload).eq('id', profil.id);
+                  if (retryErr) throw retryErr;
+                } else {
+                  const { error: retryErr } = await supabase.from('profil_desa').upsert([sanitizedPayload]);
+                  if (retryErr) throw retryErr;
+                }
+                showToast('Profil desa berhasil disimpan!', 'success');
+              } catch (innerErr) {
+                console.error('Retry error:', innerErr);
+                showToast('Gagal simpan profil: ' + innerErr.message, 'error');
+              }
+            } else {
+              showToast('Gagal simpan profil: ' + err.message, 'error');
+            }
           }
         } else {
-          Object.assign(profil, payload);
-          Object.assign(mockData.profil_desa, payload);
           showToast('Profil desa diperbarui & tersinkronisasi (Mode Demo)!', 'success');
         }
 

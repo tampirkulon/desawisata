@@ -110,6 +110,8 @@ CREATE TABLE IF NOT EXISTS profil_desa (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nama_desa TEXT DEFAULT 'Desa Wisata Tampirkulon',
     tagline TEXT DEFAULT 'Keindahan Alam & Pesona Budaya Candimulyo',
+    logo_url TEXT,
+    banner_url TEXT,
     sejarah TEXT,
     visi TEXT,
     misi TEXT,
@@ -126,6 +128,10 @@ CREATE TABLE IF NOT EXISTS profil_desa (
     youtube TEXT,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Migration support for existing database
+ALTER TABLE profil_desa ADD COLUMN IF NOT EXISTS logo_url TEXT;
+ALTER TABLE profil_desa ADD COLUMN IF NOT EXISTS banner_url TEXT;
 
 DROP TRIGGER IF EXISTS update_profil_desa_updated_at ON profil_desa;
 CREATE TRIGGER update_profil_desa_updated_at
