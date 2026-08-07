@@ -56,7 +56,8 @@ export const initTableSearch = (container, options = {}) => {
     let visibleCount = 0;
 
     rows.forEach(row => {
-      const text = row.textContent.toLowerCase();
+      const cells = Array.from(row.querySelectorAll('td')).slice(0, -1);
+      const text = (cells.length > 0 ? cells.map(c => c.textContent).join(' ') : row.textContent).toLowerCase();
       const match = text.includes(query);
       row.style.display = match ? '' : 'none';
       if (match) visibleCount++;
