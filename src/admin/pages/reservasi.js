@@ -1,7 +1,7 @@
 import { auth } from '../../utils/auth.js';
 import { renderAdminSidebar, initAdminSidebarEvents } from '../components/sidebar.js';
 import { renderAdminHeader } from '../components/header.js';
-import { renderDataTable } from '../components/data-table.js';
+import { renderDataTable, initTableSearch } from '../components/data-table.js';
 import { openAdminModal } from '../components/modal.js';
 import { showToast } from '../../components/toast.js';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
@@ -87,6 +87,7 @@ export const renderAdminReservasi = async () => {
 
   const bindEvents = (dataToRender) => {
     initAdminSidebarEvents();
+    initTableSearch(container);
 
     container.querySelectorAll('.filter-rsv-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {

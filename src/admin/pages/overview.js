@@ -138,7 +138,7 @@ export const renderAdminOverview = async () => {
             `).join('')}
           </div>
 
-          <button id="export-report-btn" class="px-4 py-2 rounded-full bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200 transition-colors flex items-center gap-1.5 shadow-2xs">
+          <button id="export-report-btn" class="px-4 py-2 rounded-full bg-[#316342] hover:bg-[#254d33] text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm">
             <span class="material-symbols-outlined text-sm">download</span>
             Ekspor Laporan
           </button>

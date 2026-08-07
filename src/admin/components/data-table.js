@@ -30,3 +30,57 @@ export const renderDataTable = ({ columns, data, searchPlaceholder = 'Cari data.
     </div>
   `;
 };
+
+/**
+ * Attaches real-time client-side search filtering to the data table.
+ * @param {HTMLElement} container - Page container element
+ * @param {object} [options]
+ * @param {string} [options.searchInputId='table-search']
+ * @param {string} [options.tableBodyId='table-body-element']
+ */
+export const initTableSearch = (container, options = {}) => {
+  const {
+    searchInputId = 'table-search',
+    tableBodyId = 'table-body-element',
+  } = options;
+
+  const searchInput = container.querySelector(`#${searchInputId}`);
+  const tbody = container.querySelector(`#${tableBodyId}`);
+
+  if (!searchInput || !tbody) return;
+
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.trim().toLowerCase();
+    const rows = Array.from(tbody.querySelectorAll('tr:not(.no-search-results)'));
+
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      const match = text.includes(query);
+      row.style.display = match ? '' : 'none';
+      if (match) visibleCount++;
+    });
+
+    // Handle no matching rows indicator
+    let noResultRow = tbody.querySelector('.no-search-results');
+    if (visibleCount === 0 && query !== '') {
+      if (!noResultRow) {
+        const colCount = container.querySelectorAll('#data-table-element th').length || 5;
+        noResultRow = document.createElement('tr');
+        noResultRow.className = 'no-search-results';
+        noResultRow.innerHTML = `
+          <td colspan="${colCount}" style="text-align: center; color: var(--neutral-600); padding: 32px 16px;">
+            Tidak ada data yang sesuai dengan pencarian "<strong>${e.target.value}</strong>"
+          </td>
+        `;
+        tbody.appendChild(noResultRow);
+      } else {
+        noResultRow.style.display = '';
+        noResultRow.querySelector('td').innerHTML = `Tidak ada data yang sesuai dengan pencarian "<strong>${e.target.value}</strong>"`;
+      }
+    } else if (noResultRow) {
+      noResultRow.style.display = 'none';
+    }
+  });
+};

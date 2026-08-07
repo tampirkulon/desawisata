@@ -48,12 +48,17 @@ export const renderAdminGaleri = async () => {
             </button>
           </div>
 
+          <!-- Search & Filter Toolbar -->
+          <div class="mb-6 flex items-center justify-between flex-wrap gap-4">
+            <input type="text" class="search-input w-full max-w-md px-4 py-2 bg-white border border-slate-200 rounded-full text-xs focus:outline-none focus:ring-2 focus:ring-[#316342] shadow-2xs" id="galeri-search" placeholder="Cari media galeri..." />
+          </div>
+
           <!-- Grid Thumbnail View -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
+          <div id="galeri-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
             ${galeriList.length === 0 ? `
               <p style="grid-column: 1/-1; text-align: center; color: var(--neutral-600); padding: 40px;">Belum ada media di galeri.</p>
             ` : galeriList.map(item => `
-              <div class="card" style="padding: 0; overflow: hidden; position: relative;">
+              <div class="card galeri-card-item" style="padding: 0; overflow: hidden; position: relative;">
                 <img src="${item.url}" style="width: 100%; height: 160px; object-fit: cover;" />
                 <div style="padding: 12px;">
                   <strong style="font-size: 0.95rem; display: block;">${item.judul || 'Foto'}</strong>
@@ -75,6 +80,17 @@ export const renderAdminGaleri = async () => {
 
   const bindEvents = () => {
     initAdminSidebarEvents();
+
+    const searchInput = container.querySelector('#galeri-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const q = e.target.value.trim().toLowerCase();
+        container.querySelectorAll('.galeri-card-item').forEach(card => {
+          const text = card.textContent.toLowerCase();
+          card.style.display = text.includes(q) ? '' : 'none';
+        });
+      });
+    }
 
     container.querySelector('#upload-galeri-btn')?.addEventListener('click', () => openUploadModal());
 

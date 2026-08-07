@@ -1,7 +1,7 @@
 import { auth } from '../../utils/auth.js';
 import { renderAdminSidebar, initAdminSidebarEvents } from '../components/sidebar.js';
 import { renderAdminHeader } from '../components/header.js';
-import { renderDataTable } from '../components/data-table.js';
+import { renderDataTable, initTableSearch } from '../components/data-table.js';
 import { openAdminModal, openConfirmModal } from '../components/modal.js';
 import { showToast } from '../../components/toast.js';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
@@ -73,6 +73,7 @@ export const renderAdminKategori = async () => {
 
   const bindEvents = () => {
     initAdminSidebarEvents();
+    initTableSearch(container);
 
     const tbody = container.querySelector('#table-body-element');
     if (tbody && kategoriList.length > 0) {
