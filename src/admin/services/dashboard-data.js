@@ -187,7 +187,8 @@ const _fetchFromMock = (stats, startDate, endDate) => {
 
 /** @private */
 const _fetchFromSupabase = async (stats, startDate, endDate) => {
-  // --- Reservasi counts (filtered by tanggal_kunjungan) ---
+  const today = new Date().toISOString().split('T')[0];
+
   const buildCountQuery = (statusFilter) => {
     let q = supabase.from('reservasi').select('*', { count: 'exact', head: true });
     if (startDate) q = q.gte('tanggal_kunjungan', startDate);
@@ -200,35 +201,74 @@ const _fetchFromSupabase = async (stats, startDate, endDate) => {
     return q;
   };
 
-  const [resPending, resDikonfirmasi, resSelesai] = await Promise.all([
+  let revQuery = supabase.from('reservasi')
+    .select('jumlah_orang, paket_wisata(harga)')
+    .or('status.eq.selesai,status.eq.dikonfirmasi');
+  if (startDate) revQuery = revQuery.gte('tanggal_kunjungan', startDate);
+  revQuery = revQuery.lte('tanggal_kunjungan', endDate);
+
+  let recQuery = supabase.from('reservasi')
+    .select('*, paket_wisata(nama, harga)')
+    .order('created_at', { ascending: false })
+    .limit(5);
+  if (startDate) recQuery = recQuery.gte('tanggal_kunjungan', startDate);
+  recQuery = recQuery.lte('tanggal_kunjungan', endDate);
+
+  let popQuery = supabase.from('reservasi')
+    .select('paket_id, jumlah_orang');
+  if (startDate) popQuery = popQuery.gte('tanggal_kunjungan', startDate);
+  popQuery = popQuery.lte('tanggal_kunjungan', endDate);
+
+  let chartQuery = supabase.from('reservasi')
+    .select('tanggal_kunjungan, jumlah_orang');
+  if (startDate) chartQuery = chartQuery.gte('tanggal_kunjungan', startDate);
+  chartQuery = chartQuery.lte('tanggal_kunjungan', endDate);
+
+  // Execute ALL 16 Supabase queries in PARALLEL via a single Promise.all
+  const [
+    resPending,
+    resDikonfirmasi,
+    resSelesai,
+    cDest,
+    cPaket,
+    cBlog,
+    cGal,
+    { data: revData },
+    { data: recData },
+    { data: agendaData },
+    { data: popData },
+    { data: allDest },
+    { data: allPaket },
+    { data: allKategori },
+    { data: chartRaw },
+    { data: pendTest }
+  ] = await Promise.all([
     buildCountQuery('pending'),
     buildCountQuery('dikonfirmasi'),
     buildCountQuery('selesai'),
+    supabase.from('destinasi').select('*', { count: 'exact', head: true }),
+    supabase.from('paket_wisata').select('*', { count: 'exact', head: true }),
+    supabase.from('artikel').select('*', { count: 'exact', head: true }),
+    supabase.from('galeri').select('*', { count: 'exact', head: true }),
+    revQuery,
+    recQuery,
+    supabase.from('reservasi').select('*, paket_wisata(nama)').eq('tanggal_kunjungan', today).neq('status', 'dibatalkan').order('created_at', { ascending: true }),
+    popQuery,
+    supabase.from('destinasi').select('id, nama, kategori_id'),
+    supabase.from('paket_wisata').select('id, nama, destinasi_ids'),
+    supabase.from('kategori_wisata').select('id, nama'),
+    chartQuery,
+    supabase.from('testimoni').select('*').eq('is_shown', false).order('created_at', { ascending: false })
   ]);
 
   stats.reservasiPending = resPending.count || 0;
   stats.reservasiDikonfirmasi = resDikonfirmasi.count || 0;
   stats.reservasiSelesai = resSelesai.count || 0;
 
-  // --- Static counts (not date-filtered) ---
-  const [cDest, cPaket, cBlog, cGal] = await Promise.all([
-    supabase.from('destinasi').select('*', { count: 'exact', head: true }),
-    supabase.from('paket_wisata').select('*', { count: 'exact', head: true }),
-    supabase.from('artikel').select('*', { count: 'exact', head: true }),
-    supabase.from('galeri').select('*', { count: 'exact', head: true }),
-  ]);
   stats.totalDestinasi = cDest.count || 0;
   stats.totalPaket = cPaket.count || 0;
   stats.totalArtikel = cBlog.count || 0;
   stats.totalGaleri = cGal.count || 0;
-
-  // --- Estimasi Pendapatan (ALL matching, no .limit()) ---
-  let revQuery = supabase.from('reservasi')
-    .select('jumlah_orang, paket_wisata(harga)')
-    .or('status.eq.selesai,status.eq.dikonfirmasi');
-  if (startDate) revQuery = revQuery.gte('tanggal_kunjungan', startDate);
-  revQuery = revQuery.lte('tanggal_kunjungan', endDate);
-  const { data: revData } = await revQuery;
 
   if (revData) {
     stats.estimasiPendapatan = revData.reduce((sum, r) => {
@@ -237,15 +277,6 @@ const _fetchFromSupabase = async (stats, startDate, endDate) => {
       return sum + (pax * price);
     }, 0);
   }
-
-  // --- Recent Reservations (max 5, within period) ---
-  let recQuery = supabase.from('reservasi')
-    .select('*, paket_wisata(nama, harga)')
-    .order('created_at', { ascending: false })
-    .limit(5);
-  if (startDate) recQuery = recQuery.gte('tanggal_kunjungan', startDate);
-  recQuery = recQuery.lte('tanggal_kunjungan', endDate);
-  const { data: recData } = await recQuery;
 
   if (recData && recData.length > 0) {
     stats.recentReservations = recData.map((r, i) => ({
@@ -262,14 +293,6 @@ const _fetchFromSupabase = async (stats, startDate, endDate) => {
     }));
   }
 
-  // --- Agenda Hari Ini (always today) ---
-  const today = new Date().toISOString().split('T')[0];
-  const { data: agendaData } = await supabase.from('reservasi')
-    .select('*, paket_wisata(nama)')
-    .eq('tanggal_kunjungan', today)
-    .neq('status', 'dibatalkan')
-    .order('created_at', { ascending: true });
-
   if (agendaData) {
     stats.agendaHariIni = agendaData.map(r => ({
       id: r.id,
@@ -280,17 +303,6 @@ const _fetchFromSupabase = async (stats, startDate, endDate) => {
       status: r.status,
     }));
   }
-
-  // --- Destinasi Populer (ranked by reservation pax in period) ---
-  let popQuery = supabase.from('reservasi')
-    .select('paket_id, jumlah_orang');
-  if (startDate) popQuery = popQuery.gte('tanggal_kunjungan', startDate);
-  popQuery = popQuery.lte('tanggal_kunjungan', endDate);
-  const { data: popData } = await popQuery;
-
-  const { data: allDest } = await supabase.from('destinasi').select('id, nama, kategori_id');
-  const { data: allPaket } = await supabase.from('paket_wisata').select('id, nama, destinasi_ids');
-  const { data: allKategori } = await supabase.from('kategori_wisata').select('id, nama');
 
   if (popData && allDest && allPaket) {
     const paketPax = {};
@@ -315,22 +327,9 @@ const _fetchFromSupabase = async (stats, startDate, endDate) => {
     }).sort((a, b) => b.totalPengunjung - a.totalPengunjung).slice(0, 3);
   }
 
-  // --- Chart Data ---
-  let chartQuery = supabase.from('reservasi')
-    .select('tanggal_kunjungan, jumlah_orang');
-  if (startDate) chartQuery = chartQuery.gte('tanggal_kunjungan', startDate);
-  chartQuery = chartQuery.lte('tanggal_kunjungan', endDate);
-  const { data: chartRaw } = await chartQuery;
-
   if (chartRaw) {
     stats.chartData = _buildChartData(chartRaw, startDate, endDate);
   }
-
-  // --- Pending Testimonials (not date-filtered) ---
-  const { data: pendTest } = await supabase.from('testimoni')
-    .select('*')
-    .eq('is_shown', false)
-    .order('created_at', { ascending: false });
 
   if (pendTest) stats.pendingTestimonials = pendTest;
 };
