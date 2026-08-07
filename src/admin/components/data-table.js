@@ -57,9 +57,22 @@ export const initTableSearch = (container, options = {}) => {
     const table = tbody.closest('table');
     const headers = table ? Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim().toLowerCase()) : [];
 
+    const excludedKeywords = [
+      'status',
+      'aksi',
+      'action',
+      'durasi',
+      'tiket',
+      'harga',
+      'urutan',
+      'jumlah',
+      'paket / jenis',
+      'paket/jenis'
+    ];
+
     const excludedIndices = new Set();
     headers.forEach((h, idx) => {
-      if (h === 'status' || h === 'aksi' || h === 'action' || h === 'durasi' || h.includes('durasi')) {
+      if (excludedKeywords.some(kw => h.includes(kw))) {
         excludedIndices.add(idx);
       }
     });
