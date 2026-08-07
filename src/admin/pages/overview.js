@@ -137,11 +137,6 @@ export const renderAdminOverview = async () => {
               </button>
             `).join('')}
           </div>
-
-          <a href="#/admin/destinasi" class="px-5 py-2.5 rounded-full bg-[#316342] text-white font-bold text-xs hover:bg-[#254d33] transition-colors shadow-md flex items-center gap-2">
-            <span class="material-symbols-outlined text-sm">add</span>
-            Tambah Destinasi
-          </a>
         </div>
       </div>
 
