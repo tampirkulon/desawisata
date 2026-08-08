@@ -1,5 +1,6 @@
 /* ============================================================
    ADMIN DASHBOARD STYLES
+   PALETTE: #123524, #3E7B27, #85A947, #EFE3C2
    ============================================================ */
 
 .dashboard-wrapper {
@@ -7,7 +8,7 @@
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background-color: var(--bg-donezo, #f4f6f5);
+  background-color: var(--bg-donezo, #f5f7f4);
 }
 
 /* Admin Sidebar */
@@ -28,11 +29,11 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(18, 53, 36, 0.08);
 }
 
 .sidebar-title {
-  color: var(--neutral-900);
+  color: #123524;
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 700;
@@ -62,7 +63,7 @@
 
 .menu-item a:hover {
   background-color: var(--neutral-100);
-  color: var(--neutral-900);
+  color: #123524;
 }
 
 .menu-item.active a {
@@ -85,7 +86,7 @@
   min-width: 0;
   height: 100vh;
   overflow: hidden;
-  background-color: var(--bg-donezo, #f4f6f5);
+  background-color: var(--bg-donezo, #f5f7f4);
 }
 
 .admin-header {
@@ -185,7 +186,7 @@
 
 .search-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(49, 99, 66, 0.15);
+  box-shadow: 0 0 0 3px rgba(62, 123, 39, 0.15);
 }
 
 .table-wrapper {
@@ -234,7 +235,7 @@
   font-weight: 600;
   font-size: 0.8125rem;
   margin-bottom: 6px;
-  color: #334155;
+  color: #123524;
 }
 
 .form-control,
@@ -257,11 +258,11 @@ textarea.form-control,
 .modal-body textarea {
   width: 100%;
   padding: 10px 14px !important;
-  border: 1.5px solid #cbd5e1 !important;
+  border: 1.5px solid #cdd8c9 !important;
   border-radius: 12px !important;
   outline: none !important;
   background-color: #ffffff !important;
-  color: #0f172a !important;
+  color: #123524 !important;
   font-size: 0.875rem !important;
   font-family: var(--font-body) !important;
   line-height: 1.5 !important;
@@ -275,11 +276,11 @@ textarea.form-control,
   width: 18px !important;
   height: 18px !important;
   padding: 0 !important;
-  border: 1.5px solid #cbd5e1 !important;
+  border: 1.5px solid #cdd8c9 !important;
   border-radius: 4px !important;
   cursor: pointer !important;
   box-shadow: none !important;
-  accent-color: #316342 !important;
+  accent-color: #3E7B27 !important;
 }
 
 .form-control:hover,
@@ -291,7 +292,7 @@ textarea.form-control:hover,
 .modal-body input:not([type="checkbox"]):not([type="radio"]):hover,
 .modal-body select:hover,
 .modal-body textarea:hover {
-  border-color: #94a3b8 !important;
+  border-color: #85A947 !important;
 }
 
 .form-control:focus,
@@ -303,8 +304,8 @@ textarea.form-control:focus,
 .modal-body input:not([type="checkbox"]):not([type="radio"]):focus,
 .modal-body select:focus,
 .modal-body textarea:focus {
-  border-color: #316342 !important;
-  box-shadow: 0 0 0 3px rgba(49, 99, 66, 0.15) !important;
+  border-color: #3E7B27 !important;
+  box-shadow: 0 0 0 3px rgba(62, 123, 39, 0.15) !important;
   background-color: #ffffff !important;
 }
 
@@ -316,7 +317,7 @@ select,
   appearance: none !important;
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%2523475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%25233E7B27'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
   background-position: right 14px center !important;
   background-size: 16px 16px !important;
@@ -350,11 +351,11 @@ textarea {
 
 /* Dropzone Upload */
 .dropzone {
-  border: 2px dashed #94a3b8;
+  border: 2px dashed #85A947;
   border-radius: var(--radius-lg);
   padding: 24px;
   text-align: center;
-  background-color: #f8fafc;
+  background-color: #fcfbf8;
   cursor: pointer;
   color: var(--neutral-600);
   font-weight: 500;
@@ -363,7 +364,7 @@ textarea {
 
 .dropzone:hover {
   border-color: var(--primary);
-  background-color: #f0fdf4;
+  background-color: #f1f6ee;
   color: var(--primary);
 }
 
@@ -385,34 +386,34 @@ textarea {
    ============================================================ */
 
 .donezo-bg {
-  background-color: var(--bg-donezo, #f4f6f5);
+  background-color: var(--bg-donezo, #f5f7f4);
 }
 
 .donezo-card {
   background-color: #ffffff;
   border-radius: var(--radius-donezo, 24px);
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e2e8e2;
+  box-shadow: 0 4px 20px rgba(18, 53, 36, 0.03);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .donezo-card:hover {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 30px rgba(18, 53, 36, 0.06);
 }
 
 .donezo-hero-card {
-  background: linear-gradient(135deg, #316342 0%, #1e452c 100%);
+  background: linear-gradient(135deg, #123524 0%, #3E7B27 100%);
   color: #ffffff;
   border-radius: var(--radius-donezo, 24px);
-  box-shadow: 0 10px 25px rgba(49, 99, 66, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 25px rgba(18, 53, 36, 0.25);
+  border: 1px solid rgba(239, 227, 194, 0.15);
 }
 
 .donezo-cta-card {
-  background: linear-gradient(135deg, #1b3d27 0%, #0e2417 100%);
+  background: linear-gradient(135deg, #123524 0%, #1a422f 100%);
   border-radius: 20px;
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(239, 227, 194, 0.15);
   padding: 20px;
   position: relative;
   overflow: hidden;
@@ -425,7 +426,7 @@ textarea {
   right: -30%;
   width: 120px;
   height: 120px;
-  background: radial-gradient(circle, rgba(74, 222, 128, 0.2) 0%, rgba(0,0,0,0) 70%);
+  background: radial-gradient(circle, rgba(133, 169, 71, 0.25) 0%, rgba(0,0,0,0) 70%);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -436,7 +437,7 @@ textarea {
   gap: 12px;
   padding: 10px 16px;
   border-radius: 14px;
-  color: #64748b;
+  color: #647464;
   font-family: var(--font-label);
   font-weight: 500;
   font-size: 0.9rem;
@@ -445,15 +446,15 @@ textarea {
 }
 
 .donezo-sidebar-item:hover {
-  color: #0f172a;
-  background-color: #f1f5f9;
+  color: #123524;
+  background-color: #f1f5f1;
 }
 
 .donezo-sidebar-item.active {
-  color: #316342;
-  background-color: #e8f5e9;
+  color: #3E7B27;
+  background-color: #f1f6ee;
   font-weight: 700;
-  border-left: 4px solid #316342;
+  border-left: 4px solid #3E7B27;
 }
 
 .donezo-sidebar-item.active::before {
@@ -466,7 +467,7 @@ textarea {
 .search-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
+  background: rgba(18, 53, 36, 0.45);
   backdrop-filter: blur(8px);
   z-index: 9999;
   display: flex;
@@ -488,8 +489,8 @@ textarea {
   border-radius: 20px;
   width: 100%;
   max-width: 620px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 25px 50px -12px rgba(18, 53, 36, 0.25);
+  border: 1px solid #cdd8c9;
   overflow: hidden;
   animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -503,12 +504,12 @@ textarea {
   display: flex;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f1;
   gap: 12px;
 }
 
 .search-modal-header .search-icon {
-  color: #94a3b8;
+  color: #85A947;
   font-size: 1.25rem;
 }
 
@@ -517,7 +518,7 @@ textarea {
   border: none !important;
   outline: none !important;
   font-size: 0.95rem !important;
-  color: #0f172a !important;
+  color: #123524 !important;
   background: transparent !important;
   padding: 0 !important;
   box-shadow: none !important;
@@ -526,9 +527,9 @@ textarea {
 .search-modal-kbd {
   font-size: 10px;
   font-weight: 700;
-  color: #94a3b8;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  color: #85A947;
+  background: #f8faf8;
+  border: 1px solid #cdd8c9;
   padding: 2px 6px;
   border-radius: 6px;
 }
@@ -545,7 +546,7 @@ textarea {
 .search-placeholder-hint {
   padding: 24px;
   text-align: center;
-  color: #94a3b8;
+  color: #85A947;
   font-size: 0.85rem;
 }
 
@@ -564,22 +565,22 @@ textarea {
   padding: 10px 14px;
   border-radius: 14px;
   text-decoration: none;
-  color: #1e293b;
+  color: #123524;
   transition: all 0.15s ease;
 }
 
 .palette-result-item:hover,
 .palette-result-item.active {
-  background-color: #e8f5e9;
-  color: #316342;
+  background-color: #f1f6ee;
+  color: #3E7B27;
 }
 
 .palette-icon-box {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background-color: #f1f5f9;
-  color: #64748b;
+  background-color: #f1f5f1;
+  color: #647464;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -587,7 +588,7 @@ textarea {
 }
 
 .palette-result-item.active .palette-icon-box {
-  background-color: #316342;
+  background-color: #3E7B27;
   color: #ffffff;
 }
 
@@ -606,7 +607,7 @@ textarea {
 
 .palette-item-subtitle {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #647464;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -619,13 +620,13 @@ textarea {
   letter-spacing: 0.05em;
   padding: 3px 8px;
   border-radius: 6px;
-  background-color: #f1f5f9;
-  color: #64748b;
+  background-color: #EFE3C2;
+  color: #123524;
 }
 
 .palette-result-item.active .palette-category-badge {
-  background-color: #c8e6c9;
-  color: #1b3d27;
+  background-color: #85A947;
+  color: #ffffff;
 }
 
 .search-modal-footer {
@@ -634,9 +635,8 @@ textarea {
   justify-content: flex-end;
   gap: 16px;
   padding: 10px 20px;
-  background: #f8fafc;
-  border-top: 1px solid #f1f5f9;
+  background: #f8faf8;
+  border-top: 1px solid #f1f5f1;
   font-size: 11px;
-  color: #64748b;
+  color: #647464;
 }
-

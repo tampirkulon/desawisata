@@ -25,8 +25,8 @@ export const renderAdminProfil = async () => {
         <div class="flex-1 overflow-y-auto p-6 md:p-8 w-full pb-28">
           <!-- Page Title -->
           <div class="mb-8">
-            <h1 class="font-display-lg text-2xl md:text-3xl font-extrabold text-slate-800 m-0">Pengaturan Profil Desa</h1>
-            <p class="text-xs md:text-sm font-medium text-slate-400 m-0 mt-1.5">Kelola seluruh informasi identitas, narasi, media visual, dan kontak desa wisata dalam satu halaman.</p>
+            <h1 class="font-display-lg text-2xl md:text-3xl font-extrabold text-[#123524] m-0">Pengaturan Profil Desa</h1>
+            <p class="text-xs md:text-sm font-medium text-slate-500 m-0 mt-1.5">Kelola seluruh informasi identitas, narasi, media visual, dan kontak desa wisata dalam satu halaman.</p>
           </div>
 
           <!-- Main Unified Profile Form -->
@@ -34,38 +34,38 @@ export const renderAdminProfil = async () => {
             
             <!-- SECTION 1: IDENTITAS & INFORMASI UMUM -->
             <div class="donezo-card p-6 md:p-8 space-y-6">
-              <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
-                <div class="w-9 h-9 rounded-xl bg-emerald-50 text-[#316342] flex items-center justify-center font-bold">
+              <div class="flex items-center gap-3 border-b border-[#e2e8e2] pb-4">
+                <div class="w-9 h-9 rounded-xl bg-[#EFE3C2] text-[#123524] flex items-center justify-center font-bold">
                   <span class="material-symbols-outlined text-xl">domain</span>
                 </div>
                 <div>
-                  <h3 class="text-base font-bold text-slate-800 m-0">1. Identitas & Informasi Umum</h3>
-                  <p class="text-xs text-slate-400 m-0">Data pokok identitas dan profil statistik desa wisata.</p>
+                  <h3 class="text-base font-bold text-[#123524] m-0">1. Identitas & Informasi Umum</h3>
+                  <p class="text-xs text-slate-500 m-0">Data pokok identitas dan profil statistik desa wisata.</p>
                 </div>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="form-group">
-                  <label class="form-label font-semibold text-slate-700 text-xs">Nama Resmi Desa Wisata <span class="text-rose-500">*</span></label>
+                  <label class="form-label font-semibold text-[#123524] text-xs">Nama Resmi Desa Wisata <span class="text-rose-500">*</span></label>
                   <input type="text" id="prof-nama" class="form-control" value="${profil.nama_desa || ''}" required placeholder="Contoh: Desa Wisata Tampirkulon" />
                 </div>
                 <div class="form-group">
-                  <label class="form-label font-semibold text-slate-700 text-xs">Slogan / Tagline Resmi</label>
+                  <label class="form-label font-semibold text-[#123524] text-xs">Slogan / Tagline Resmi</label>
                   <input type="text" id="prof-tagline" class="form-control" value="${profil.tagline || ''}" placeholder="Contoh: Keindahan Alam & Pesona Budaya..." />
                 </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="form-group">
-                  <label class="form-label font-semibold text-slate-700 text-xs">Luas Wilayah</label>
+                  <label class="form-label font-semibold text-[#123524] text-xs">Luas Wilayah</label>
                   <input type="text" id="prof-luas" class="form-control" value="${profil.luas_wilayah || ''}" placeholder="Contoh: 3.45 km²" />
                 </div>
                 <div class="form-group">
-                  <label class="form-label font-semibold text-slate-700 text-xs">Jumlah Populasi / Penduduk</label>
+                  <label class="form-label font-semibold text-[#123524] text-xs">Jumlah Populasi / Penduduk</label>
                   <input type="text" id="prof-populasi" class="form-control" value="${profil.populasi || ''}" placeholder="Contoh: 2.850+ Jiwa" />
                 </div>
                 <div class="form-group">
-                  <label class="form-label font-semibold text-slate-700 text-xs">Jam Operasional Wisata</label>
+                  <label class="form-label font-semibold text-[#123524] text-xs">Jam Operasional Wisata</label>
                   <input type="text" id="prof-jam" class="form-control" value="${profil.jam_operasional || ''}" placeholder="Contoh: Senin - Minggu: 08:00 - 17:00 WIB" />
                 </div>
               </div>
@@ -73,28 +73,28 @@ export const renderAdminProfil = async () => {
 
             <!-- SECTION 2: NARASI SEJARAH, VISI & MISI -->
             <div class="donezo-card p-6 md:p-8 space-y-6">
-              <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
-                <div class="w-9 h-9 rounded-xl bg-emerald-50 text-[#316342] flex items-center justify-center font-bold">
+              <div class="flex items-center gap-3 border-b border-[#e2e8e2] pb-4">
+                <div class="w-9 h-9 rounded-xl bg-[#EFE3C2] text-[#123524] flex items-center justify-center font-bold">
                   <span class="material-symbols-outlined text-xl">auto_stories</span>
                 </div>
                 <div>
-                  <h3 class="text-base font-bold text-slate-800 m-0">2. Narasi Sejarah, Visi & Misi</h3>
-                  <p class="text-xs text-slate-400 m-0">Cerita latar belakang dan cita-cita pengembangan desa wisata.</p>
+                  <h3 class="text-base font-bold text-[#123524] m-0">2. Narasi Sejarah, Visi & Misi</h3>
+                  <p class="text-xs text-slate-500 m-0">Cerita latar belakang dan cita-cita pengembangan desa wisata.</p>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="form-label font-semibold text-slate-700 text-xs">Sejarah & Latar Belakang Desa (Teks Lengkap)</label>
+                <label class="form-label font-semibold text-[#123524] text-xs">Sejarah & Latar Belakang Desa (Teks Lengkap)</label>
                 <textarea id="prof-sejarah" class="form-control leading-relaxed text-sm" rows="5" placeholder="Tuliskan sejarah desa, awal mula terbentuknya desa wisata, serta keunikan budayanya...">${profil.sejarah || ''}</textarea>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="form-group">
-                  <label class="form-label font-semibold text-slate-700 text-xs">Visi Desa Wisata</label>
+                  <label class="form-label font-semibold text-[#123524] text-xs">Visi Desa Wisata</label>
                   <textarea id="prof-visi" class="form-control leading-relaxed text-sm" rows="4" placeholder="Tuliskan visi masa depan desa wisata...">${profil.visi || ''}</textarea>
                 </div>
                 <div class="form-group">
-                  <label class="form-label font-semibold text-slate-700 text-xs flex items-center justify-between">
+                  <label class="form-label font-semibold text-[#123524] text-xs flex items-center justify-between">
                     <span>Misi Desa Wisata</span>
                     <span class="text-[11px] font-normal text-slate-400">(Tulis 1 poin per baris)</span>
                   </label>
@@ -105,23 +105,23 @@ export const renderAdminProfil = async () => {
 
             <!-- SECTION 3: MEDIA VISUAL & FOTO -->
             <div class="donezo-card p-6 md:p-8 space-y-6">
-              <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
-                <div class="w-9 h-9 rounded-xl bg-emerald-50 text-[#316342] flex items-center justify-center font-bold">
+              <div class="flex items-center gap-3 border-b border-[#e2e8e2] pb-4">
+                <div class="w-9 h-9 rounded-xl bg-[#EFE3C2] text-[#123524] flex items-center justify-center font-bold">
                   <span class="material-symbols-outlined text-xl">photo_library</span>
                 </div>
                 <div>
-                  <h3 class="text-base font-bold text-slate-800 m-0">3. Media Visual & Logo</h3>
-                  <p class="text-xs text-slate-400 m-0">Logo resmi dan foto profil desa (otomatis terkompresi format modern WebP).</p>
+                  <h3 class="text-base font-bold text-[#123524] m-0">3. Media Visual & Logo</h3>
+                  <p class="text-xs text-slate-500 m-0">Logo resmi dan foto profil desa (otomatis terkompresi format modern WebP).</p>
                 </div>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-2">
-                  <span class="text-xs font-bold text-slate-700 block">Logo Resmi Desa</span>
+                  <span class="text-xs font-bold text-[#123524] block">Logo Resmi Desa</span>
                   ${renderImageUploader('prof-logo', profil.logo_url || '')}
                 </div>
                 <div class="space-y-2">
-                  <span class="text-xs font-bold text-slate-700 block">Foto Banner Profil Desa</span>
+                  <span class="text-xs font-bold text-[#123524] block">Foto Banner Profil Desa</span>
                   ${renderImageUploader('prof-banner', profil.banner_url || '')}
                 </div>
               </div>
@@ -129,49 +129,49 @@ export const renderAdminProfil = async () => {
 
             <!-- SECTION 4: KONTAK, MEDIA SOSIAL & PETA -->
             <div class="donezo-card p-6 md:p-8 space-y-6">
-              <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
-                <div class="w-9 h-9 rounded-xl bg-emerald-50 text-[#316342] flex items-center justify-center font-bold">
+              <div class="flex items-center gap-3 border-b border-[#e2e8e2] pb-4">
+                <div class="w-9 h-9 rounded-xl bg-[#EFE3C2] text-[#123524] flex items-center justify-center font-bold">
                   <span class="material-symbols-outlined text-xl">pin_drop</span>
                 </div>
                 <div>
-                  <h3 class="text-base font-bold text-slate-800 m-0">4. Kontak Resmi & Peta Lokasi</h3>
-                  <p class="text-xs text-slate-400 m-0">Alamat kantor sekretariat, WhatsApp pengelola, dan sematan peta.</p>
+                  <h3 class="text-base font-bold text-[#123524] m-0">4. Kontak Resmi & Peta Lokasi</h3>
+                  <p class="text-xs text-slate-500 m-0">Alamat kantor sekretariat, WhatsApp pengelola, dan sematan peta.</p>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="form-label font-semibold text-slate-700 text-xs">Alamat Lengkap Kantor Desa / Sekretariat</label>
+                <label class="form-label font-semibold text-[#123524] text-xs">Alamat Lengkap Kantor Desa / Sekretariat</label>
                 <input type="text" id="prof-alamat" class="form-control" value="${profil.alamat || ''}" placeholder="Jl. Raya Candimulyo No. 12, Tampirkulon, Magelang, Jawa Tengah 56191" />
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="form-group">
-                  <label class="form-label font-semibold text-slate-700 text-xs flex items-center gap-1.5">
+                  <label class="form-label font-semibold text-[#123524] text-xs flex items-center gap-1.5">
                     <span class="w-4 h-4 text-[#25D366] flex items-center justify-center">${IconWhatsApp('w-3.5 h-3.5 fill-current')}</span>
                     WhatsApp Pengelola
                   </label>
                   <input type="text" id="prof-whatsapp" class="form-control" value="${profil.whatsapp || ''}" placeholder="Contoh: 081234567890 / 628..." />
                 </div>
                 <div class="form-group">
-                  <label class="form-label font-semibold text-slate-700 text-xs">Nomor Telepon Kantor</label>
+                  <label class="form-label font-semibold text-[#123524] text-xs">Nomor Telepon Kantor</label>
                   <input type="text" id="prof-telepon" class="form-control" value="${profil.telepon || ''}" placeholder="+62 812-3456-7890" />
                 </div>
                 <div class="form-group">
-                  <label class="form-label font-semibold text-slate-700 text-xs">Email Resmi</label>
+                  <label class="form-label font-semibold text-[#123524] text-xs">Email Resmi</label>
                   <input type="email" id="prof-email" class="form-control" value="${profil.email || ''}" placeholder="info@tampirkulon.desa.id" />
                 </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="form-group">
-                  <label class="form-label font-semibold text-slate-700 text-xs flex items-center gap-1.5">
+                  <label class="form-label font-semibold text-[#123524] text-xs flex items-center gap-1.5">
                     <span class="w-4 h-4 text-[#C13584] flex items-center justify-center">${IconInstagram('w-3.5 h-3.5 fill-current')}</span>
                     Akun / URL Instagram
                   </label>
                   <input type="text" id="prof-ig" class="form-control" value="${profil.instagram || ''}" placeholder="https://instagram.com/desawisatatampirkulon" />
                 </div>
                 <div class="form-group">
-                  <label class="form-label font-semibold text-slate-700 text-xs flex items-center gap-1.5">
+                  <label class="form-label font-semibold text-[#123524] text-xs flex items-center gap-1.5">
                     <span class="w-4 h-4 text-[#FF0000] flex items-center justify-center">${IconYouTube('w-3.5 h-3.5 fill-current')}</span>
                     Channel / URL YouTube
                   </label>
@@ -180,8 +180,8 @@ export const renderAdminProfil = async () => {
               </div>
 
               <!-- Flexible Google Maps Input & Live Preview -->
-              <div class="form-group pt-4 border-t border-slate-100">
-                <label class="form-label font-semibold text-slate-700 text-xs flex items-center justify-between">
+              <div class="form-group pt-4 border-t border-[#e2e8e2]">
+                <label class="form-label font-semibold text-[#123524] text-xs flex items-center justify-between">
                   <span>Peta Lokasi Google Maps (Link URL atau Kode &lt;iframe&gt;)</span>
                   <span class="text-[11px] font-normal text-slate-400">Otomatis didukung: Link Maps dari browser atau kode &lt;iframe&gt;</span>
                 </label>
@@ -189,7 +189,7 @@ export const renderAdminProfil = async () => {
 
                 <div class="mt-4">
                   <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2">Live Pratinjau Peta:</span>
-                  <div id="maps-live-preview" class="w-full h-56 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 flex items-center justify-center text-xs text-slate-400">
+                  <div id="maps-live-preview" class="w-full h-56 rounded-xl overflow-hidden border border-[#cdd8c9] bg-[#f8f6f0] flex items-center justify-center text-xs text-slate-400">
                     ${profil.google_maps_embed ? formatGoogleMapsEmbed(profil.google_maps_embed) : 'Masukkan link atau kode semat Google Maps untuk melihat pratinjau.'}
                   </div>
                 </div>
@@ -197,12 +197,12 @@ export const renderAdminProfil = async () => {
             </div>
 
             <!-- STICKY BOTTOM ACTION BAR (Clean & Tanpa Tombol Cepat) -->
-            <div class="fixed bottom-0 left-0 md:left-64 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-6 py-4 z-40 flex items-center justify-between shadow-lg">
-              <div class="flex items-center gap-2 text-xs text-slate-500">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <div class="fixed bottom-0 left-0 md:left-64 right-0 bg-white/95 backdrop-blur-md border-t border-[#cdd8c9] px-6 py-4 z-40 flex items-center justify-between shadow-lg">
+              <div class="flex items-center gap-2 text-xs text-slate-600">
+                <span class="w-2 h-2 rounded-full bg-[#3E7B27]"></span>
                 <span>Perubahan tersimpan otomatis & tersinkronisasi ke profil publik.</span>
               </div>
-              <button type="submit" id="save-profil-btn" class="px-7 py-2.5 rounded-full bg-[#316342] hover:bg-[#254d33] text-white font-bold text-sm transition-all shadow-md hover:shadow-lg flex items-center gap-2 cursor-pointer">
+              <button type="submit" id="save-profil-btn" class="px-7 py-2.5 rounded-full bg-[#3E7B27] hover:bg-[#123524] text-white font-bold text-sm transition-all shadow-md hover:shadow-lg flex items-center gap-2 cursor-pointer">
                 <span class="material-symbols-outlined text-lg">save</span>
                 Simpan Seluruh Perubahan Profil
               </button>
