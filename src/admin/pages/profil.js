@@ -3,7 +3,7 @@ import { renderAdminSidebar, initAdminSidebarEvents } from '../components/sideba
 import { renderAdminHeader } from '../components/header.js';
 import { renderImageUploader, initImageUploaderEvents } from '../components/image-upload.js';
 import { showToast } from '../../components/toast.js';
-import { getProfilDesa, saveProfilDesa } from '../../utils/profile-store.js';
+import { getProfilDesa, saveProfilDesa, formatGoogleMapsEmbed } from '../../utils/profile-store.js';
 
 export const renderAdminProfil = async () => {
   const isAuthed = await auth.requireAuth();
@@ -15,16 +15,6 @@ export const renderAdminProfil = async () => {
   container.className = 'dashboard-wrapper donezo-bg';
 
   const renderPage = () => {
-    // Helper function to format maps iframe
-    const getMapsIframe = (input) => {
-      if (!input || !input.trim()) return '';
-      const trimmed = input.trim();
-      if (trimmed.includes('<iframe')) {
-        return trimmed.replace('<iframe', '<iframe class="w-full h-full border-0 rounded-xl"');
-      }
-      return `<iframe class="w-full h-full border-0 rounded-xl" src="${trimmed}" loading="lazy"></iframe>`;
-    };
-
     container.innerHTML = `
       ${renderAdminSidebar('#/admin/profil')}
 
@@ -192,14 +182,14 @@ export const renderAdminProfil = async () => {
               <div class="form-group pt-4 border-t border-slate-100">
                 <label class="form-label font-semibold text-slate-700 text-xs flex items-center justify-between">
                   <span>Peta Lokasi Google Maps (Link URL atau Kode &lt;iframe&gt;)</span>
-                  <span class="text-[11px] font-normal text-slate-400">Bisa paste link Maps atau kode semat</span>
+                  <span class="text-[11px] font-normal text-slate-400">Otomatis didukung: Link Maps dari browser atau kode &lt;iframe&gt;</span>
                 </label>
-                <textarea id="prof-maps" class="form-control font-mono text-xs leading-relaxed" rows="3" placeholder="Paste kode embed &lt;iframe ...&gt;&lt;/iframe&gt; atau URL link Google Maps di sini...">${profil.google_maps_embed || ''}</textarea>
+                <textarea id="prof-maps" class="form-control font-mono text-xs leading-relaxed" rows="3" placeholder="Paste link Google Maps (misal: https://www.google.com/maps/place/...) atau kode &lt;iframe ...&gt;&lt;/iframe&gt; di sini...">${profil.google_maps_embed || ''}</textarea>
 
                 <div class="mt-4">
                   <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2">Live Pratinjau Peta:</span>
-                  <div id="maps-live-preview" class="w-full h-52 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 flex items-center justify-center text-xs text-slate-400">
-                    ${profil.google_maps_embed ? getMapsIframe(profil.google_maps_embed) : 'Masukkan link atau kode semat Google Maps untuk melihat pratinjau.'}
+                  <div id="maps-live-preview" class="w-full h-56 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 flex items-center justify-center text-xs text-slate-400">
+                    ${profil.google_maps_embed ? formatGoogleMapsEmbed(profil.google_maps_embed) : 'Masukkan link atau kode semat Google Maps untuk melihat pratinjau.'}
                   </div>
                 </div>
               </div>
@@ -234,16 +224,14 @@ export const renderAdminProfil = async () => {
       initImageUploaderEvents('prof-banner', 'profil');
     }, 50);
 
-    // Live Maps preview helper
+    // Live Maps preview helper using formatGoogleMapsEmbed
     const mapsTextarea = container.querySelector('#prof-maps');
     const mapsPreviewBox = container.querySelector('#maps-live-preview');
     if (mapsTextarea && mapsPreviewBox) {
       mapsTextarea.addEventListener('input', (e) => {
         const code = e.target.value.trim();
-        if (code.includes('<iframe')) {
-          mapsPreviewBox.innerHTML = code.replace('<iframe', '<iframe class="w-full h-full border-0 rounded-xl"');
-        } else if (code) {
-          mapsPreviewBox.innerHTML = `<iframe class="w-full h-full border-0 rounded-xl" src="${code}" loading="lazy"></iframe>`;
+        if (code) {
+          mapsPreviewBox.innerHTML = formatGoogleMapsEmbed(code);
         } else {
           mapsPreviewBox.innerHTML = 'Masukkan link atau kode semat Google Maps untuk melihat pratinjau.';
         }

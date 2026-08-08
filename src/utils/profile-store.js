@@ -5,6 +5,66 @@ const STORAGE_KEY = 'desa_wisata_profil';
 const EXTRA_STORAGE_KEY = 'desa_wisata_profil_extra';
 
 /**
+ * Robust converter for Google Maps inputs (Handles regular URLs, place links, query links, coords, or iframe embed code).
+ */
+export const formatGoogleMapsEmbed = (input) => {
+  if (!input || !input.trim()) return '';
+  const trimmed = input.trim();
+
+  // 1. If it's already an iframe tag
+  if (trimmed.includes('<iframe')) {
+    const srcMatch = trimmed.match(/src=["']([^"']+)["']/i);
+    if (srcMatch && srcMatch[1]) {
+      return `<iframe class="w-full h-full border-0 rounded-xl" src="${srcMatch[1]}" loading="lazy" allowfullscreen></iframe>`;
+    }
+    return trimmed.replace('<iframe', '<iframe class="w-full h-full border-0 rounded-xl"');
+  }
+
+  // 2. If it's already a google embed URL
+  if (trimmed.includes('output=embed') || trimmed.includes('/embed')) {
+    return `<iframe class="w-full h-full border-0 rounded-xl" src="${trimmed}" loading="lazy" allowfullscreen></iframe>`;
+  }
+
+  // 3. Extract exact pin lat/lng from Google Maps data string (!3d... !4d...)
+  const pinMatch = trimmed.match(/!3d(-?\d+(?:\.\d+)?)(?:!4d(-?\d+(?:\.\d+)?))/);
+  if (pinMatch && pinMatch[1] && pinMatch[2]) {
+    const lat = pinMatch[1];
+    const lng = pinMatch[2];
+    return `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=${lat},${lng}&hl=id&z=16&output=embed" loading="lazy" allowfullscreen></iframe>`;
+  }
+
+  // 4. Extract @lat,lng from URL
+  const atMatch = trimmed.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
+  if (atMatch && atMatch[1] && atMatch[2]) {
+    const lat = atMatch[1];
+    const lng = atMatch[2];
+    return `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=${lat},${lng}&hl=id&z=16&output=embed" loading="lazy" allowfullscreen></iframe>`;
+  }
+
+  // 5. Extract place name from /place/PlaceName
+  const placeMatch = trimmed.match(/\/place\/([^/@?#]+)/);
+  if (placeMatch && placeMatch[1]) {
+    const placeName = decodeURIComponent(placeMatch[1].replace(/\+/g, ' '));
+    return `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=${encodeURIComponent(placeName)}&hl=id&z=16&output=embed" loading="lazy" allowfullscreen></iframe>`;
+  }
+
+  // 6. If it contains ?q=query
+  const qMatch = trimmed.match(/[?&]q=([^&#]+)/);
+  if (qMatch && qMatch[1]) {
+    const query = decodeURIComponent(qMatch[1].replace(/\+/g, ' '));
+    return `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=${encodeURIComponent(query)}&hl=id&z=16&output=embed" loading="lazy" allowfullscreen></iframe>`;
+  }
+
+  // 7. General URL fallback: convert to query search embed
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=${encodeURIComponent(trimmed)}&hl=id&z=15&output=embed" loading="lazy" allowfullscreen></iframe>`;
+  }
+
+  // 8. Plain text address or coords
+  return `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=${encodeURIComponent(trimmed)}&hl=id&z=15&output=embed" loading="lazy" allowfullscreen></iframe>`;
+};
+
+/**
  * Get profile data synchronously from memory and localStorage fallback.
  */
 export const getProfilDesaSync = () => {
@@ -115,7 +175,6 @@ export const saveProfilDesa = async (payload) => {
       }
     } catch (err) {
       console.warn('Primary Supabase save failed, attempting sanitized fallback:', err);
-      // Fallback in case remote schema is missing specific columns
       if (err.message && (err.message.includes('logo_url') || err.message.includes('banner_url') || err.message.includes('schema cache'))) {
         const sanitized = { ...payload };
         delete sanitized.logo_url;

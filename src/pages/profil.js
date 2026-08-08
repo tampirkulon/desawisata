@@ -1,6 +1,6 @@
 import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
-import { getProfilDesa } from '../utils/profile-store.js';
+import { getProfilDesa, formatGoogleMapsEmbed } from '../utils/profile-store.js';
 
 export const renderProfil = async () => {
   const profil = await getProfilDesa();
@@ -182,10 +182,8 @@ export const renderProfil = async () => {
             </h4>
             <div class="w-full h-64 rounded-xl overflow-hidden border border-outline-variant/30 bg-surface-container flex items-center justify-center text-xs text-slate-400">
               ${profil.google_maps_embed 
-                ? (profil.google_maps_embed.includes('<iframe') 
-                    ? profil.google_maps_embed.replace('<iframe', '<iframe class="w-full h-full border-0"') 
-                    : `<iframe class="w-full h-full border-0" src="${profil.google_maps_embed}" loading="lazy"></iframe>`)
-                : `<iframe class="w-full h-full border-0" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
+                ? formatGoogleMapsEmbed(profil.google_maps_embed)
+                : `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
               }
             </div>
           </div>
