@@ -84,26 +84,20 @@ export const renderProfil = async () => {
           </article>
         </div>
 
-        <!-- Right Column (40%): Sidebar Informasi, Kontak, & Peta -->
+        <!-- Right Column (40%): Sidebar Informasi Desa -->
         <aside class="lg:w-[40%] flex flex-col gap-8">
-          <!-- Card Identitas & Statistik Desa -->
           <div class="bg-surface rounded-2xl p-8 border border-outline-variant/50 shadow-level-1 relative overflow-hidden">
             <h3 class="font-display-lg text-2xl font-bold text-primary mb-6 flex items-center gap-2">
               <span class="material-symbols-outlined text-primary">info</span>
               Informasi Desa
             </h3>
             
-            <!-- Visual Photo Card -->
-            <div class="w-full h-48 bg-surface-variant rounded-xl mb-6 flex items-center justify-center overflow-hidden relative border border-outline-variant/30 group">
-              <img src="${profil.banner_url || defaultHeroBg}" alt="Foto Profil Desa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col items-center justify-end p-4 text-white">
-                ${profil.logo_url ? `
-                  <img src="${profil.logo_url}" alt="Logo ${namaDesa}" class="h-12 w-12 object-contain rounded-lg bg-white/90 p-1 mb-2 shadow-md" />
-                ` : `
-                  <span class="material-symbols-outlined text-3xl mb-1 text-tertiary-fixed">location_on</span>
-                `}
-                <span class="font-bold text-xs bg-black/60 px-3 py-1 rounded-full backdrop-blur-sm">${namaDesa}</span>
-              </div>
+            <!-- Google Maps directly at the top of the card (Replacing the photo) -->
+            <div class="w-full h-56 rounded-xl mb-6 overflow-hidden border border-outline-variant/30 bg-surface-container flex items-center justify-center text-xs text-slate-400 shadow-2xs">
+              ${profil.google_maps_embed 
+                ? formatGoogleMapsEmbed(profil.google_maps_embed)
+                : `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
+              }
             </div>
 
             <!-- Detail List -->
@@ -149,10 +143,10 @@ export const renderProfil = async () => {
               </li>
             </ul>
 
-            <!-- Direct Contact & Official Brand Social Links -->
+            <!-- Direct Contact & Solid Flat Social Links (No Gradients) -->
             <div class="mt-6 pt-6 border-t border-outline-variant/30 flex flex-col gap-3">
               ${cleanWhatsapp ? `
-                <a href="https://wa.me/${cleanWhatsapp}?text=Halo%20Pengelola%20${encodeURIComponent(namaDesa)},%20saya%20ingin%20bertanya%20mengenai%20kunjungan%20wisata." target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs transition-all shadow-sm flex items-center justify-center gap-2.5">
+                <a href="https://wa.me/${cleanWhatsapp}?text=Halo%20Pengelola%20${encodeURIComponent(namaDesa)},%20saya%20ingin%20bertanya%20mengenai%20kunjungan%20wisata." target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2.5">
                   ${IconWhatsApp('w-4 h-4 fill-white shrink-0')}
                   <span>Chat WhatsApp Pengelola (${profil.whatsapp})</span>
                 </a>
@@ -160,32 +154,18 @@ export const renderProfil = async () => {
 
               <div class="flex items-center gap-3 pt-1">
                 ${profil.instagram ? `
-                  <a href="${profil.instagram.startsWith('http') ? profil.instagram : 'https://instagram.com/' + profil.instagram.replace(/^@/, '')}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#833ab4]/10 via-[#fd1d1d]/10 to-[#fcb045]/10 hover:from-[#833ab4]/20 hover:via-[#fd1d1d]/20 hover:to-[#fcb045]/20 text-[#c13584] font-bold text-xs transition-all border border-[#e1306c]/30 flex items-center justify-center gap-2">
+                  <a href="${profil.instagram.startsWith('http') ? profil.instagram : 'https://instagram.com/' + profil.instagram.replace(/^@/, '')}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 font-bold text-xs transition-colors border border-pink-200 flex items-center justify-center gap-2">
                     ${IconInstagram('w-4 h-4 fill-current shrink-0')}
                     <span>Instagram</span>
                   </a>
                 ` : ''}
                 ${profil.youtube ? `
-                  <a href="${profil.youtube.startsWith('http') ? profil.youtube : 'https://youtube.com/' + profil.youtube}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-[#FF0000] font-bold text-xs transition-all border border-red-200 flex items-center justify-center gap-2">
-                    ${IconYouTube('w-4 h-4 fill-[#FF0000] shrink-0')}
+                  <a href="${profil.youtube.startsWith('http') ? profil.youtube : 'https://youtube.com/' + profil.youtube}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs transition-colors border border-red-200 flex items-center justify-center gap-2">
+                    ${IconYouTube('w-4 h-4 fill-current shrink-0')}
                     <span>YouTube</span>
                   </a>
                 ` : ''}
               </div>
-            </div>
-          </div>
-
-          <!-- Card Peta Lokasi Google Maps -->
-          <div class="bg-surface rounded-2xl p-6 border border-outline-variant/50 shadow-level-1">
-            <h4 class="font-display-lg text-lg font-bold text-primary mb-3 flex items-center gap-2">
-              <span class="material-symbols-outlined text-primary">map</span>
-              Peta Lokasi Google Maps
-            </h4>
-            <div class="w-full h-64 rounded-xl overflow-hidden border border-outline-variant/30 bg-surface-container flex items-center justify-center text-xs text-slate-400">
-              ${profil.google_maps_embed 
-                ? formatGoogleMapsEmbed(profil.google_maps_embed)
-                : `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
-              }
             </div>
           </div>
         </aside>
