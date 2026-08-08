@@ -8,29 +8,24 @@ export const renderProfil = async () => {
   const container = document.createElement('div');
   container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background';
 
-  const heroBg = profil.banner_url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80&fm=webp';
-  const namaDesa = profil.nama_desa || 'Desa Wisata Tampirkulon';
-  const tagline = profil.tagline || 'Mengenal lebih dekat warisan budaya, keindahan alam, dan visi pembangunan berkelanjutan di jantung Jawa Tengah.';
+  const defaultHeroBg = 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80&fm=webp';
   const sejarahParagraphs = (profil.sejarah || 'Desa Tampirkulon memiliki sejarah panjang yang terjalin erat dengan perkembangan peradaban agraris di lereng pegunungan.').split('\n').filter(p => p.trim());
   const misiItems = (profil.misi || 'Melestarikan nilai-nilai budaya lokal.\nMenjaga keseimbangan ekosistem dan kebersihan lingkungan.\nMeningkatkan kesejahteraan ekonomi masyarakat.').split('\n').filter(m => m.trim());
   const cleanWhatsapp = profil.whatsapp ? profil.whatsapp.replace(/[^0-9]/g, '') : '';
+  const namaDesa = profil.nama_desa || 'Desa Wisata Tampirkulon';
 
   container.innerHTML = `
-    ${renderNavbar(false, profil)}
+    ${renderNavbar()}
 
-    <!-- Header Page Section -->
-    <section class="w-full bg-primary relative flex items-center justify-center overflow-hidden text-center text-white px-6 pt-20" style="min-height: 400px; background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('${heroBg}'); background-size: cover; background-position: center;">
-      <div class="max-w-container-max mx-auto text-center relative z-10 py-12">
-        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-white/30 text-tertiary-fixed">
-          <span class="material-symbols-outlined text-sm">nature_people</span>
-          <span>Profil Resmi</span>
-        </div>
-        <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Profil ${namaDesa}</h1>
-        <p class="text-primary-fixed-dim max-w-2xl mx-auto font-body-md text-base md:text-lg text-white/90 leading-relaxed">${tagline}</p>
+    <!-- Header Page Section (Static as Original) -->
+    <section class="w-full bg-primary relative flex items-center justify-center overflow-hidden text-center text-white px-6 pt-20" style="min-height: 391px; background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('${defaultHeroBg}'); background-size: cover; background-position: center;">
+      <div class="max-w-container-max mx-auto text-center relative z-10 py-8">
+        <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Profil Desa Wisata Tampirkulon</h1>
+        <p class="text-primary-fixed-dim max-w-2xl mx-auto font-body-md text-base md:text-lg text-white/90">Mengenal lebih dekat warisan budaya, keindahan alam, dan visi pembangunan berkelanjutan di jantung Jawa Tengah.</p>
       </div>
     </section>
 
-    <!-- Main Content Section -->
+    <!-- Main Content Section (Dynamic from Admin Settings) -->
     <section class="max-w-container-max mx-auto px-4 sm:px-6 md:px-12 py-16 flex-grow w-full">
       <div class="flex flex-col lg:flex-row gap-12">
         <!-- Left Column (60%): Sejarah, Visi, Misi -->
@@ -97,9 +92,9 @@ export const renderProfil = async () => {
               Informasi Desa
             </h3>
             
-            <!-- Hero Photo Banner inside Card -->
+            <!-- Visual Photo Card -->
             <div class="w-full h-48 bg-surface-variant rounded-xl mb-6 flex items-center justify-center overflow-hidden relative border border-outline-variant/30 group">
-              <img src="${heroBg}" alt="Foto Profil Desa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <img src="${profil.banner_url || defaultHeroBg}" alt="Foto Profil Desa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col items-center justify-end p-4 text-white">
                 ${profil.logo_url ? `
                   <img src="${profil.logo_url}" alt="Logo ${namaDesa}" class="h-12 w-12 object-contain rounded-lg bg-white/90 p-1 mb-2 shadow-md" />
