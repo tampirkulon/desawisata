@@ -3,16 +3,18 @@ import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
-import { getProfilDesa } from '../utils/profile-store.js';
 
 export const renderBlog = async () => {
   let artikelList = mockData.artikel;
-  const profil = await getProfilDesa();
+  let profil = mockData.profil_desa;
 
   if (isSupabaseConfigured()) {
     try {
       const { data: art } = await supabase.from('artikel').select('*').eq('status', 'published').order('created_at', { ascending: false });
       if (art && art.length > 0) artikelList = art;
+
+      const { data: prof } = await supabase.from('profil_desa').select('*').single();
+      if (prof) profil = prof;
     } catch (e) {
       console.warn('Fallback seed:', e);
     }
@@ -20,19 +22,18 @@ export const renderBlog = async () => {
 
   const featuredArticle = artikelList[0] || {};
   const recentArticles = artikelList.slice(1);
-  const namaDesa = profil.nama_desa || 'Desa Wisata Tampirkulon';
 
   const container = document.createElement('div');
   container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background pt-20';
 
   container.innerHTML = `
-    ${renderNavbar(true, profil)}
+    ${renderNavbar(true)}
 
     <main class="flex-grow max-w-container-max mx-auto px-4 md:px-16 w-full mb-16">
       <!-- Header Title Section -->
       <section class="py-12 text-center max-w-3xl mx-auto">
         <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-primary mb-4">
-          Kisah dari ${namaDesa}
+          Kisah dari Tampirkulon
         </h1>
         <p class="font-body-md text-base text-on-surface-variant leading-relaxed">
           Temukan cerita, tradisi, dan keindahan alam desa kami melalui catatan perjalanan dan berita terbaru.

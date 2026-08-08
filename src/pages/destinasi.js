@@ -3,14 +3,13 @@ import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
-import { getProfilDesa } from '../utils/profile-store.js';
 
 export const renderDestinasi = async (queryParams) => {
   const selectedId = queryParams ? queryParams.get('id') : null;
 
   let kategoriList = mockData.kategori_wisata;
   let destinasiList = mockData.destinasi;
-  const profil = await getProfilDesa();
+  let profil = mockData.profil_desa;
 
   if (isSupabaseConfigured()) {
     try {
@@ -19,13 +18,15 @@ export const renderDestinasi = async (queryParams) => {
 
       const { data: dest } = await supabase.from('destinasi').select('*').eq('is_published', true);
       if (dest && dest.length > 0) destinasiList = dest;
+
+      const { data: prof } = await supabase.from('profil_desa').select('*').single();
+      if (prof) profil = prof;
     } catch (e) {
       console.warn('Fallback seed:', e);
     }
   }
 
   let activeCategory = 'all';
-  const namaDesa = profil.nama_desa || 'Desa Wisata Tampirkulon';
 
   const container = document.createElement('div');
   container.className = 'w-full min-h-screen flex flex-col bg-surface text-on-surface';
@@ -36,18 +37,18 @@ export const renderDestinasi = async (queryParams) => {
       : destinasiList.filter(d => d.kategori_id === activeCategory);
 
     return `
-      ${renderNavbar(false, profil)}
+      ${renderNavbar()}
 
       <!-- Page Header -->
       <section class="relative flex items-center justify-center overflow-hidden w-full bg-primary pt-20 px-6 text-center text-white" style="min-height: 391px;">
         <div class="absolute inset-0 z-0">
-          <img alt="${namaDesa}" class="w-full h-full object-cover opacity-30" src="${profil.banner_url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80'}" loading="lazy" decoding="async" />
+          <img alt="Tampirkulon Heritage" class="w-full h-full object-cover opacity-30" src="https://lh3.googleusercontent.com/aida/AP1WRLv0kmPyXlx735C-3FBTB_btvd6IOzpOfv8reV4yrmbXWSpYqTUCgFkZ_2PuSVRtioFNOUL_7vEfh9ykgRLvufo9vdRONN04mxuEumo797mDUt6r-DwXjhT8pZHuKBVfRgc3KcVFFHdy8NgyVVD17ZnV22HDZWY5H1at2jNZuOgrJ-kgBsda7pjf_0_rL9fYtVDavMg9G7Qv7iqE8gyLZpw9eZryb4JbvYGL_t-Hb1rDIcleP0-J6wiUfg" loading="lazy" decoding="async" />
           <div class="absolute inset-0 bg-primary/60 backdrop-blur-[2px]"></div>
         </div>
         <div class="relative z-10 max-w-container-max mx-auto px-4 text-center py-8">
           <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Eksplorasi Destinasi Kami</h1>
           <p class="font-body-md text-base md:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
-            Temukan keindahan alam yang tak tertandingi, kekayaan budaya yang otentik, dan pengalaman tak terlupakan di ${namaDesa}.
+            Temukan keindahan alam yang tak tertandingi, kekayaan budaya yang otentik, dan pengalaman tak terlupakan di Desa Wisata Tampirkulon.
           </p>
         </div>
       </section>
@@ -55,11 +56,11 @@ export const renderDestinasi = async (queryParams) => {
       <!-- Filter Bar -->
       <section class="max-w-container-max mx-auto px-4 md:px-16 my-8">
         <div class="flex flex-wrap justify-center gap-3">
-          <button class="filter-btn border px-6 py-2 rounded-full font-label-caps text-xs font-semibold transition-colors cursor-pointer ${activeCategory === 'all' ? 'bg-primary text-on-primary border-primary' : 'bg-surface text-primary border-primary hover:bg-primary-fixed'}" data-cat="all">
+          <button class="filter-btn border px-6 py-2 rounded-full font-label-caps text-xs font-semibold transition-colors ${activeCategory === 'all' ? 'bg-primary text-on-primary border-primary' : 'bg-surface text-primary border-primary hover:bg-primary-fixed'}" data-cat="all">
             Semua
           </button>
           ${kategoriList.map(cat => `
-            <button class="filter-btn border px-6 py-2 rounded-full font-label-caps text-xs font-semibold transition-colors cursor-pointer ${activeCategory === cat.id ? 'bg-primary text-on-primary border-primary' : 'bg-surface text-primary border-primary hover:bg-primary-fixed'}" data-cat="${cat.id}">
+            <button class="filter-btn border px-6 py-2 rounded-full font-label-caps text-xs font-semibold transition-colors ${activeCategory === cat.id ? 'bg-primary text-on-primary border-primary' : 'bg-surface text-primary border-primary hover:bg-primary-fixed'}" data-cat="${cat.id}">
               ${cat.nama}
             </button>
           `).join('')}
