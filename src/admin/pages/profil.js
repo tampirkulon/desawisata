@@ -4,6 +4,7 @@ import { renderAdminHeader } from '../components/header.js';
 import { renderImageUploader, initImageUploaderEvents } from '../components/image-upload.js';
 import { showToast } from '../../components/toast.js';
 import { getProfilDesa, saveProfilDesa, formatGoogleMapsEmbed } from '../../utils/profile-store.js';
+import { IconInstagram, IconYouTube, IconWhatsApp } from '../../components/icons.js';
 
 export const renderAdminProfil = async () => {
   const isAuthed = await auth.requireAuth();
@@ -146,7 +147,7 @@ export const renderAdminProfil = async () => {
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="form-group">
                   <label class="form-label font-semibold text-slate-700 text-xs flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-emerald-600 text-sm">chat</span>
+                    <span class="w-4 h-4 text-[#25D366] flex items-center justify-center">${IconWhatsApp('w-3.5 h-3.5 fill-current')}</span>
                     WhatsApp Pengelola
                   </label>
                   <input type="text" id="prof-whatsapp" class="form-control" value="${profil.whatsapp || ''}" placeholder="Contoh: 081234567890 / 628..." />
@@ -164,14 +165,14 @@ export const renderAdminProfil = async () => {
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="form-group">
                   <label class="form-label font-semibold text-slate-700 text-xs flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-pink-600 text-sm">photo_camera</span>
+                    <span class="w-4 h-4 text-[#C13584] flex items-center justify-center">${IconInstagram('w-3.5 h-3.5 fill-current')}</span>
                     Akun / URL Instagram
                   </label>
                   <input type="text" id="prof-ig" class="form-control" value="${profil.instagram || ''}" placeholder="https://instagram.com/desawisatatampirkulon" />
                 </div>
                 <div class="form-group">
                   <label class="form-label font-semibold text-slate-700 text-xs flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-red-600 text-sm">smart_display</span>
+                    <span class="w-4 h-4 text-[#FF0000] flex items-center justify-center">${IconYouTube('w-3.5 h-3.5 fill-current')}</span>
                     Channel / URL YouTube
                   </label>
                   <input type="text" id="prof-yt" class="form-control" value="${profil.youtube || ''}" placeholder="https://youtube.com/@desawisatatampirkulon" />

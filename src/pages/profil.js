@@ -1,6 +1,7 @@
 import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { getProfilDesa, formatGoogleMapsEmbed } from '../utils/profile-store.js';
+import { IconInstagram, IconYouTube, IconWhatsApp } from '../components/icons.js';
 
 export const renderProfil = async () => {
   const profil = await getProfilDesa();
@@ -148,26 +149,26 @@ export const renderProfil = async () => {
               </li>
             </ul>
 
-            <!-- Direct Contact & Social Row -->
+            <!-- Direct Contact & Official Brand Social Links -->
             <div class="mt-6 pt-6 border-t border-outline-variant/30 flex flex-col gap-3">
               ${cleanWhatsapp ? `
-                <a href="https://wa.me/${cleanWhatsapp}?text=Halo%20Pengelola%20${encodeURIComponent(namaDesa)},%20saya%20ingin%20bertanya%20mengenai%20kunjungan%20wisata." target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-all shadow-sm flex items-center justify-center gap-2">
-                  <span class="material-symbols-outlined text-base">chat</span>
-                  Chat WhatsApp Pengelola (${profil.whatsapp})
+                <a href="https://wa.me/${cleanWhatsapp}?text=Halo%20Pengelola%20${encodeURIComponent(namaDesa)},%20saya%20ingin%20bertanya%20mengenai%20kunjungan%20wisata." target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs transition-all shadow-sm flex items-center justify-center gap-2.5">
+                  ${IconWhatsApp('w-4 h-4 fill-white shrink-0')}
+                  <span>Chat WhatsApp Pengelola (${profil.whatsapp})</span>
                 </a>
               ` : ''}
 
-              <div class="flex items-center gap-2 pt-2">
+              <div class="flex items-center gap-3 pt-1">
                 ${profil.instagram ? `
-                  <a href="${profil.instagram.startsWith('http') ? profil.instagram : 'https://instagram.com/' + profil.instagram}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 font-bold text-xs transition-all border border-pink-200 flex items-center justify-center gap-1.5">
-                    <span class="material-symbols-outlined text-base">photo_camera</span>
-                    Instagram
+                  <a href="${profil.instagram.startsWith('http') ? profil.instagram : 'https://instagram.com/' + profil.instagram.replace(/^@/, '')}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#833ab4]/10 via-[#fd1d1d]/10 to-[#fcb045]/10 hover:from-[#833ab4]/20 hover:via-[#fd1d1d]/20 hover:to-[#fcb045]/20 text-[#c13584] font-bold text-xs transition-all border border-[#e1306c]/30 flex items-center justify-center gap-2">
+                    ${IconInstagram('w-4 h-4 fill-current shrink-0')}
+                    <span>Instagram</span>
                   </a>
                 ` : ''}
                 ${profil.youtube ? `
-                  <a href="${profil.youtube.startsWith('http') ? profil.youtube : 'https://youtube.com/' + profil.youtube}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs transition-all border border-red-200 flex items-center justify-center gap-1.5">
-                    <span class="material-symbols-outlined text-base">smart_display</span>
-                    YouTube
+                  <a href="${profil.youtube.startsWith('http') ? profil.youtube : 'https://youtube.com/' + profil.youtube}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-[#FF0000] font-bold text-xs transition-all border border-red-200 flex items-center justify-center gap-2">
+                    ${IconYouTube('w-4 h-4 fill-[#FF0000] shrink-0')}
+                    <span>YouTube</span>
                   </a>
                 ` : ''}
               </div>
