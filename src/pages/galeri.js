@@ -3,24 +3,23 @@ import { renderFooter } from '../components/footer.js';
 import { openLightbox } from '../components/lightbox.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
+import { getProfilDesa } from '../utils/profile-store.js';
 
 export const renderGaleri = async () => {
   let galeriList = mockData.galeri;
-  let profil = mockData.profil_desa;
+  const profil = await getProfilDesa();
 
   if (isSupabaseConfigured()) {
     try {
       const { data } = await supabase.from('galeri').select('*').order('urutan', { ascending: true });
       if (data && data.length > 0) galeriList = data;
-
-      const { data: prof } = await supabase.from('profil_desa').select('*').single();
-      if (prof) profil = prof;
     } catch (e) {
       console.warn('Fallback seed:', e);
     }
   }
 
   let activeFilter = 'all';
+  const namaDesa = profil.nama_desa || 'Desa Wisata Tampirkulon';
 
   const container = document.createElement('div');
   container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background pt-20';
@@ -30,19 +29,19 @@ export const renderGaleri = async () => {
     const filteredGaleri = activeFilter === 'all' ? galeriList : galeriList.filter(g => g.kategori === activeFilter);
 
     return `
-      ${renderNavbar(true)}
+      ${renderNavbar(true, profil)}
 
       <main class="max-w-container-max mx-auto px-4 md:px-16 pb-20 w-full flex-grow">
         <!-- Header Section -->
         <section class="text-center py-12">
-          <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-primary mb-3">Galeri Kenangan Tampirkulon</h1>
+          <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-primary mb-3">Galeri Kenangan ${namaDesa}</h1>
           <p class="font-body-md text-base text-on-surface-variant max-w-2xl mx-auto">Jelajahi keindahan alam, kekayaan budaya, dan momen tak terlupakan di desa wisata kami.</p>
         </section>
 
         <!-- Filter Bar -->
         <section class="flex flex-wrap justify-center gap-3 mb-12">
           ${categories.map(cat => `
-            <button class="galeri-filter-btn px-6 py-2 rounded-full font-label-caps text-xs font-semibold transition-colors ${activeFilter === cat ? 'bg-primary text-on-primary shadow-sm' : 'bg-transparent text-primary border border-primary hover:bg-primary/10'}" data-cat="${cat}">
+            <button class="galeri-filter-btn px-6 py-2 rounded-full font-label-caps text-xs font-semibold transition-colors cursor-pointer ${activeFilter === cat ? 'bg-primary text-on-primary shadow-sm' : 'bg-transparent text-primary border border-primary hover:bg-primary/10'}" data-cat="${cat}">
               ${cat === 'all' ? 'Semua' : cat}
             </button>
           `).join('')}
@@ -60,7 +59,7 @@ export const renderGaleri = async () => {
                 <img src="${item.url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80'}" alt="${item.judul || 'Foto Galeri'}" class="w-full h-full min-h-[240px] max-h-[420px] object-cover transform transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                 <div class="overlay absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-all duration-300 opacity-0 group-hover:opacity-100">
                   <div>
-                    <h3 class="text-white font-display-lg text-lg md:text-xl font-bold">${item.judul || 'Dokumentasi Tampirkulon'}</h3>
+                    <h3 class="text-white font-display-lg text-lg md:text-xl font-bold">${item.judul || ('Dokumentasi ' + namaDesa)}</h3>
                     <span class="text-xs text-tertiary-fixed font-semibold">${item.kategori || 'Galeri'}</span>
                   </div>
                 </div>

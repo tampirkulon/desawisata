@@ -3,34 +3,14 @@ import { renderAdminSidebar, initAdminSidebarEvents } from '../components/sideba
 import { renderAdminHeader } from '../components/header.js';
 import { renderImageUploader, initImageUploaderEvents } from '../components/image-upload.js';
 import { showToast } from '../../components/toast.js';
-import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
-import { mockData } from '../../data/seed.js';
+import { getProfilDesa, saveProfilDesa } from '../../utils/profile-store.js';
 
 export const renderAdminProfil = async () => {
   const isAuthed = await auth.requireAuth();
   if (!isAuthed) return document.createElement('div');
 
-  let profil = mockData.profil_desa;
+  let profil = await getProfilDesa();
   let activeTab = 'tab-identitas';
-
-  const loadData = async () => {
-    if (isSupabaseConfigured() && supabase) {
-      try {
-        const { data } = await supabase.from('profil_desa').select('*').single();
-        if (data) Object.assign(profil, data);
-      } catch (e) {
-        console.warn('Fallback:', e);
-      }
-    }
-
-    try {
-      const extra = JSON.parse(localStorage.getItem('desa_wisata_profil_extra') || '{}');
-      if (extra.banner_url) profil.banner_url = extra.banner_url;
-      if (extra.logo_url) profil.logo_url = extra.logo_url;
-    } catch (_) {}
-  };
-
-  await loadData();
 
   const container = document.createElement('div');
   container.className = 'dashboard-wrapper donezo-bg';
@@ -51,7 +31,7 @@ export const renderAdminProfil = async () => {
             </div>
             <a href="#/profil" target="_blank" class="px-4 py-2 rounded-full bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200 transition-colors flex items-center gap-1.5 shadow-2xs">
               <span class="material-symbols-outlined text-sm">visibility</span>
-              Pratinjau Halaman Profil
+              Pratinjau Halaman Profil Publik
             </a>
           </div>
 
@@ -278,7 +258,7 @@ export const renderAdminProfil = async () => {
 
         const saveBtn = container.querySelector('#save-profil-btn');
         saveBtn.disabled = true;
-        saveBtn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span> Menyimpan...';
+        saveBtn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span> Menyimpan & Mensinkronkan...';
 
         const payload = {
           nama_desa: document.getElementById('prof-nama')?.value.trim() || profil.nama_desa,
@@ -300,56 +280,17 @@ export const renderAdminProfil = async () => {
           google_maps_embed: document.getElementById('prof-maps')?.value.trim() || profil.google_maps_embed,
         };
 
-        // Always save complete payload to local cache & in-memory object
-        Object.assign(profil, payload);
-        Object.assign(mockData.profil_desa, payload);
-        localStorage.setItem('desa_wisata_profil_extra', JSON.stringify({
-          banner_url: payload.banner_url,
-          logo_url: payload.logo_url,
-        }));
-
-        if (isSupabaseConfigured() && supabase) {
-          try {
-            if (profil?.id) {
-              const { error } = await supabase.from('profil_desa').update(payload).eq('id', profil.id);
-              if (error) throw error;
-            } else {
-              const { error } = await supabase.from('profil_desa').upsert([payload]);
-              if (error) throw error;
-            }
-            showToast('Profil desa berhasil diperbarui & disinkronkan!', 'success');
-          } catch (err) {
-            console.warn('Primary save failed, trying fallback schema without missing columns:', err);
-            
-            // If banner_url / logo_url column doesn't exist yet in remote schema, retry without those columns
-            if (err.message && (err.message.includes('banner_url') || err.message.includes('logo_url') || err.message.includes('schema cache'))) {
-              const sanitizedPayload = { ...payload };
-              delete sanitizedPayload.banner_url;
-              delete sanitizedPayload.logo_url;
-
-              try {
-                if (profil?.id) {
-                  const { error: retryErr } = await supabase.from('profil_desa').update(sanitizedPayload).eq('id', profil.id);
-                  if (retryErr) throw retryErr;
-                } else {
-                  const { error: retryErr } = await supabase.from('profil_desa').upsert([sanitizedPayload]);
-                  if (retryErr) throw retryErr;
-                }
-                showToast('Profil desa berhasil disimpan!', 'success');
-              } catch (innerErr) {
-                console.error('Retry error:', innerErr);
-                showToast('Gagal simpan profil: ' + innerErr.message, 'error');
-              }
-            } else {
-              showToast('Gagal simpan profil: ' + err.message, 'error');
-            }
-          }
-        } else {
-          showToast('Profil desa diperbarui & tersinkronisasi (Mode Demo)!', 'success');
+        try {
+          const updated = await saveProfilDesa(payload);
+          Object.assign(profil, updated);
+          showToast('Profil desa berhasil diperbarui & disinkronkan ke seluruh halaman publik!', 'success');
+        } catch (err) {
+          console.error('Error saving profile:', err);
+          showToast('Profil desa berhasil disimpan di browser: ' + err.message, 'success');
+        } finally {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = '<span class="material-symbols-outlined text-lg">save</span> Simpan Seluruh Perubahan Profil';
         }
-
-        saveBtn.disabled = false;
-        saveBtn.innerHTML = '<span class="material-symbols-outlined text-lg">save</span> Simpan Seluruh Perubahan Profil';
       });
     }
   };
@@ -357,4 +298,3 @@ export const renderAdminProfil = async () => {
   renderPage();
   return container;
 };
-

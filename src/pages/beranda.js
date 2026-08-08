@@ -4,17 +4,15 @@ import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
+import { getProfilDesa } from '../utils/profile-store.js';
 
 export const renderBeranda = async () => {
-  let profil = mockData.profil_desa;
+  const profil = await getProfilDesa();
   let destinasi = mockData.destinasi;
   let testimoniList = mockData.testimoni;
 
   if (isSupabaseConfigured()) {
     try {
-      const { data: profilData } = await supabase.from('profil_desa').select('*').single();
-      if (profilData) profil = profilData;
-
       const { data: destData } = await supabase.from('destinasi').select('*').eq('is_published', true).limit(3);
       if (destData && destData.length > 0) destinasi = destData;
 
@@ -28,19 +26,23 @@ export const renderBeranda = async () => {
   const container = document.createElement('div');
   container.className = 'w-full min-h-screen flex flex-col';
 
+  const heroImage = profil.banner_url || 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1920&q=80';
+  const namaDesa = profil.nama_desa || 'Desa Wisata Tampirkulon';
+  const namaDesaDisplay = namaDesa.replace(/^Desa\s+Wisata\s+/i, '');
+
   container.innerHTML = `
-    ${renderNavbar()}
+    ${renderNavbar(false, profil)}
 
     <!-- Header / Hero Section (Stitch Exact Design) -->
     <header class="relative min-h-screen flex items-center justify-center text-center text-white pt-20" id="home">
-      <div class="absolute inset-0 bg-cover bg-center z-0" style="background-image: url('https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1920&q=80');"></div>
-      <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-primary/80 z-0"></div>
+      <div class="absolute inset-0 bg-cover bg-center z-0" style="background-image: url('${heroImage}');"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-primary/85 z-0"></div>
       <div class="relative z-10 max-w-4xl px-6 py-20 flex flex-col items-center text-white">
         <span class="bg-secondary/90 backdrop-blur-md text-white border border-white/30 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
-          Welcome to Tampirkulon
+          Welcome to ${namaDesaDisplay}
         </span>
         <h1 class="font-display-lg text-4xl md:text-6xl font-bold mb-6 leading-tight drop-shadow-md text-white">
-          ${profil.nama_desa || 'Jelajahi Warisan Alam Tampirkulon'}
+          ${namaDesa}
         </h1>
         <p class="font-body-md text-lg md:text-xl text-white mb-10 max-w-2xl leading-relaxed">
           ${profil.tagline || 'Temukan keindahan tersembunyi, rasakan kehangatan budaya, dan ciptakan kenangan tak terlupakan di desa wisata kami.'}
@@ -100,7 +102,7 @@ export const renderBeranda = async () => {
       <div class="max-w-container-max mx-auto px-4 md:px-12">
         <div class="text-center max-w-2xl mx-auto mb-12">
           <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-3">Destinasi Unggulan</h2>
-          <p class="font-body-md text-base text-on-surface-variant">Tempat-tempat terbaik yang wajib Anda kunjungi di Tampirkulon.</p>
+          <p class="font-body-md text-base text-on-surface-variant">Tempat-tempat terbaik yang wajib Anda kunjungi di ${namaDesaDisplay}.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -115,12 +117,12 @@ export const renderBeranda = async () => {
               <div class="p-6 flex flex-col flex-grow">
                 <h3 class="font-display-lg text-xl font-bold text-primary mb-2 line-clamp-1">${item.nama}</h3>
                 <p class="font-body-sm text-sm text-on-surface-variant mb-6 flex-grow leading-relaxed line-clamp-3">
-                  ${item.deskripsi || 'Nikmati keindahan dan suasana unik di destinasi favorit Desa Wisata Tampirkulon.'}
+                  ${item.deskripsi || 'Nikmati keindahan dan suasana unik di destinasi favorit ' + namaDesa + '.'}
                 </p>
                 <div class="pt-4 border-t border-outline-variant/20 flex justify-between items-center mt-auto">
                   <span class="font-bold text-primary text-sm flex items-center gap-1">
                     <span class="material-symbols-outlined text-base">location_on</span>
-                    ${item.lokasi || 'Tampirkulon'}
+                    ${item.lokasi || namaDesaDisplay}
                   </span>
                   <button class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-primary-container transition-colors pointer-events-none">Lihat Detail</button>
                 </div>
@@ -143,33 +145,33 @@ export const renderBeranda = async () => {
       <div class="max-w-container-max mx-auto px-4 md:px-12">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-4">Mengenal Tampirkulon</h2>
+            <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-4">Mengenal ${namaDesaDisplay}</h2>
             <p class="font-body-md text-base text-on-surface-variant mb-4 leading-relaxed">
-              Desa Wisata Tampirkulon menawarkan perpaduan harmonis antara keindahan alam yang masih perawan dan kekayaan budaya lokal yang terus dilestarikan. Kami berkomitmen untuk menyajikan pengalaman ekowisata yang tidak hanya memanjakan mata, tetapi juga memberikan dampak positif bagi komunitas dan lingkungan.
+              ${profil.sejarah ? (profil.sejarah.length > 300 ? profil.sejarah.substring(0, 300) + '...' : profil.sejarah) : 'Desa Wisata ' + namaDesaDisplay + ' menawarkan perpaduan harmonis antara keindahan alam yang asri dan kekayaan budaya lokal yang terus dilestarikan.'}
             </p>
             <p class="font-body-md text-base text-on-surface-variant mb-6 leading-relaxed">
-              Dengan keramahan penduduk lokal dan fasilitas yang terus dikembangkan, kami mengundang Anda untuk sejenak melepas penat dan menemukan kedamaian di desa kami.
+              ${profil.visi || 'Kami berkomitmen untuk menyajikan pengalaman ekowisata yang berorientasi pada pelestarian alam dan pemberdayaan masyarakat.'}
             </p>
             <a href="#/profil" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-6 py-3 rounded-full hover:bg-primary-container transition-all shadow-level-1">
-              Baca Selengkapnya
+              Baca Profil Lengkap
             </a>
           </div>
 
           <div class="grid grid-cols-2 gap-6">
             <div class="bg-surface-container-low border border-outline-variant/30 p-6 rounded-2xl text-center shadow-level-1">
-              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">3.45</div>
-              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Km² Luas Wilayah</div>
+              <div class="font-display-lg text-2xl md:text-3xl font-bold text-primary mb-1">${profil.luas_wilayah || '3.45 km²'}</div>
+              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Luas Wilayah</div>
             </div>
             <div class="bg-surface-container-low border border-outline-variant/30 p-6 rounded-2xl text-center shadow-level-1">
-              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">2.8k</div>
+              <div class="font-display-lg text-2xl md:text-3xl font-bold text-primary mb-1">${profil.populasi || '2.850+ Jiwa'}</div>
               <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Populasi Penduduk</div>
             </div>
             <div class="bg-surface-container-low border border-outline-variant/30 p-6 rounded-2xl text-center shadow-level-1">
-              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">4+</div>
+              <div class="font-display-lg text-2xl md:text-3xl font-bold text-primary mb-1">4+</div>
               <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Kategori Wisata</div>
             </div>
             <div class="bg-surface-container-low border border-outline-variant/30 p-6 rounded-2xl text-center shadow-level-1">
-              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">100%</div>
+              <div class="font-display-lg text-2xl md:text-3xl font-bold text-primary mb-1">100%</div>
               <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Kearifan Lokal</div>
             </div>
           </div>
@@ -218,9 +220,9 @@ export const renderBeranda = async () => {
     <!-- Call to Action Banner -->
     <section class="py-16 bg-primary-fixed/30 text-center">
       <div class="max-w-3xl mx-auto px-6">
-        <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-4">Siap Menjelajahi Tampirkulon?</h2>
+        <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-4">Siap Menjelajahi ${namaDesaDisplay}?</h2>
         <p class="font-body-md text-base text-on-surface-variant mb-8">
-          Temukan kedamaian dan keindahan yang autentik di Desa Wisata Tampirkulon. Kami siap menyambut kedatangan Anda dengan keramahan khas desa kami.
+          ${profil.tagline || 'Temukan kedamaian dan keindahan yang autentik di ' + namaDesa + '. Kami siap menyambut kedatangan Anda dengan keramahan khas desa kami.'}
         </p>
         <a href="#/kontak" class="inline-flex items-center gap-2 bg-secondary text-white font-bold px-8 py-3.5 rounded-full hover:bg-secondary/90 transition-all shadow-level-1">
           <span class="material-symbols-outlined text-xl">calendar_month</span>
