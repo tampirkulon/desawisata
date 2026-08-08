@@ -92,7 +92,7 @@ export const renderProfil = async () => {
               Informasi Desa
             </h3>
             
-            <!-- Google Maps directly at the top of the card (Replacing the photo) -->
+            <!-- Google Maps directly at the top of the card -->
             <div class="w-full h-56 rounded-xl mb-6 overflow-hidden border border-outline-variant/30 bg-surface-container flex items-center justify-center text-xs text-slate-400 shadow-2xs">
               ${profil.google_maps_embed 
                 ? formatGoogleMapsEmbed(profil.google_maps_embed)
@@ -143,7 +143,7 @@ export const renderProfil = async () => {
               </li>
             </ul>
 
-            <!-- Direct Contact & Solid Flat Social Links (No Gradients) -->
+            <!-- Direct Contact & Solid Color Buttons (Full Bold Solid) -->
             <div class="mt-6 pt-6 border-t border-outline-variant/30 flex flex-col gap-3">
               ${cleanWhatsapp ? `
                 <a href="https://wa.me/${cleanWhatsapp}?text=Halo%20Pengelola%20${encodeURIComponent(namaDesa)},%20saya%20ingin%20bertanya%20mengenai%20kunjungan%20wisata." target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2.5">
@@ -154,14 +154,14 @@ export const renderProfil = async () => {
 
               <div class="flex items-center gap-3 pt-1">
                 ${profil.instagram ? `
-                  <a href="${profil.instagram.startsWith('http') ? profil.instagram : 'https://instagram.com/' + profil.instagram.replace(/^@/, '')}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 font-bold text-xs transition-colors border border-pink-200 flex items-center justify-center gap-2">
-                    ${IconInstagram('w-4 h-4 fill-current shrink-0')}
+                  <a href="${profil.instagram.startsWith('http') ? profil.instagram : 'https://instagram.com/' + profil.instagram.replace(/^@/, '')}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-[#E1306C] hover:bg-[#C13584] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
+                    ${IconInstagram('w-4 h-4 fill-white shrink-0')}
                     <span>Instagram</span>
                   </a>
                 ` : ''}
                 ${profil.youtube ? `
-                  <a href="${profil.youtube.startsWith('http') ? profil.youtube : 'https://youtube.com/' + profil.youtube}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs transition-colors border border-red-200 flex items-center justify-center gap-2">
-                    ${IconYouTube('w-4 h-4 fill-current shrink-0')}
+                  <a href="${profil.youtube.startsWith('http') ? profil.youtube : 'https://youtube.com/' + profil.youtube}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-[#FF0000] hover:bg-[#CC0000] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
+                    ${IconYouTube('w-4 h-4 fill-white shrink-0')}
                     <span>YouTube</span>
                   </a>
                 ` : ''}
