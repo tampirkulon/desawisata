@@ -69,40 +69,48 @@ export const renderBeranda = async () => {
       </div>
     </header>
 
-    <!-- Highlights Grid Section -->
-    <section class="py-16 md:py-24 bg-surface border-t-4 border-primary" id="highlights">
-      <div class="max-w-container-max mx-auto px-4 md:px-12">
+    <!-- Highlights Grid Section with Ambient Accents -->
+    <section class="py-16 md:py-24 bg-surface relative overflow-hidden border-t-2 border-primary/20" id="highlights">
+      <!-- Ambient Glow Orbs -->
+      <div class="absolute -top-20 -left-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-secondary/15 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="max-w-container-max mx-auto px-4 md:px-12 relative z-10">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          <div class="bg-surface-container-lowest p-8 rounded-2xl text-center border border-outline-variant/30 shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300">
-            <div class="w-16 h-16 bg-surface-container text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+          <div class="group relative bg-white/80 backdrop-blur-md p-8 rounded-2xl text-center border border-white/80 shadow-level-1 hover:shadow-xl hover:-translate-y-2 hover:border-secondary/60 transition-all duration-300 flex flex-col items-center">
+            <span class="absolute top-4 right-4 text-xs font-bold text-primary/30 font-mono">01</span>
+            <div class="w-16 h-16 bg-gradient-to-br from-primary/15 via-primary/10 to-secondary/20 text-primary rounded-2xl flex items-center justify-center mb-5 shadow-inner group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300">
               <span class="material-symbols-outlined text-3xl">park</span>
             </div>
             <h3 class="font-display-lg text-xl font-bold text-on-surface mb-2">Wisata Alam</h3>
-            <p class="font-body-sm text-sm text-on-surface-variant">Eksplorasi bentang alam yang asri dan menenangkan.</p>
+            <p class="font-body-sm text-sm text-on-surface-variant leading-relaxed">Eksplorasi bentang alam yang asri dan menenangkan.</p>
           </div>
 
-          <div class="bg-surface-container-lowest p-8 rounded-2xl text-center border border-outline-variant/30 shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300">
-            <div class="w-16 h-16 bg-surface-container text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+          <div class="group relative bg-white/80 backdrop-blur-md p-8 rounded-2xl text-center border border-white/80 shadow-level-1 hover:shadow-xl hover:-translate-y-2 hover:border-secondary/60 transition-all duration-300 flex flex-col items-center">
+            <span class="absolute top-4 right-4 text-xs font-bold text-primary/30 font-mono">02</span>
+            <div class="w-16 h-16 bg-gradient-to-br from-primary/15 via-primary/10 to-secondary/20 text-primary rounded-2xl flex items-center justify-center mb-5 shadow-inner group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300">
               <span class="material-symbols-outlined text-3xl">festival</span>
             </div>
             <h3 class="font-display-lg text-xl font-bold text-on-surface mb-2">Budaya Lokal</h3>
-            <p class="font-body-sm text-sm text-on-surface-variant">Saksikan tradisi dan kesenian yang masih terjaga.</p>
+            <p class="font-body-sm text-sm text-on-surface-variant leading-relaxed">Saksikan tradisi dan kesenian yang masih terjaga.</p>
           </div>
 
-          <div class="bg-surface-container-lowest p-8 rounded-2xl text-center border border-outline-variant/30 shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300">
-            <div class="w-16 h-16 bg-surface-container text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+          <div class="group relative bg-white/80 backdrop-blur-md p-8 rounded-2xl text-center border border-white/80 shadow-level-1 hover:shadow-xl hover:-translate-y-2 hover:border-secondary/60 transition-all duration-300 flex flex-col items-center">
+            <span class="absolute top-4 right-4 text-xs font-bold text-primary/30 font-mono">03</span>
+            <div class="w-16 h-16 bg-gradient-to-br from-primary/15 via-primary/10 to-secondary/20 text-primary rounded-2xl flex items-center justify-center mb-5 shadow-inner group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300">
               <span class="material-symbols-outlined text-3xl">restaurant</span>
             </div>
             <h3 class="font-display-lg text-xl font-bold text-on-surface mb-2">Kuliner Khas</h3>
-            <p class="font-body-sm text-sm text-on-surface-variant">Nikmati hidangan otentik dengan resep turun temurun.</p>
+            <p class="font-body-sm text-sm text-on-surface-variant leading-relaxed">Nikmati hidangan otentik dengan resep turun temurun.</p>
           </div>
 
-          <div class="bg-surface-container-lowest p-8 rounded-2xl text-center border border-outline-variant/30 shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300">
-            <div class="w-16 h-16 bg-surface-container text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+          <div class="group relative bg-white/80 backdrop-blur-md p-8 rounded-2xl text-center border border-white/80 shadow-level-1 hover:shadow-xl hover:-translate-y-2 hover:border-secondary/60 transition-all duration-300 flex flex-col items-center">
+            <span class="absolute top-4 right-4 text-xs font-bold text-primary/30 font-mono">04</span>
+            <div class="w-16 h-16 bg-gradient-to-br from-primary/15 via-primary/10 to-secondary/20 text-primary rounded-2xl flex items-center justify-center mb-5 shadow-inner group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300">
               <span class="material-symbols-outlined text-3xl">home_work</span>
             </div>
             <h3 class="font-display-lg text-xl font-bold text-on-surface mb-2">Homestay Nyaman</h3>
-            <p class="font-body-sm text-sm text-on-surface-variant">Menginap bersama warga untuk pengalaman otentik.</p>
+            <p class="font-body-sm text-sm text-on-surface-variant leading-relaxed">Menginap bersama warga untuk pengalaman otentik.</p>
           </div>
         </div>
       </div>
