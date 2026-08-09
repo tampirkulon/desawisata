@@ -79,6 +79,10 @@ export const getProfilDesaSync = () => {
     const extra = JSON.parse(localStorage.getItem(EXTRA_STORAGE_KEY) || '{}');
     if (extra.banner_url) base.banner_url = extra.banner_url;
     if (extra.logo_url) base.logo_url = extra.logo_url;
+    if (extra.footer_deskripsi) base.footer_deskripsi = extra.footer_deskripsi;
+    if (extra.footer_copyright) base.footer_copyright = extra.footer_copyright;
+    if (extra.footer_show_social !== undefined) base.footer_show_social = extra.footer_show_social;
+    if (extra.footer_quick_links) base.footer_quick_links = extra.footer_quick_links;
   } catch (err) {
     console.warn('Error loading cached profile:', err);
   }
@@ -108,12 +112,14 @@ export const getProfilDesa = async () => {
         // Keep localStorage synchronized
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(profil));
-          if (data.banner_url || data.logo_url) {
-            localStorage.setItem(EXTRA_STORAGE_KEY, JSON.stringify({
-              banner_url: data.banner_url || profil.banner_url || '',
-              logo_url: data.logo_url || profil.logo_url || ''
-            }));
-          }
+          localStorage.setItem(EXTRA_STORAGE_KEY, JSON.stringify({
+            banner_url: data.banner_url || profil.banner_url || '',
+            logo_url: data.logo_url || profil.logo_url || '',
+            footer_deskripsi: data.footer_deskripsi || profil.footer_deskripsi || '',
+            footer_copyright: data.footer_copyright || profil.footer_copyright || '',
+            footer_show_social: data.footer_show_social !== undefined ? data.footer_show_social : profil.footer_show_social,
+            footer_quick_links: data.footer_quick_links || profil.footer_quick_links
+          }));
         } catch (_) {}
       }
     } catch (err) {
@@ -139,7 +145,11 @@ export const saveProfilDesa = async (payload) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
     localStorage.setItem(EXTRA_STORAGE_KEY, JSON.stringify({
       banner_url: merged.banner_url || '',
-      logo_url: merged.logo_url || ''
+      logo_url: merged.logo_url || '',
+      footer_deskripsi: merged.footer_deskripsi || '',
+      footer_copyright: merged.footer_copyright || '',
+      footer_show_social: merged.footer_show_social,
+      footer_quick_links: merged.footer_quick_links
     }));
   } catch (e) {
     console.warn('Failed to save profile to localStorage:', e);
@@ -175,10 +185,14 @@ export const saveProfilDesa = async (payload) => {
       }
     } catch (err) {
       console.warn('Primary Supabase save failed, attempting sanitized fallback:', err);
-      if (err.message && (err.message.includes('logo_url') || err.message.includes('banner_url') || err.message.includes('schema cache'))) {
+      if (err.message && (err.message.includes('logo_url') || err.message.includes('banner_url') || err.message.includes('footer_') || err.message.includes('schema cache') || err.message.includes('column'))) {
         const sanitized = { ...payload };
         delete sanitized.logo_url;
         delete sanitized.banner_url;
+        delete sanitized.footer_deskripsi;
+        delete sanitized.footer_copyright;
+        delete sanitized.footer_show_social;
+        delete sanitized.footer_quick_links;
 
         if (merged.id) {
           await supabase.from('profil_desa').update(sanitized).eq('id', merged.id);

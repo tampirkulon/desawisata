@@ -1,7 +1,6 @@
 import { auth } from '../../utils/auth.js';
 import { renderAdminSidebar, initAdminSidebarEvents } from '../components/sidebar.js';
 import { renderAdminHeader } from '../components/header.js';
-import { renderImageUploader, initImageUploaderEvents } from '../components/image-upload.js';
 import { showToast } from '../../components/toast.js';
 import { getProfilDesa, saveProfilDesa, formatGoogleMapsEmbed } from '../../utils/profile-store.js';
 import { IconInstagram, IconYouTube, IconWhatsApp } from '../../components/icons.js';
@@ -103,38 +102,14 @@ export const renderAdminProfil = async () => {
               </div>
             </div>
 
-            <!-- SECTION 3: MEDIA VISUAL & FOTO -->
-            <div class="donezo-card p-6 md:p-8 space-y-6">
-              <div class="flex items-center gap-3 border-b border-[#e2e8e2] pb-4">
-                <div class="w-9 h-9 rounded-xl bg-[#EFE3C2] text-[#123524] flex items-center justify-center font-bold">
-                  <span class="material-symbols-outlined text-xl">photo_library</span>
-                </div>
-                <div>
-                  <h3 class="text-base font-bold text-[#123524] m-0">3. Media Visual & Logo</h3>
-                  <p class="text-xs text-slate-500 m-0">Logo resmi dan foto profil desa (otomatis terkompresi format modern WebP).</p>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="space-y-2">
-                  <span class="text-xs font-bold text-[#123524] block">Logo Resmi Desa</span>
-                  ${renderImageUploader('prof-logo', profil.logo_url || '')}
-                </div>
-                <div class="space-y-2">
-                  <span class="text-xs font-bold text-[#123524] block">Foto Banner Profil Desa</span>
-                  ${renderImageUploader('prof-banner', profil.banner_url || '')}
-                </div>
-              </div>
-            </div>
-
-            <!-- SECTION 4: KONTAK, MEDIA SOSIAL & PETA -->
+            <!-- SECTION 3: KONTAK, MEDIA SOSIAL & PETA -->
             <div class="donezo-card p-6 md:p-8 space-y-6">
               <div class="flex items-center gap-3 border-b border-[#e2e8e2] pb-4">
                 <div class="w-9 h-9 rounded-xl bg-[#EFE3C2] text-[#123524] flex items-center justify-center font-bold">
                   <span class="material-symbols-outlined text-xl">pin_drop</span>
                 </div>
                 <div>
-                  <h3 class="text-base font-bold text-[#123524] m-0">4. Kontak Resmi & Peta Lokasi</h3>
+                  <h3 class="text-base font-bold text-[#123524] m-0">3. Kontak Resmi & Peta Lokasi</h3>
                   <p class="text-xs text-slate-500 m-0">Alamat kantor sekretariat, WhatsApp pengelola, dan sematan peta.</p>
                 </div>
               </div>
@@ -196,6 +171,73 @@ export const renderAdminProfil = async () => {
               </div>
             </div>
 
+            <!-- SECTION 4: PENGATURAN FOOTER WEBSITE -->
+            <div class="donezo-card p-6 md:p-8 space-y-6">
+              <div class="flex items-center gap-3 border-b border-[#e2e8e2] pb-4">
+                <div class="w-9 h-9 rounded-xl bg-[#EFE3C2] text-[#123524] flex items-center justify-center font-bold">
+                  <span class="material-symbols-outlined text-xl">call_to_action</span>
+                </div>
+                <div>
+                  <h3 class="text-base font-bold text-[#123524] m-0">4. Pengaturan Footer Website</h3>
+                  <p class="text-xs text-slate-500 m-0">Kustomisasi narasi singkat, teks copyright, ikon sosial media, dan pilihan menu tautan cepat pada footer.</p>
+                </div>
+              </div>
+
+              <!-- Narasi Singkat Footer -->
+              <div class="form-group">
+                <label class="form-label font-semibold text-[#123524] text-xs flex items-center justify-between">
+                  <span>Deskripsi / Narasi Singkat Footer</span>
+                  <span class="text-[11px] font-normal text-slate-400">Tampil pada kolom 1 footer website</span>
+                </label>
+                <textarea id="prof-footer-deskripsi" class="form-control leading-relaxed text-sm" rows="3" placeholder="Tuliskan deskripsi ringkas desa untuk footer...">${profil.footer_deskripsi || ''}</textarea>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Teks Hak Cipta Kustom -->
+                <div class="form-group">
+                  <label class="form-label font-semibold text-[#123524] text-xs flex items-center justify-between">
+                    <span>Teks Hak Cipta (Copyright)</span>
+                    <span class="text-[11px] font-normal text-slate-400">Gunakan {year} untuk tahun otomatis</span>
+                  </label>
+                  <input type="text" id="prof-footer-copyright" class="form-control" value="${profil.footer_copyright || ''}" placeholder="Contoh: © {year} Desa Wisata Tampirkulon. Hak Cipta Dilindungi." />
+                </div>
+
+                <!-- Toggle Tampilkan Sosial Media -->
+                <div class="form-group flex flex-col justify-center">
+                  <label class="form-label font-semibold text-[#123524] text-xs mb-2">Tautan Sosial Media di Footer</label>
+                  <label class="inline-flex items-center gap-3 cursor-pointer select-none p-2 rounded-xl bg-slate-50 border border-slate-200">
+                    <input type="checkbox" id="prof-footer-social" class="w-4 h-4 text-[#3E7B27] rounded focus:ring-[#3E7B27]" ${profil.footer_show_social !== false ? 'checked' : ''} />
+                    <span class="text-xs font-semibold text-slate-700">Tampilkan Ikon & Link Media Sosial</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Pilihan Tautan Cepat (Quick Links) -->
+              <div class="pt-4 border-t border-[#e2e8e2]">
+                <label class="form-label font-semibold text-[#123524] text-xs block mb-3">Menu Tautan Cepat yang Ditampilkan di Footer:</label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                  ${[
+                    { key: 'beranda', label: 'Beranda' },
+                    { key: 'destinasi', label: 'Destinasi' },
+                    { key: 'paket', label: 'Paket Tour' },
+                    { key: 'profil', label: 'Profil Desa' },
+                    { key: 'galeri', label: 'Galeri Foto' },
+                    { key: 'blog', label: 'Blog Artikel' }
+                  ].map(item => {
+                    const isChecked = Array.isArray(profil.footer_quick_links) 
+                      ? profil.footer_quick_links.includes(item.key)
+                      : true;
+                    return `
+                      <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-100/80 transition-colors cursor-pointer text-xs font-medium text-slate-700 select-none">
+                        <input type="checkbox" name="footer_quick_link" value="${item.key}" class="w-4 h-4 text-[#3E7B27] rounded focus:ring-[#3E7B27]" ${isChecked ? 'checked' : ''} />
+                        <span>${item.label}</span>
+                      </label>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            </div>
+
             <!-- STICKY BOTTOM ACTION BAR (Clean & Tanpa Tombol Cepat) -->
             <div class="fixed bottom-0 left-0 md:left-64 right-0 bg-white/95 backdrop-blur-md border-t border-[#cdd8c9] px-6 py-4 z-40 flex items-center justify-between shadow-lg">
               <div class="flex items-center gap-2 text-xs text-slate-600">
@@ -218,12 +260,6 @@ export const renderAdminProfil = async () => {
 
   const bindEvents = () => {
     initAdminSidebarEvents();
-
-    // Init WebP Drag & Drop image uploaders
-    setTimeout(() => {
-      initImageUploaderEvents('prof-logo', 'profil');
-      initImageUploaderEvents('prof-banner', 'profil');
-    }, 50);
 
     // Live Maps preview helper using formatGoogleMapsEmbed
     const mapsTextarea = container.querySelector('#prof-maps');
@@ -267,11 +303,15 @@ export const renderAdminProfil = async () => {
           cleanedWa = '628' + cleanedWa.substring(2);
         }
 
+        const selectedQuickLinks = Array.from(
+          container.querySelectorAll('input[name="footer_quick_link"]:checked')
+        ).map(cb => cb.value);
+
         const payload = {
           nama_desa: document.getElementById('prof-nama')?.value.trim() || profil.nama_desa,
           tagline: document.getElementById('prof-tagline')?.value.trim() || profil.tagline,
-          logo_url: document.getElementById('prof-logo')?.value || profil.logo_url || '',
-          banner_url: document.getElementById('prof-banner')?.value || profil.banner_url || '',
+          logo_url: profil.logo_url || '',
+          banner_url: profil.banner_url || '',
           luas_wilayah: document.getElementById('prof-luas')?.value.trim() || profil.luas_wilayah,
           populasi: document.getElementById('prof-populasi')?.value.trim() || profil.populasi,
           sejarah: document.getElementById('prof-sejarah')?.value.trim() || profil.sejarah,
@@ -285,6 +325,10 @@ export const renderAdminProfil = async () => {
           instagram: document.getElementById('prof-ig')?.value.trim() || profil.instagram,
           youtube: document.getElementById('prof-yt')?.value.trim() || profil.youtube,
           google_maps_embed: document.getElementById('prof-maps')?.value.trim() || profil.google_maps_embed,
+          footer_deskripsi: document.getElementById('prof-footer-deskripsi')?.value.trim() || profil.footer_deskripsi || '',
+          footer_copyright: document.getElementById('prof-footer-copyright')?.value.trim() || profil.footer_copyright || '',
+          footer_show_social: document.getElementById('prof-footer-social')?.checked ?? true,
+          footer_quick_links: selectedQuickLinks.length > 0 ? selectedQuickLinks : ['beranda', 'destinasi', 'paket', 'profil', 'galeri', 'blog'],
         };
 
         try {
