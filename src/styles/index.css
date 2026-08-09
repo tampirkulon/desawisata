@@ -1,32 +1,34 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #316342;
-  --color-primary-container: #4a7c59;
+  --color-primary: #3E7B27;
+  --color-primary-dark: #123524;
+  --color-primary-container: #123524;
   --color-on-primary: #ffffff;
-  --color-on-primary-container: #e1ffe5;
-  --color-primary-fixed: #b9efc5;
-  --color-primary-fixed-dim: #9dd3aa;
-  --color-secondary: #7a5900;
-  --color-secondary-container: #fdce6c;
+  --color-on-primary-container: #EFE3C2;
+  --color-primary-fixed: #EFE3C2;
+  --color-primary-fixed-dim: #85A947;
+  --color-secondary: #85A947;
+  --color-secondary-container: #EFE3C2;
   --color-on-secondary: #ffffff;
-  --color-tertiary: #306345;
-  --color-tertiary-container: #497c5c;
-  --color-tertiary-fixed: #c8f085;
-  --color-background: #fcf9f8;
+  --color-tertiary: #123524;
+  --color-tertiary-container: #3E7B27;
+  --color-tertiary-fixed: #85A947;
+  --color-cream: #EFE3C2;
+  --color-background: #fcfbf8;
   --color-on-background: #1c1b1b;
-  --color-surface: #fcf9f8;
-  --color-surface-dim: #dcd9d9;
-  --color-surface-variant: #e5e2e1;
+  --color-surface: #fcfbf8;
+  --color-surface-dim: #dedad4;
+  --color-surface-variant: #e6e3dc;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f6f3f2;
-  --color-surface-container: #f0eded;
-  --color-surface-container-high: #eae7e7;
-  --color-surface-container-highest: #e5e2e1;
-  --color-on-surface: #1c1b1b;
-  --color-on-surface-variant: #414942;
-  --color-outline: #717971;
-  --color-outline-variant: #c1c9bf;
+  --color-surface-container-low: #f8f6f0;
+  --color-surface-container: #f1eee6;
+  --color-surface-container-high: #eae6dc;
+  --color-surface-container-highest: #e4dfd3;
+  --color-on-surface: #123524;
+  --color-on-surface-variant: #3a4738;
+  --color-outline: #72826e;
+  --color-outline-variant: #c3cdbf;
   --color-error: #ba1a1a;
   --color-error-container: #ffdad6;
 
@@ -39,69 +41,74 @@
 }
 
 /* ============================================================
-   DESIGN SYSTEM TOKENS & STITCH UI STYLES - DESA WISATA TAMPIRKULON
+   DESIGN SYSTEM TOKENS & STITCH UI STYLES - DESA WISATA
+   PALETTE: #123524, #3E7B27, #85A947, #EFE3C2
    ============================================================ */
 
 :root {
-  --color-primary: #316342;
-  --color-primary-light: #4a7c59;
-  --color-primary-dark: #1e5031;
-  --color-accent: #7a5900;
-  --color-bg: #fcf9f8;
+  --color-primary: #3E7B27;
+  --color-primary-light: #85A947;
+  --color-primary-dark: #123524;
+  --color-accent: #85A947;
+  --color-cream: #EFE3C2;
+  --color-bg: #fcfbf8;
   --color-surface: #ffffff;
-  --color-text: #1c1b1b;
-  --color-text-secondary: #414942;
+  --color-text: #123524;
+  --color-text-secondary: #3a4738;
 
-  --primary: #316342;
-  --primary-container: #4a7c59;
+  --primary: #3E7B27;
+  --primary-container: #123524;
   --on-primary: #ffffff;
-  --on-primary-container: #e1ffe5;
-  --primary-fixed: #b9efc5;
-  --primary-fixed-dim: #9dd3aa;
+  --on-primary-container: #EFE3C2;
+  --primary-fixed: #EFE3C2;
+  --primary-fixed-dim: #85A947;
 
-  --secondary: #7a5900;
-  --secondary-container: #fdce6c;
+  --secondary: #85A947;
+  --secondary-container: #EFE3C2;
   --on-secondary: #ffffff;
 
-  --tertiary: #306345;
-  --tertiary-container: #497c5c;
+  --tertiary: #123524;
+  --tertiary-container: #3E7B27;
+  --tertiary-fixed: #85A947;
 
-  --accent-gold: #d4a84b;
+  --accent-gold: #85A947;
+  --accent-cream: #EFE3C2;
 
-  --background: #fcf9f8;
+  --background: #fcfbf8;
   --on-background: #1c1b1b;
   
-  --surface: #fcf9f8;
-  --surface-dim: #dcd9d9;
-  --surface-variant: #e5e2e1;
+  --surface: #fcfbf8;
+  --surface-dim: #dedad4;
+  --surface-variant: #e6e3dc;
   --surface-container-lowest: #ffffff;
-  --surface-container-low: #f6f3f2;
-  --surface-container: #f0eded;
-  --surface-container-high: #eae7e7;
-  --surface-container-highest: #e5e2e1;
-  --on-surface: #1c1b1b;
-  --on-surface-variant: #414942;
+  --surface-container-low: #f8f6f0;
+  --surface-container: #f1eee6;
+  --surface-container-high: #eae6dc;
+  --surface-container-highest: #e4dfd3;
+  --on-surface: #123524;
+  --on-surface-variant: #3a4738;
 
-  --outline: #b5c4ba;
-  --outline-variant: #cbd5e1;
+  --outline: #b6c4b2;
+  --outline-variant: #cdd8c9;
   
-  --neutral-50: #f8faf9;
-  --neutral-100: #f1f5f2;
-  --neutral-200: #e2e8f0;
-  --neutral-300: #cbd5e1;
-  --neutral-400: #94a3b8;
-  --neutral-500: #64748b;
-  --neutral-600: #475569;
-  --neutral-700: #334155;
-  --neutral-800: #1e293b;
-  --bg-donezo: #f4f6f5;
+  --neutral-50: #f8faf8;
+  --neutral-100: #f1f5f1;
+  --neutral-200: #e2e8e2;
+  --neutral-300: #cbd5cb;
+  --neutral-400: #94a394;
+  --neutral-500: #647464;
+  --neutral-600: #475547;
+  --neutral-700: #334133;
+  --neutral-800: #1e291e;
+  --bg-donezo: #f5f7f4;
   --radius-donezo: 24px;
-  --shadow-donezo: 0 4px 20px rgba(0, 0, 0, 0.03);
-  --donezo-green: #316342;
-  --donezo-green-dark: #1b3d27;
-  --donezo-accent: #4ade80;
+  --shadow-donezo: 0 4px 20px rgba(18, 53, 36, 0.04);
+  --donezo-green: #3E7B27;
+  --donezo-green-dark: #123524;
+  --donezo-accent: #85A947;
+  --donezo-cream: #EFE3C2;
 
-  --primary-500: #316342;
+  --primary-500: #3E7B27;
   --status-error: #dc2626;
 
   --radius-xs: 0.25rem;
@@ -116,12 +123,12 @@
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
 
-  --shadow-level-1: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-level-2: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-level-1: 0 1px 3px rgba(18, 53, 36, 0.08), 0 1px 2px rgba(18, 53, 36, 0.04);
+  --shadow-level-2: 0 4px 6px -1px rgba(18, 53, 36, 0.1), 0 2px 4px -1px rgba(18, 53, 36, 0.06);
+  --shadow-sm: 0 1px 2px 0 rgba(18, 53, 36, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(18, 53, 36, 0.1), 0 2px 4px -1px rgba(18, 53, 36, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(18, 53, 36, 0.1), 0 4px 6px -2px rgba(18, 53, 36, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(18, 53, 36, 0.1), 0 10px 10px -5px rgba(18, 53, 36, 0.04);
 
   --font-body: 'Inter', sans-serif;
   --font-heading: 'Outfit', sans-serif;
@@ -207,17 +214,57 @@
 
 /* Glassmorphism Classes (Stitch UI) */
 .glass-panel, .glass-effect {
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(239, 227, 194, 0.4);
 }
 
 .glass-panel-dark {
-  background: rgba(0, 69, 50, 0.75);
+  background: rgba(18, 53, 36, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(239, 227, 194, 0.2);
+}
+
+/* Ambient glow & glass accents */
+.glass-card-accent {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.glass-card-dark {
+  background: rgba(18, 53, 36, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(239, 227, 194, 0.25);
+}
+
+.pulse-dot {
+  position: relative;
+  display: inline-flex;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: #22c55e;
+}
+
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  background-color: rgba(34, 197, 94, 0.5);
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
 .parallax-bg {
@@ -240,3 +287,4 @@
     padding: 0 16px;
   }
 }
+

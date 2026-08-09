@@ -1,6 +1,7 @@
 import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
-import { getProfilDesa } from '../utils/profile-store.js';
+import { getProfilDesa, formatGoogleMapsEmbed } from '../utils/profile-store.js';
+import { IconInstagram, IconYouTube, IconWhatsApp } from '../components/icons.js';
 
 export const renderProfil = async () => {
   const profil = await getProfilDesa();
@@ -18,10 +19,10 @@ export const renderProfil = async () => {
     ${renderNavbar()}
 
     <!-- Header Page Section (Static as Original) -->
-    <section class="w-full bg-primary relative flex items-center justify-center overflow-hidden text-center text-white px-6 pt-20" style="min-height: 391px; background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('${defaultHeroBg}'); background-size: cover; background-position: center;">
+    <section class="w-full bg-[#123524] relative flex items-center justify-center overflow-hidden text-center text-white px-6 pt-20" style="min-height: 391px; background-image: linear-gradient(rgba(18, 53, 36, 0.65), rgba(18, 53, 36, 0.65)), url('${defaultHeroBg}'); background-size: cover; background-position: center;">
       <div class="max-w-container-max mx-auto text-center relative z-10 py-8">
         <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Profil Desa Wisata Tampirkulon</h1>
-        <p class="text-primary-fixed-dim max-w-2xl mx-auto font-body-md text-base md:text-lg text-white/90">Mengenal lebih dekat warisan budaya, keindahan alam, dan visi pembangunan berkelanjutan di jantung Jawa Tengah.</p>
+        <p class="text-[#EFE3C2] max-w-2xl mx-auto font-body-md text-base md:text-lg text-white/90">Mengenal lebih dekat warisan budaya, keindahan alam, dan visi pembangunan berkelanjutan di jantung Jawa Tengah.</p>
       </div>
     </section>
 
@@ -30,13 +31,13 @@ export const renderProfil = async () => {
       <div class="flex flex-col lg:flex-row gap-12">
         <!-- Left Column (60%): Sejarah, Visi, Misi -->
         <div class="lg:w-[60%] flex flex-col gap-10">
-          <article class="bg-surface rounded-2xl p-8 border border-outline-variant/30 shadow-level-1">
-            <div class="flex items-center gap-3 border-b border-outline-variant/30 pb-4 mb-6">
-              <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
+          <article class="bg-surface rounded-2xl p-8 border border-outline-variant/40 shadow-level-1">
+            <div class="flex items-center gap-3 border-b border-outline-variant/40 pb-4 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-[#EFE3C2] text-[#123524] flex items-center justify-center font-bold">
                 <span class="material-symbols-outlined text-2xl">auto_stories</span>
               </div>
               <div>
-                <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-primary m-0">Sejarah & Latar Belakang</h2>
+                <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-[#123524] m-0">Sejarah & Latar Belakang</h2>
                 <span class="text-xs text-on-surface-variant">Asal usul dan perkembangan desa wisata</span>
               </div>
             </div>
@@ -46,34 +47,34 @@ export const renderProfil = async () => {
           </article>
 
           <article>
-            <div class="bg-surface-container rounded-2xl p-8 border border-outline-variant/30 shadow-level-1">
-              <div class="flex items-center gap-3 border-b border-outline-variant/30 pb-4 mb-6">
-                <div class="w-10 h-10 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center font-bold">
+            <div class="bg-surface-container rounded-2xl p-8 border border-outline-variant/40 shadow-level-1">
+              <div class="flex items-center gap-3 border-b border-outline-variant/40 pb-4 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-[#85A947]/20 text-[#3E7B27] flex items-center justify-center font-bold">
                   <span class="material-symbols-outlined text-2xl">flag</span>
                 </div>
                 <div>
-                  <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-primary m-0">Visi & Misi</h2>
+                  <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-[#123524] m-0">Visi & Misi</h2>
                   <span class="text-xs text-on-surface-variant">Arah pembangunan dan pelestarian desa wisata</span>
                 </div>
               </div>
 
-              <div class="mb-8 bg-surface p-6 rounded-xl border border-outline-variant/20">
-                <h3 class="font-display-lg text-lg font-bold text-primary mb-2 flex items-center gap-2">
-                  <span class="material-symbols-outlined text-primary text-xl">visibility</span>
+              <div class="mb-8 bg-surface p-6 rounded-xl border border-outline-variant/30">
+                <h3 class="font-display-lg text-lg font-bold text-[#123524] mb-2 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[#3E7B27] text-xl">visibility</span>
                   Visi Desa Wisata
                 </h3>
                 <p class="text-on-surface-variant italic text-base leading-relaxed m-0">"${profil.visi || 'Menjadi Desa Wisata Mandiri Berbasis Kearifan Lokal dan Kelestarian Alam Bertaraf Internasional.'}"</p>
               </div>
               
-              <div class="bg-surface p-6 rounded-xl border border-outline-variant/20">
-                <h3 class="font-display-lg text-lg font-bold text-primary mb-4 flex items-center gap-2">
-                  <span class="material-symbols-outlined text-primary text-xl">task_alt</span>
+              <div class="bg-surface p-6 rounded-xl border border-outline-variant/30">
+                <h3 class="font-display-lg text-lg font-bold text-[#123524] mb-4 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[#3E7B27] text-xl">task_alt</span>
                   Misi Desa Wisata
                 </h3>
                 <ul class="list-none flex flex-col gap-3.5 p-0 m-0">
                   ${misiItems.map(item => `
                     <li class="flex items-start gap-3 text-sm text-on-surface-variant">
-                      <span class="material-symbols-outlined text-primary text-xl mt-0.5 shrink-0">check_circle</span>
+                      <span class="material-symbols-outlined text-[#3E7B27] text-xl mt-0.5 shrink-0">check_circle</span>
                       <span class="leading-relaxed">${item.replace(/^[0-9]+[.)]\s*/, '')}</span>
                     </li>
                   `).join('')}
@@ -83,110 +84,88 @@ export const renderProfil = async () => {
           </article>
         </div>
 
-        <!-- Right Column (40%): Sidebar Informasi, Kontak, & Peta -->
+        <!-- Right Column (40%): Sidebar Informasi Desa -->
         <aside class="lg:w-[40%] flex flex-col gap-8">
-          <!-- Card Identitas & Statistik Desa -->
-          <div class="bg-surface rounded-2xl p-8 border border-outline-variant/50 shadow-level-1 relative overflow-hidden">
-            <h3 class="font-display-lg text-2xl font-bold text-primary mb-6 flex items-center gap-2">
-              <span class="material-symbols-outlined text-primary">info</span>
+          <div class="bg-surface rounded-2xl p-8 border border-outline-variant/40 shadow-level-1 relative overflow-hidden">
+            <h3 class="font-display-lg text-2xl font-bold text-[#123524] mb-6 flex items-center gap-2">
+              <span class="material-symbols-outlined text-[#3E7B27]">info</span>
               Informasi Desa
             </h3>
             
-            <!-- Visual Photo Card -->
-            <div class="w-full h-48 bg-surface-variant rounded-xl mb-6 flex items-center justify-center overflow-hidden relative border border-outline-variant/30 group">
-              <img src="${profil.banner_url || defaultHeroBg}" alt="Foto Profil Desa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col items-center justify-end p-4 text-white">
-                ${profil.logo_url ? `
-                  <img src="${profil.logo_url}" alt="Logo ${namaDesa}" class="h-12 w-12 object-contain rounded-lg bg-white/90 p-1 mb-2 shadow-md" />
-                ` : `
-                  <span class="material-symbols-outlined text-3xl mb-1 text-tertiary-fixed">location_on</span>
-                `}
-                <span class="font-bold text-xs bg-black/60 px-3 py-1 rounded-full backdrop-blur-sm">${namaDesa}</span>
-              </div>
+            <!-- Google Maps directly at the top of the card -->
+            <div class="w-full h-56 rounded-xl mb-6 overflow-hidden border border-outline-variant/30 bg-surface-container flex items-center justify-center text-xs text-slate-400 shadow-2xs">
+              ${profil.google_maps_embed 
+                ? formatGoogleMapsEmbed(profil.google_maps_embed)
+                : `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
+              }
             </div>
 
             <!-- Detail List -->
             <ul class="flex flex-col gap-4 list-none p-0 m-0">
               <li class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
-                <div class="bg-primary-fixed text-primary p-2.5 rounded-full flex items-center justify-center shrink-0">
+                <div class="bg-[#EFE3C2] text-[#123524] p-2.5 rounded-full flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-xl">aspect_ratio</span>
                 </div>
                 <div>
                   <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold m-0 mb-0.5">Luas Wilayah</p>
-                  <p class="font-display-lg text-base font-bold text-primary m-0">${profil.luas_wilayah || '3.45 km²'}</p>
+                  <p class="font-display-lg text-base font-bold text-[#123524] m-0">${profil.luas_wilayah || '3.45 km²'}</p>
                 </div>
               </li>
 
               <li class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
-                <div class="bg-secondary-container text-secondary p-2.5 rounded-full flex items-center justify-center shrink-0">
+                <div class="bg-[#85A947]/20 text-[#3E7B27] p-2.5 rounded-full flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-xl">diversity_3</span>
                 </div>
                 <div>
                   <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold m-0 mb-0.5">Populasi Penduduk</p>
-                  <p class="font-display-lg text-base font-bold text-primary m-0">${profil.populasi || '2.850+ Jiwa'}</p>
+                  <p class="font-display-lg text-base font-bold text-[#123524] m-0">${profil.populasi || '2.850+ Jiwa'}</p>
                 </div>
               </li>
 
               <li class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
-                <div class="bg-tertiary-fixed text-primary p-2.5 rounded-full flex items-center justify-center shrink-0">
+                <div class="bg-[#3E7B27]/15 text-[#123524] p-2.5 rounded-full flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-xl">schedule</span>
                 </div>
                 <div>
                   <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold m-0 mb-0.5">Jam Operasional</p>
-                  <p class="font-body-md text-sm font-semibold text-primary m-0">${profil.jam_operasional || 'Senin - Minggu: 08:00 - 17:00 WIB'}</p>
+                  <p class="font-body-md text-sm font-semibold text-[#123524] m-0">${profil.jam_operasional || 'Senin - Minggu: 08:00 - 17:00 WIB'}</p>
                 </div>
               </li>
 
               <li class="flex items-start gap-4 p-4 bg-surface-container-low rounded-xl">
-                <div class="bg-primary text-white p-2.5 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                <div class="bg-[#123524] text-white p-2.5 rounded-full flex items-center justify-center shrink-0 mt-0.5">
                   <span class="material-symbols-outlined text-xl">home_pin</span>
                 </div>
                 <div>
                   <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold m-0 mb-1">Alamat Lengkap</p>
-                  <p class="font-body-sm text-sm text-primary leading-relaxed m-0">${profil.alamat || 'Jl. Raya Candimulyo No. 12, Tampirkulon, Magelang, Jawa Tengah 56191'}</p>
+                  <p class="font-body-sm text-sm text-[#123524] leading-relaxed m-0">${profil.alamat || 'Jl. Raya Candimulyo No. 12, Tampirkulon, Magelang, Jawa Tengah 56191'}</p>
                 </div>
               </li>
             </ul>
 
-            <!-- Direct Contact & Social Row -->
+            <!-- Direct Contact & Solid Color Buttons (Full Bold Solid) -->
             <div class="mt-6 pt-6 border-t border-outline-variant/30 flex flex-col gap-3">
               ${cleanWhatsapp ? `
-                <a href="https://wa.me/${cleanWhatsapp}?text=Halo%20Pengelola%20${encodeURIComponent(namaDesa)},%20saya%20ingin%20bertanya%20mengenai%20kunjungan%20wisata." target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-all shadow-sm flex items-center justify-center gap-2">
-                  <span class="material-symbols-outlined text-base">chat</span>
-                  Chat WhatsApp Pengelola (${profil.whatsapp})
+                <a href="https://wa.me/${cleanWhatsapp}?text=Halo%20Pengelola%20${encodeURIComponent(namaDesa)},%20saya%20ingin%20bertanya%20mengenai%20kunjungan%20wisata." target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2.5">
+                  ${IconWhatsApp('w-4 h-4 fill-white shrink-0')}
+                  <span>Chat WhatsApp Pengelola (${profil.whatsapp})</span>
                 </a>
               ` : ''}
 
-              <div class="flex items-center gap-2 pt-2">
+              <div class="flex items-center gap-3 pt-1">
                 ${profil.instagram ? `
-                  <a href="${profil.instagram.startsWith('http') ? profil.instagram : 'https://instagram.com/' + profil.instagram}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 font-bold text-xs transition-all border border-pink-200 flex items-center justify-center gap-1.5">
-                    <span class="material-symbols-outlined text-base">photo_camera</span>
-                    Instagram
+                  <a href="${profil.instagram.startsWith('http') ? profil.instagram : 'https://instagram.com/' + profil.instagram.replace(/^@/, '')}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-[#E1306C] hover:bg-[#C13584] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
+                    ${IconInstagram('w-4 h-4 fill-white shrink-0')}
+                    <span>Instagram</span>
                   </a>
                 ` : ''}
                 ${profil.youtube ? `
-                  <a href="${profil.youtube.startsWith('http') ? profil.youtube : 'https://youtube.com/' + profil.youtube}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs transition-all border border-red-200 flex items-center justify-center gap-1.5">
-                    <span class="material-symbols-outlined text-base">smart_display</span>
-                    YouTube
+                  <a href="${profil.youtube.startsWith('http') ? profil.youtube : 'https://youtube.com/' + profil.youtube}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-[#FF0000] hover:bg-[#CC0000] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
+                    ${IconYouTube('w-4 h-4 fill-white shrink-0')}
+                    <span>YouTube</span>
                   </a>
                 ` : ''}
               </div>
-            </div>
-          </div>
-
-          <!-- Card Peta Lokasi Google Maps -->
-          <div class="bg-surface rounded-2xl p-6 border border-outline-variant/50 shadow-level-1">
-            <h4 class="font-display-lg text-lg font-bold text-primary mb-3 flex items-center gap-2">
-              <span class="material-symbols-outlined text-primary">map</span>
-              Peta Lokasi Google Maps
-            </h4>
-            <div class="w-full h-64 rounded-xl overflow-hidden border border-outline-variant/30 bg-surface-container flex items-center justify-center text-xs text-slate-400">
-              ${profil.google_maps_embed 
-                ? (profil.google_maps_embed.includes('<iframe') 
-                    ? profil.google_maps_embed.replace('<iframe', '<iframe class="w-full h-full border-0"') 
-                    : `<iframe class="w-full h-full border-0" src="${profil.google_maps_embed}" loading="lazy"></iframe>`)
-                : `<iframe class="w-full h-full border-0" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
-              }
             </div>
           </div>
         </aside>
