@@ -119,12 +119,14 @@ export const renderBeranda = async () => {
                 <p class="font-body-sm text-sm text-on-surface-variant mb-6 flex-grow leading-relaxed line-clamp-3">
                   ${item.deskripsi || 'Nikmati keindahan dan suasana unik di destinasi favorit Desa Wisata Tampirkulon.'}
                 </p>
-                <div class="pt-4 border-t border-outline-variant/20 flex justify-between items-center mt-auto">
-                  <span class="font-bold text-primary text-sm flex items-center gap-1">
-                    <span class="material-symbols-outlined text-base">location_on</span>
+                <div class="mt-auto flex justify-between items-center pt-4 border-t border-outline-variant/10">
+                  <span class="text-xs text-on-surface-variant flex items-center gap-1 font-semibold">
+                    <span class="material-symbols-outlined text-sm text-primary">location_on</span>
                     ${item.lokasi || 'Tampirkulon'}
                   </span>
-                  <button class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-primary-container transition-colors pointer-events-none">Lihat Detail</button>
+                  <button class="detail-btn w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary hover:bg-secondary hover:text-on-secondary transition-colors duration-300 pointer-events-none" data-id="${item.id}">
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                  </button>
                 </div>
               </div>
             </div>
