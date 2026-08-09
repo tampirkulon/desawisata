@@ -229,15 +229,19 @@ export const renderBeranda = async () => {
       </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section class="py-16 md:py-24 bg-surface-container-low" id="testimonials">
-      <div class="max-w-container-max mx-auto px-4 md:px-12">
+    <!-- Testimonials Section with Quote Watermarks -->
+    <section class="py-16 md:py-24 bg-surface-container-low relative overflow-hidden" id="testimonials">
+      <div class="max-w-container-max mx-auto px-4 md:px-12 relative z-10">
         <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
           <div class="text-center md:text-left">
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-secondary/20 text-primary text-xs font-bold uppercase tracking-wider mb-2">
+              <span class="material-symbols-outlined text-sm">chat_bubble</span>
+              <span>Ulasan & Kesan</span>
+            </span>
             <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-2">Kata Mereka</h2>
             <p class="font-body-md text-base text-on-surface-variant m-0">Pengalaman tak terlupakan dari pengunjung kami.</p>
           </div>
-          <button id="write-testimonial-btn" class="px-6 py-3 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-level-1 transition-all flex items-center gap-2">
+          <button id="write-testimonial-btn" class="px-6 py-3.5 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-level-1 hover:shadow-md transition-all flex items-center gap-2 cursor-pointer">
             <span class="material-symbols-outlined text-sm">rate_review</span>
             <span>Tulis Ulasan & Kesan</span>
           </button>
@@ -245,15 +249,18 @@ export const renderBeranda = async () => {
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           ${testimoniList.map(t => `
-            <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/30 shadow-level-1 flex flex-col justify-between">
-              <div>
-                <div class="flex text-amber-500 mb-4">${'★'.repeat(t.rating || 5)}${'☆'.repeat(5 - (t.rating || 5))}</div>
+            <div class="relative overflow-hidden bg-white/90 backdrop-blur-md p-8 rounded-2xl border border-outline-variant/30 shadow-level-1 hover:shadow-xl hover:-translate-y-1.5 hover:border-secondary/50 transition-all duration-300 flex flex-col justify-between group">
+              <!-- Watermark Quote Icon -->
+              <span class="material-symbols-outlined text-6xl text-primary/10 absolute top-4 right-4 pointer-events-none select-none">format_quote</span>
+
+              <div class="relative z-10">
+                <div class="flex text-amber-500 mb-4 text-base tracking-wide drop-shadow-xs">${'★'.repeat(t.rating || 5)}${'☆'.repeat(5 - (t.rating || 5))}</div>
                 <p class="font-body-md italic text-on-surface-variant text-sm mb-6 leading-relaxed">
                   "${t.pesan}"
                 </p>
               </div>
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold">
+              <div class="flex items-center gap-3 relative z-10 pt-4 border-t border-outline-variant/20">
+                <div class="w-11 h-11 bg-gradient-to-br from-primary to-secondary text-white rounded-full flex items-center justify-center font-bold shadow-xs">
                   ${(t.nama || 'A').charAt(0).toUpperCase()}
                 </div>
                 <div>
@@ -267,17 +274,40 @@ export const renderBeranda = async () => {
       </div>
     </section>
 
-    <!-- Call to Action Banner -->
-    <section class="py-16 bg-primary-fixed/30 text-center">
-      <div class="max-w-3xl mx-auto px-6">
-        <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-4">Siap Menjelajahi Tampirkulon?</h2>
-        <p class="font-body-md text-base text-on-surface-variant mb-8">
-          Temukan kedamaian dan keindahan yang autentik di Desa Wisata Tampirkulon. Kami siap menyambut kedatangan Anda dengan keramahan khas desa kami.
-        </p>
-        <a href="#/kontak" class="inline-flex items-center gap-2 bg-secondary text-white font-bold px-8 py-3.5 rounded-full hover:bg-secondary/90 transition-all shadow-level-1">
-          <span class="material-symbols-outlined text-xl">calendar_month</span>
-          Kontak & Reservasi
-        </a>
+    <!-- Modern Elevated Gradient Glass CTA Banner -->
+    <section class="py-16 md:py-20 bg-surface relative overflow-hidden" id="cta-banner">
+      <div class="max-w-container-max mx-auto px-4 md:px-12">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#123524] via-[#1A452D] to-[#3E7B27] text-white p-10 md:p-16 shadow-2xl border border-white/15 text-center">
+          
+          <!-- Ambient glowing orbs inside CTA -->
+          <div class="w-80 h-80 bg-white/10 rounded-full blur-3xl absolute -top-20 -right-20 pointer-events-none"></div>
+          <div class="w-64 h-64 bg-[#85A947]/25 rounded-full blur-2xl absolute -bottom-16 -left-16 pointer-events-none"></div>
+
+          <div class="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
+            <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-[#EFE3C2] text-xs font-bold uppercase tracking-wider mb-5 shadow-xs">
+              <span class="material-symbols-outlined text-sm">explore</span>
+              <span>Petualangan Menanti</span>
+            </span>
+
+            <h2 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-5 drop-shadow-md leading-tight">
+              Siap Menjelajahi Keindahan Tampirkulon?
+            </h2>
+            <p class="font-body-md text-base md:text-lg text-white/90 mb-10 max-w-2xl leading-relaxed">
+              Temukan kedamaian, udara segar pegunungan, dan keramahan autentik masyarakat kami. Jadwalkan liburan berkesan Anda sekarang!
+            </p>
+
+            <div class="flex flex-wrap gap-4 justify-center">
+              <a href="#/kontak" class="inline-flex items-center gap-2.5 bg-[#EFE3C2] text-[#123524] font-bold px-9 py-4 rounded-full hover:bg-white hover:scale-105 hover:shadow-xl transition-all shadow-md">
+                <span class="material-symbols-outlined text-xl">calendar_month</span>
+                <span>Kontak & Reservasi</span>
+              </a>
+              <a href="#/paket" class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md border border-white/30 text-white font-bold px-8 py-4 rounded-full hover:bg-white/25 transition-all shadow-xs">
+                <span class="material-symbols-outlined text-xl">package_2</span>
+                <span>Lihat Paket Wisata</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
