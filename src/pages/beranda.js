@@ -116,10 +116,14 @@ export const renderBeranda = async () => {
       </div>
     </section>
 
-    <!-- Destinations Section -->
-    <section class="py-16 md:py-24 bg-surface-container-low" id="destinations">
-      <div class="max-w-container-max mx-auto px-4 md:px-12">
+    <!-- Destinations Section with Glass Badges -->
+    <section class="py-16 md:py-24 bg-surface-container-low relative overflow-hidden" id="destinations">
+      <div class="max-w-container-max mx-auto px-4 md:px-12 relative z-10">
         <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-secondary/20 text-primary text-xs font-bold uppercase tracking-wider mb-3">
+            <span class="material-symbols-outlined text-sm">stars</span>
+            <span>Destinasi Favorit</span>
+          </span>
           <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-3">Destinasi Unggulan</h2>
           <p class="font-body-md text-base text-on-surface-variant">Tempat-tempat terbaik yang wajib Anda kunjungi di Tampirkulon.</p>
         </div>
@@ -128,15 +132,15 @@ export const renderBeranda = async () => {
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           ${destinasi.map(item => `
-            <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 overflow-hidden shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 flex flex-col cursor-pointer beranda-destinasi-card" data-id="${item.id}">
+            <div class="group bg-white/90 backdrop-blur-md rounded-2xl border border-outline-variant/40 overflow-hidden shadow-level-1 hover:shadow-xl hover:-translate-y-1.5 hover:border-secondary/60 transition-all duration-300 flex flex-col cursor-pointer beranda-destinasi-card" data-id="${item.id}">
               <div class="relative h-56 overflow-hidden bg-surface-container-low">
                 <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${item.nama}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
-                <span class="absolute top-4 right-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                <span class="absolute top-4 right-4 bg-[#123524]/85 backdrop-blur-md text-[#EFE3C2] text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider border border-white/20 shadow-md">
                   ${item.harga_tiket || 'Gratis'}
                 </span>
               </div>
               <div class="p-6 flex flex-col flex-grow">
-                <h3 class="font-display-lg text-xl font-bold text-primary mb-2 line-clamp-1">${item.nama}</h3>
+                <h3 class="font-display-lg text-xl font-bold text-primary mb-2 line-clamp-1 group-hover:text-secondary transition-colors">${item.nama}</h3>
                 <p class="font-body-sm text-sm text-on-surface-variant mb-6 flex-grow leading-relaxed line-clamp-3">
                   ${item.deskripsi || 'Nikmati keindahan dan suasana unik di destinasi favorit Desa Wisata Tampirkulon.'}
                 </p>
@@ -155,47 +159,70 @@ export const renderBeranda = async () => {
         </div>
 
         <div class="text-center mt-12">
-          <a href="#/destinasi" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3.5 rounded-full hover:bg-primary-container transition-all shadow-level-1">
-            Lihat Semua Destinasi
+          <a href="#/destinasi" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3.5 rounded-full hover:bg-primary-container hover:shadow-lg hover:shadow-primary/25 transition-all shadow-level-1">
+            <span>Lihat Semua Destinasi</span>
             <span class="material-symbols-outlined text-sm">arrow_forward</span>
           </a>
         </div>
       </div>
     </section>
 
-    <!-- About Section -->
-    <section class="py-16 md:py-24 bg-surface border-t border-outline-variant/30" id="about">
-      <div class="max-w-container-max mx-auto px-4 md:px-12">
+    <!-- About Section with Watermark Stat Cards -->
+    <section class="py-16 md:py-24 bg-surface border-t border-outline-variant/30 relative overflow-hidden" id="about">
+      <!-- Subtle ambient circle -->
+      <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-container-max mx-auto px-4 md:px-12 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-primary/15 text-primary text-xs font-bold uppercase tracking-wider mb-3">
+              <span class="material-symbols-outlined text-sm">eco</span>
+              <span>Mengenal Desa Kami</span>
+            </span>
             <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-4">Mengenal Tampirkulon</h2>
-            <p class="font-body-md text-base text-on-surface-variant mb-4 leading-relaxed">
-              Desa Wisata Tampirkulon menawarkan perpaduan harmonis antara keindahan alam yang masih perawan dan kekayaan budaya lokal yang terus dilestarikan. Kami berkomitmen untuk menyajikan pengalaman ekowisata yang tidak hanya memanjakan mata, tetapi juga memberikan dampak positif bagi komunitas dan lingkungan.
-            </p>
+            
+            <div class="p-5 rounded-2xl bg-surface-container-low/80 border-l-4 border-primary mb-4">
+              <p class="font-body-md text-base text-on-surface font-medium leading-relaxed m-0">
+                Desa Wisata Tampirkulon menawarkan perpaduan harmonis antara keindahan alam yang asri dan kekayaan budaya lokal yang terus dilestarikan.
+              </p>
+            </div>
+
             <p class="font-body-md text-base text-on-surface-variant mb-6 leading-relaxed">
               Dengan keramahan penduduk lokal dan fasilitas yang terus dikembangkan, kami mengundang Anda untuk sejenak melepas penat dan menemukan kedamaian di desa kami.
             </p>
-            <a href="#/profil" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-6 py-3 rounded-full hover:bg-primary-container transition-all shadow-level-1">
-              Baca Selengkapnya
+            <a href="#/profil" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-6 py-3 rounded-full hover:bg-primary-container hover:shadow-md transition-all shadow-level-1">
+              <span>Baca Selengkapnya</span>
+              <span class="material-symbols-outlined text-base">arrow_forward</span>
             </a>
           </div>
 
           <div class="grid grid-cols-2 gap-6">
-            <div class="bg-surface-container-low border border-outline-variant/30 p-6 rounded-2xl text-center shadow-level-1">
-              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">3.45</div>
-              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Km² Luas Wilayah</div>
+            <!-- Stat 1 -->
+            <div class="relative overflow-hidden bg-white/90 backdrop-blur-sm border border-outline-variant/40 border-l-4 border-l-primary p-6 rounded-2xl text-left shadow-level-1 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+              <span class="material-symbols-outlined text-6xl text-primary/10 absolute -bottom-2 -right-2 select-none pointer-events-none">aspect_ratio</span>
+              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1 relative z-10">3.45</div>
+              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider relative z-10">Km² Luas Wilayah</div>
             </div>
-            <div class="bg-surface-container-low border border-outline-variant/30 p-6 rounded-2xl text-center shadow-level-1">
-              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">2.8k</div>
-              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Populasi Penduduk</div>
+
+            <!-- Stat 2 -->
+            <div class="relative overflow-hidden bg-white/90 backdrop-blur-sm border border-outline-variant/40 border-l-4 border-l-secondary p-6 rounded-2xl text-left shadow-level-1 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+              <span class="material-symbols-outlined text-6xl text-secondary/15 absolute -bottom-2 -right-2 select-none pointer-events-none">diversity_3</span>
+              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1 relative z-10">2.8k</div>
+              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider relative z-10">Populasi Penduduk</div>
             </div>
-            <div class="bg-surface-container-low border border-outline-variant/30 p-6 rounded-2xl text-center shadow-level-1">
-              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">4+</div>
-              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Kategori Wisata</div>
+
+            <!-- Stat 3 -->
+            <div class="relative overflow-hidden bg-white/90 backdrop-blur-sm border border-outline-variant/40 border-l-4 border-l-primary p-6 rounded-2xl text-left shadow-level-1 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+              <span class="material-symbols-outlined text-6xl text-primary/10 absolute -bottom-2 -right-2 select-none pointer-events-none">category</span>
+              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1 relative z-10">4+</div>
+              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider relative z-10">Kategori Wisata</div>
             </div>
-            <div class="bg-surface-container-low border border-outline-variant/30 p-6 rounded-2xl text-center shadow-level-1">
-              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1">100%</div>
-              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider">Kearifan Lokal</div>
+
+            <!-- Stat 4 -->
+            <div class="relative overflow-hidden bg-white/90 backdrop-blur-sm border border-outline-variant/40 border-l-4 border-l-secondary p-6 rounded-2xl text-left shadow-level-1 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+              <span class="material-symbols-outlined text-6xl text-secondary/15 absolute -bottom-2 -right-2 select-none pointer-events-none">verified</span>
+              <div class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-1 relative z-10">100%</div>
+              <div class="font-body-sm text-xs text-on-surface-variant font-bold uppercase tracking-wider relative z-10">Kearifan Lokal</div>
             </div>
           </div>
         </div>
