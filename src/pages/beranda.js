@@ -41,11 +41,6 @@ export const renderBeranda = async () => {
       <div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-primary-light/20 rounded-full blur-3xl pointer-events-none z-0"></div>
 
       <div class="relative z-10 max-w-4xl px-6 py-20 flex flex-col items-center text-white">
-        <!-- Live Status Pill -->
-        <div class="inline-flex items-center gap-2.5 bg-black/40 backdrop-blur-md border border-white/25 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide mb-5 shadow-sm text-white/90">
-          <span class="pulse-dot"></span>
-          <span>Buka Setiap Hari • ${profil.jam_operasional || '08:00 - 17:00 WIB'}</span>
-        </div>
 
         <span class="bg-secondary/90 backdrop-blur-md text-white border border-white/30 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
           Welcome to Tampirkulon
