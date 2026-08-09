@@ -59,11 +59,15 @@ export const initImageUploaderEvents = (inputId, folderPath = 'uploads') => {
 
         if (error) throw error;
 
-        const { data: publicUrlData } = supabase.storage.from('images').getPublicUrl(filePath);
-        const url = publicUrlData.publicUrl;
+        const { 
+         } = supabase.storage
+          .from('images')
+          .getPublicUrl(filePath);
 
-        hiddenInput.value = url;
-        previewImg.src = url;
+        const imageUrl = publicUrlData.publicUrl;
+
+        hiddenInput.value = imageUrl;
+        previewImg.src = imageUrl;
         previewContainer.style.display = 'block';
         showToast(`Gambar berhasil dikonversi ke WebP${savingsPercent > 0 ? ` (hemat ${savingsPercent}%)` : ''} & diunggah!`, 'success');
       } catch (err) {

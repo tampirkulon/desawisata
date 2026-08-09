@@ -166,7 +166,7 @@ export const renderKontak = async (queryParams) => {
         const emailInput = container.querySelector('#email').value;
         const teleponInput = container.querySelector('#telepon').value;
         const tglInput = container.querySelector('#tanggal_kunjungan').value;
-        const paxInput = parseInt(container.querySelector('#jumlah_peserta').value) || 1;
+        const paxInput = Number.parseInt(container.querySelector('#jumlah_peserta').value) || 1;
         const rawPaketId = container.querySelector('#paket_id').value;
         const isValidUuid = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
         const paketIdInput = isValidUuid(rawPaketId) ? rawPaketId : null;

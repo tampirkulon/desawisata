@@ -192,10 +192,10 @@ export const renderAdminPaket = async () => {
       onSave: async () => {
         const payload = {
           nama: document.getElementById('pkt-nama').value.trim(),
-          harga: parseInt(document.getElementById('pkt-harga').value) || 0,
+          harga: Number.parseInt(document.getElementById('pkt-harga').value) || 0,
           durasi: document.getElementById('pkt-durasi').value.trim(),
-          kapasitas_min: parseInt(document.getElementById('pkt-min').value) || 1,
-          kapasitas_max: parseInt(document.getElementById('pkt-max').value) || 30,
+          kapasitas_min: Number.parseInt(document.getElementById('pkt-min').value) || 1,
+          kapasitas_max: Number.parseInt(document.getElementById('pkt-max').value) || 30,
           gambar_url: document.getElementById('pkt-gambar').value,
           fasilitas: document.getElementById('pkt-fasilitas').value.split('\n').map(s => s.trim()).filter(Boolean),
           deskripsi: document.getElementById('pkt-deskripsi').value.trim(),

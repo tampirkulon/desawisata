@@ -71,7 +71,7 @@ export const openTestimoniModal = () => {
   const updateStars = (rating) => {
     selectedRating = rating;
     stars.forEach(star => {
-      const val = parseInt(star.getAttribute('data-star'));
+      const val = Number.parseInt(star.getAttribute('data-star'));
       if (val <= rating) {
         star.classList.add('text-amber-500');
         star.classList.remove('text-slate-300');
@@ -86,7 +86,7 @@ export const openTestimoniModal = () => {
 
   stars.forEach(star => {
     star.addEventListener('click', (e) => {
-      const val = parseInt(e.currentTarget.getAttribute('data-star'));
+      const val = Number.parseInt(e.currentTarget.getAttribute('data-star'));
       updateStars(val);
     });
   });

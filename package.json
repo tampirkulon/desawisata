@@ -1,8 +1,23 @@
 {
   "name": "desawisata",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "homepage": "https://github.com/tampirkulon/desawisata#readme",
+  "bugs": {
+    "url": "https://github.com/tampirkulon/desawisata/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tampirkulon/desawisata.git"
+  },
+  "license": "ISC",
+  "author": "",
   "type": "module",
+  "main": "vite.config.js",
+  "directories": {
+    "doc": "docs"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

@@ -89,7 +89,7 @@ export const renderGaleri = async () => {
 
     container.querySelectorAll('.gallery-item').forEach(item => {
       item.addEventListener('click', (e) => {
-        const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+        const idx = Number.parseInt(e.currentTarget.getAttribute('data-idx'));
         const filteredList = activeFilter === 'all' ? galeriList : galeriList.filter(g => g.kategori === activeFilter);
         openLightbox(filteredList, idx);
       });

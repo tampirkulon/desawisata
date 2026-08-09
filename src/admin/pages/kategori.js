@@ -163,7 +163,7 @@ export const renderAdminKategori = async () => {
       onSave: async () => {
         const payload = {
           nama: document.getElementById('kat-nama').value.trim(),
-          urutan: parseInt(document.getElementById('kat-urutan').value) || 1,
+          urutan: Number.parseInt(document.getElementById('kat-urutan').value) || 1,
           deskripsi: document.getElementById('kat-deskripsi').value.trim(),
         };
 
