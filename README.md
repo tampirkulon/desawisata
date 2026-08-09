@@ -120,17 +120,6 @@ desawisata/
 
 ---
 
-## 🤝 Kontribusi
-
-Kontribusi, saran perbaikan, dan laporan kendala selalu diterima!
-1. Fork repository ini
-2. Buat branch fitur baru (`git checkout -b feature/nama-fitur`)
-3. Commit perubahan Anda (`git commit -m "feat: tambah fitur baru"`)
-4. Push ke branch (`git push origin feature/nama-fitur`)
-5. Ajukan *Pull Request*
-
----
-
 ## 📄 Lisensi
 
 Proyek ini dikembangkan untuk komunitas **Desa Wisata Tampirkulon**. Hak Cipta dilindungi undang-undang.
