@@ -4,17 +4,15 @@ import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
+import { getProfilDesa } from '../utils/profile-store.js';
 
 export const renderBeranda = async () => {
-  let profil = mockData.profil_desa;
+  let profil = await getProfilDesa();
   let destinasi = mockData.destinasi;
   let testimoniList = mockData.testimoni;
 
   if (isSupabaseConfigured()) {
     try {
-      const { data: profilData } = await supabase.from('profil_desa').select('*').single();
-      if (profilData) profil = profilData;
-
       const { data: destData } = await supabase.from('destinasi').select('*').eq('is_published', true).eq('is_unggulan', true).limit(3);
       if (destData && destData.length > 0) destinasi = destData;
 

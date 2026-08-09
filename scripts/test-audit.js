@@ -82,9 +82,14 @@ assert(defaultFooter.includes('Tautan Cepat'), 'Default footer renders quick lin
 assert(defaultFooter.includes('Hak Cipta Dilindungi'), 'Default footer renders copyright text');
 assert(defaultFooter.includes('Portal Pengelola Desa'), 'Default footer renders admin portal link');
 
-// Custom description & custom copyright
+// Custom description & custom copyright & dynamic contact
 const customFooter = renderFooter({
   nama_desa: 'Desa Mandiri',
+  alamat: 'Jl. Merdeka No. 99, Dusun Mandiri',
+  whatsapp: '081299998888',
+  telepon: '+62 293 123456',
+  email: 'kontak@desamandiri.id',
+  jam_operasional: 'Senin - Sabtu: 09:00 - 16:00 WIB',
   footer_deskripsi: 'Deskripsi kustom footer pengelola.',
   footer_copyright: '© {year} Desa Mandiri & Pokdarwis. All rights reserved.',
   footer_show_social: true,
@@ -96,6 +101,10 @@ assert(customFooter.includes('Deskripsi kustom footer pengelola.'), 'Footer rend
 assert(customFooter.includes('Desa Mandiri & Pokdarwis.'), 'Footer renders custom copyright');
 assert(customFooter.includes('instagram.com/custom'), 'Footer renders custom instagram link');
 assert(customFooter.includes('Galeri Foto') && !customFooter.includes('Paket Tour'), 'Footer filters quick links accurately');
+assert(customFooter.includes('Jl. Merdeka No. 99, Dusun Mandiri'), 'Footer renders dynamic custom address');
+assert(customFooter.includes('wa.me/6281299998888'), 'Footer renders formatted WhatsApp link');
+assert(customFooter.includes('mailto:kontak@desamandiri.id'), 'Footer renders dynamic email mailto link');
+assert(customFooter.includes('Senin - Sabtu: 09:00 - 16:00 WIB'), 'Footer renders dynamic operational hours');
 
 // Hidden social links
 const noSocialFooter = renderFooter({

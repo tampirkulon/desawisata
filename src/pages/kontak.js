@@ -2,20 +2,18 @@ import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
+import { getProfilDesa } from '../utils/profile-store.js';
 
 export const renderKontak = async (queryParams) => {
   const selectedPaketId = queryParams ? queryParams.get('paket_id') : null;
   const selectedDestinasiId = queryParams ? queryParams.get('destinasi_id') : null;
 
-  let profil = mockData.profil_desa;
+  let profil = await getProfilDesa();
   let paketList = mockData.paket_wisata;
   let prefilledNotes = '';
 
   if (isSupabaseConfigured()) {
     try {
-      const { data: prof } = await supabase.from('profil_desa').select('*').single();
-      if (prof) profil = prof;
-
       const { data: pak } = await supabase.from('paket_wisata').select('*').eq('is_published', true);
       if (pak && pak.length > 0) paketList = pak;
 
