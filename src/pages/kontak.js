@@ -2,7 +2,7 @@ import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
-import { getProfilDesa } from '../utils/profile-store.js';
+import { getProfilDesa, formatGoogleMapsEmbed } from '../utils/profile-store.js';
 
 export const renderKontak = async (queryParams) => {
   const selectedPaketId = queryParams ? queryParams.get('paket_id') : null;
@@ -116,7 +116,7 @@ export const renderKontak = async (queryParams) => {
                 <span class="material-symbols-outlined text-tertiary-fixed text-2xl">call</span>
                 <div>
                   <span class="block font-label-caps text-xs text-on-primary-container font-bold uppercase mb-1">WHATSAPP / TELP</span>
-                  <span class="font-body-md text-sm text-white/90">${profil.telepon || '+62 812-3456-7890'}</span>
+                  <span class="font-body-md text-sm text-white/90">${profil.whatsapp || profil.telepon || '+62 812-3456-7890'}</span>
                 </div>
               </li>
               <li class="flex items-center gap-4">
@@ -131,17 +131,17 @@ export const renderKontak = async (queryParams) => {
               <h4 class="font-label-caps text-xs text-tertiary-fixed font-bold uppercase mb-2">JAM OPERASIONAL</h4>
               <div class="flex justify-between items-center text-sm">
                 <span>Senin - Minggu</span>
-                <span class="font-bold text-tertiary-fixed">08:00 - 17:00 WIB</span>
+                <span class="font-bold text-tertiary-fixed">${profil.jam_operasional || '08:00 - 17:00 WIB'}</span>
               </div>
             </div>
           </div>
 
-          <!-- Map Box -->
+          <!-- Map Box with Automatic URL / iframe converter -->
           <div class="bg-surface-variant rounded-2xl h-64 w-full relative overflow-hidden shadow-level-1 border border-outline-variant/50 flex items-center justify-center">
             ${profil.google_maps_embed
-      ? profil.google_maps_embed.replace('<iframe', '<iframe class="w-full h-full border-0"')
-      : `<iframe class="w-full h-full border-0" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
-    }
+              ? formatGoogleMapsEmbed(profil.google_maps_embed)
+              : `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
+            }
           </div>
         </div>
       </div>
