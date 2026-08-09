@@ -32,7 +32,7 @@ export const renderBeranda = async () => {
     ${renderNavbar()}
 
     <!-- Header / Hero Section (Stitch Exact Design + Glassmorphic Accents) -->
-    <header class="relative min-h-screen flex items-center justify-center text-center text-white pt-20 overflow-hidden" id="home">
+    <header class="relative min-h-screen flex items-center justify-center text-center text-white pt-16 pb-20 md:pb-28 overflow-hidden" id="home">
       <div class="absolute inset-0 bg-cover bg-center z-0 scale-105 transition-transform duration-1000" style="background-image: url('https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1920&q=80');"></div>
       <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-primary/85 z-0"></div>
       
@@ -40,23 +40,23 @@ export const renderBeranda = async () => {
       <div class="absolute top-1/3 -left-20 w-80 h-80 bg-secondary/20 rounded-full blur-3xl pointer-events-none z-0"></div>
       <div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-primary-light/20 rounded-full blur-3xl pointer-events-none z-0"></div>
 
-      <div class="relative z-10 max-w-4xl px-6 py-20 flex flex-col items-center text-white">
+      <div class="relative z-10 max-w-4xl px-6 -mt-12 md:-mt-20 flex flex-col items-center text-white">
 
-        <span class="bg-secondary/90 backdrop-blur-md text-white border border-white/30 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
+        <span class="bg-secondary/90 backdrop-blur-md text-white border border-white/30 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 shadow-sm">
           Welcome to Tampirkulon
         </span>
-        <h1 class="font-display-lg text-4xl md:text-6xl font-bold mb-6 leading-tight drop-shadow-lg text-white">
+        <h1 class="font-display-lg text-4xl md:text-6xl font-bold mb-3 md:mb-4 leading-tight drop-shadow-lg text-white">
           ${profil.nama_desa || 'Jelajahi Warisan Alam Tampirkulon'}
         </h1>
-        <p class="font-body-md text-lg md:text-xl text-white/95 mb-10 max-w-2xl leading-relaxed drop-shadow-sm">
+        <p class="font-body-md text-base md:text-lg text-white/95 mb-7 max-w-2xl leading-normal md:leading-relaxed drop-shadow-sm">
           ${profil.tagline || 'Temukan keindahan tersembunyi, rasakan kehangatan budaya, dan ciptakan kenangan tak terlupakan di desa wisata kami.'}
         </p>
-        <div class="flex flex-wrap gap-4 justify-center">
-          <a href="#/destinasi" class="bg-secondary text-white font-bold px-8 py-3.5 rounded-full hover:bg-secondary/90 hover:shadow-lg hover:shadow-secondary/30 transition-all transform hover:-translate-y-1 shadow-level-1 inline-flex items-center gap-2">
+        <div class="flex flex-wrap gap-3.5 justify-center">
+          <a href="#/destinasi" class="bg-secondary text-white font-bold px-7 py-3 rounded-full hover:bg-secondary/90 hover:shadow-lg hover:shadow-secondary/30 transition-all transform hover:-translate-y-1 shadow-level-1 inline-flex items-center gap-2">
             <span>Mulai Petualangan</span>
             <span class="material-symbols-outlined text-lg">explore</span>
           </a>
-          <a href="#/kontak" class="bg-white/15 backdrop-blur-md border border-white/40 text-white font-bold px-8 py-3.5 rounded-full hover:bg-white/25 transition-all transform hover:-translate-y-1 shadow-sm inline-flex items-center gap-2">
+          <a href="#/kontak" class="bg-white/15 backdrop-blur-md border border-white/40 text-white font-bold px-7 py-3 rounded-full hover:bg-white/25 transition-all transform hover:-translate-y-1 shadow-sm inline-flex items-center gap-2">
             <span>Kontak & Reservasi</span>
             <span class="material-symbols-outlined text-lg">arrow_forward</span>
           </a>
