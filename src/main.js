@@ -19,6 +19,7 @@ import { renderAdminArtikel } from './admin/pages/artikel.js';
 import { renderAdminProfil } from './admin/pages/profil.js';
 import { renderAdminGaleri } from './admin/pages/galeri.js';
 import { renderAdminReservasi } from './admin/pages/reservasi.js';
+import { renderAdminUlasan } from './admin/pages/ulasan.js';
 
 // Register Public Routes
 router.addRoute('#/', (params) => renderBeranda(params));
@@ -40,6 +41,7 @@ router.addRoute('#/admin/artikel', (params) => renderAdminArtikel(params));
 router.addRoute('#/admin/profil', (params) => renderAdminProfil(params));
 router.addRoute('#/admin/galeri', (params) => renderAdminGaleri(params));
 router.addRoute('#/admin/reservasi', (params) => renderAdminReservasi(params));
+router.addRoute('#/admin/ulasan', (params) => renderAdminUlasan(params));
 
 // Initialize Router on app container
 router.init('app');

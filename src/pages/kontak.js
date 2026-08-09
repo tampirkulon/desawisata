@@ -141,9 +141,9 @@ export const renderKontak = async (queryParams) => {
           <!-- Map Box -->
           <div class="bg-surface-variant rounded-2xl h-64 w-full relative overflow-hidden shadow-level-1 border border-outline-variant/50 flex items-center justify-center">
             ${profil.google_maps_embed
-              ? profil.google_maps_embed.replace('<iframe', '<iframe class="w-full h-full border-0"')
-              : `<iframe class="w-full h-full border-0" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
-            }
+      ? profil.google_maps_embed.replace('<iframe', '<iframe class="w-full h-full border-0"')
+      : `<iframe class="w-full h-full border-0" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
+    }
           </div>
         </div>
       </div>
@@ -152,74 +152,234 @@ export const renderKontak = async (queryParams) => {
     ${renderFooter(profil)}
   `;
 
+
   const bindEvents = () => {
     initNavbarEvents(true);
 
     const form = container.querySelector('#reservasi-form');
     const alertBox = container.querySelector('#form-alert');
 
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const namaInput = container.querySelector('#nama_pemesan').value;
-        const emailInput = container.querySelector('#email').value;
-        const teleponInput = container.querySelector('#telepon').value;
-        const tglInput = container.querySelector('#tanggal_kunjungan').value;
-        const paxInput = Number.parseInt(container.querySelector('#jumlah_peserta').value) || 1;
-        const rawPaketId = container.querySelector('#paket_id').value;
-        const isValidUuid = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
-        const paketIdInput = isValidUuid(rawPaketId) ? rawPaketId : null;
-        const catatanInput = container.querySelector('#catatan').value.trim();
+    if (!form || !alertBox) return;
 
-        const newResObj = {
-          id: 'rsv-' + Date.now(),
-          nama: namaInput,
-          email: emailInput,
-          telepon: teleponInput,
-          tanggal_kunjungan: tglInput,
-          jumlah_orang: paxInput,
-          paket_id: paketIdInput,
-          pesan: catatanInput,
-          status: 'baru',
-          created_at: new Date().toISOString()
-        };
+    const WHATSAPP_NUMBER = '6285727163035';
 
-        // Simpan ke memori lokal
-        mockData.reservasi.unshift(newResObj);
+    const isValidUuid = (value) => {
+      return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        value
+      );
+    };
 
-        if (isSupabaseConfigured() && supabase) {
-          try {
-            const { error } = await supabase.from('reservasi').insert([{
-              nama: namaInput,
-              email: emailInput,
-              telepon: teleponInput,
-              tanggal_kunjungan: tglInput,
-              jumlah_orang: paxInput,
-              paket_id: paketIdInput,
-              pesan: catatanInput,
-              status: 'baru'
-            }]).select();
+    const formatTanggal = (date) => {
+      if (!date) return '-';
 
-            if (error) throw error;
+      const parsedDate = new Date(date);
 
-            alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300';
-            alertBox.innerHTML = '✅ Reservasi berhasil dikirim! Tim pengelola Desa Wisata Tampirkulon akan segera menghubungi WhatsApp Anda.';
-            alertBox.classList.remove('hidden');
-            form.reset();
-          } catch (err) {
-            alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-rose-100 text-rose-800 border border-rose-300';
-            alertBox.innerHTML = '❌ Gagal mengirim reservasi: ' + err.message;
-            alertBox.classList.remove('hidden');
-          }
-        } else {
-          alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300';
-          alertBox.innerHTML = '✅ Reservasi berhasil disimpan (Mode Demo)! Kami akan segera menghubungi WhatsApp Anda.';
-          alertBox.classList.remove('hidden');
-          form.reset();
-        }
+      if (Number.isNaN(parsedDate.getTime())) {
+        return date;
+      }
+
+      return parsedDate.toLocaleDateString('id-ID', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
       });
-    }
+    };
+
+    const formatWaktu = () => {
+      return new Date().toLocaleString('id-ID', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    };
+
+
+
+
+    const showAlert = (type, message) => {
+      if (type === 'success') {
+        alertBox.className =
+          'mb-6 p-4 rounded-xl text-sm font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300';
+      } else {
+        alertBox.className =
+          'mb-6 p-4 rounded-xl text-sm font-semibold bg-rose-100 text-rose-800 border border-rose-300';
+      }
+
+      alertBox.innerHTML = message;
+      alertBox.classList.remove('hidden');
+    };
+
+
+    const createWhatsAppMessage = ({
+      nama,
+      email,
+      telepon,
+      tanggal,
+      jumlahOrang,
+      paketId,
+      catatan
+    }) => {
+      return `
+Halo Admin Desa Wisata Tampirkulon 👋
+
+Saya ingin melakukan reservasi.
+
+📋 *DETAIL RESERVASI*
+━━━━━━━━━━━━━━━━━━
+👤 Nama: ${nama}
+📧 Email: ${email}
+📱 WhatsApp: ${telepon}
+📅 Tanggal kunjungan: ${formatTanggal(tanggal)}
+👥 Jumlah peserta: ${jumlahOrang} orang
+🎫 Paket ID: ${paketId || '-'}
+📝 Catatan: ${catatan || '-'}
+
+🕐 Waktu pengajuan:
+${formatWaktu()}
+
+Mohon informasi terkait ketersediaan dan proses selanjutnya.
+
+Terima kasih 🙏
+    `.trim();
+    };
+
+    const openWhatsApp = (reservationData) => {
+      if (!WHATSAPP_NUMBER || WHATSAPP_NUMBER.includes('XXXXXXXX')) {
+        console.warn(
+          'Nomor WhatsApp belum dikonfigurasi.'
+        );
+
+        return false;
+      }
+
+      const message = createWhatsAppMessage(reservationData);
+
+      const whatsappUrl =
+        `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+
+      return true;
+    };
+
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+
+
+      const namaInput =
+        container.querySelector('#nama_pemesan')?.value.trim() || '';
+
+      const emailInput =
+        container.querySelector('#email')?.value.trim() || '';
+
+      const teleponInput =
+        container.querySelector('#telepon')?.value.trim() || '';
+
+      const tglInput =
+        container.querySelector('#tanggal_kunjungan')?.value || '';
+
+      const paxInput =
+        Number.parseInt(
+          container.querySelector('#jumlah_peserta')?.value,
+          10
+        ) || 1;
+
+      const rawPaketId =
+        container.querySelector('#paket_id')?.value || '';
+
+      const paketIdInput =
+        isValidUuid(rawPaketId)
+          ? rawPaketId
+          : null;
+
+      const catatanInput =
+        container.querySelector('#catatan')?.value.trim() || '';
+
+
+
+      const newResObj = {
+        id: `rsv-${Date.now()}`,
+        nama: namaInput,
+        email: emailInput,
+        telepon: teleponInput,
+        tanggal_kunjungan: tglInput,
+        jumlah_orang: paxInput,
+        paket_id: paketIdInput,
+        pesan: catatanInput,
+        status: 'baru',
+        created_at: new Date().toISOString()
+      };
+
+      mockData.reservasi.unshift(newResObj);
+
+      const reservationData = {
+        nama: namaInput,
+        email: emailInput,
+        telepon: teleponInput,
+        tanggal: tglInput,
+        jumlahOrang: paxInput,
+        paketId: paketIdInput,
+        catatan: catatanInput
+      };
+
+      if (isSupabaseConfigured() && supabase) {
+        try {
+          const { error } = await supabase
+            .from('reservasi')
+            .insert([
+              {
+                nama: namaInput,
+                email: emailInput,
+                telepon: teleponInput,
+                tanggal_kunjungan: tglInput,
+                jumlah_orang: paxInput,
+                paket_id: paketIdInput,
+                pesan: catatanInput,
+                status: 'baru'
+              }
+            ]);
+
+          if (error) {
+            throw error;
+          }
+
+          openWhatsApp(reservationData);
+
+          showAlert(
+            'success',
+            '✅ Reservasi berhasil dikirim! WhatsApp akan dibuka dengan detail reservasi Anda.'
+          );
+
+          form.reset();
+
+        } catch (error) {
+          console.error(
+            'Gagal menyimpan reservasi:',
+            error
+          );
+
+          showAlert(
+            'error',
+            `❌ Gagal mengirim reservasi: ${error.message}`
+          );
+        }
+
+        return;
+      }
+
+      openWhatsApp(reservationData);
+
+      showAlert(
+        'success',
+        '✅ Reservasi berhasil disimpan (Mode Demo)! WhatsApp akan dibuka dengan detail reservasi Anda.'
+      );
+
+      form.reset();
+    });
   };
 
   setTimeout(() => bindEvents(), 0);
