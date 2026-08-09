@@ -71,6 +71,39 @@ console.log('\n💰 Suite 3: Utilities & Formatting');
 const formatRupiah = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
 assert(formatRupiah(150000).replace(/\s/g, '').includes('150.000'), 'Currency formatter formats IDR correctly');
 
+// Test Suite 4: Custom Footer Component
+console.log('\n🦶 Suite 4: Customizable Footer Rendering');
+import { renderFooter } from '../src/components/footer.js';
+
+// Default rendering
+const defaultFooter = renderFooter(mockData.profil_desa);
+assert(defaultFooter.includes('Desa Wisata Tampirkulon'), 'Default footer renders village name');
+assert(defaultFooter.includes('Tautan Cepat'), 'Default footer renders quick links title');
+assert(defaultFooter.includes('Hak Cipta Dilindungi'), 'Default footer renders copyright text');
+assert(defaultFooter.includes('Portal Pengelola Desa'), 'Default footer renders admin portal link');
+
+// Custom description & custom copyright
+const customFooter = renderFooter({
+  nama_desa: 'Desa Mandiri',
+  footer_deskripsi: 'Deskripsi kustom footer pengelola.',
+  footer_copyright: '© {year} Desa Mandiri & Pokdarwis. All rights reserved.',
+  footer_show_social: true,
+  instagram: 'https://instagram.com/custom',
+  footer_quick_links: ['beranda', 'galeri']
+});
+
+assert(customFooter.includes('Deskripsi kustom footer pengelola.'), 'Footer renders custom description');
+assert(customFooter.includes('Desa Mandiri & Pokdarwis.'), 'Footer renders custom copyright');
+assert(customFooter.includes('instagram.com/custom'), 'Footer renders custom instagram link');
+assert(customFooter.includes('Galeri Foto') && !customFooter.includes('Paket Tour'), 'Footer filters quick links accurately');
+
+// Hidden social links
+const noSocialFooter = renderFooter({
+  footer_show_social: false,
+  instagram: 'https://instagram.com/custom'
+});
+assert(!noSocialFooter.includes('instagram.com/custom'), 'Footer hides social links when footer_show_social is false');
+
 console.log('\n==============================================');
 console.log(`TOTAL TESTS: ${passed + failed} | PASSED: ${passed} | FAILED: ${failed}`);
 if (failed > 0) {
