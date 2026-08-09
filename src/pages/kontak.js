@@ -170,6 +170,7 @@ export const renderKontak = async (queryParams) => {
         const rawPaketId = container.querySelector('#paket_id').value;
         const isValidUuid = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
         const paketIdInput = isValidUuid(rawPaketId) ? rawPaketId : null;
+        const catatanInput = container.querySelector('#catatan').value.trim();
 
         const newResObj = {
           id: 'rsv-' + Date.now(),

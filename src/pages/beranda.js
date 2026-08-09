@@ -15,7 +15,7 @@ export const renderBeranda = async () => {
       const { data: profilData } = await supabase.from('profil_desa').select('*').single();
       if (profilData) profil = profilData;
 
-      const { data: destData } = await supabase.from('destinasi').select('*').eq('is_published', true).limit(3);
+      const { data: destData } = await supabase.from('destinasi').select('*').eq('is_published', true).eq('is_unggulan', true).limit(3);
       if (destData && destData.length > 0) destinasi = destData;
 
       const { data: testData } = await supabase.from('testimoni').select('*').eq('is_shown', true).limit(6);
@@ -102,6 +102,8 @@ export const renderBeranda = async () => {
           <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-3">Destinasi Unggulan</h2>
           <p class="font-body-md text-base text-on-surface-variant">Tempat-tempat terbaik yang wajib Anda kunjungi di Tampirkulon.</p>
         </div>
+
+       
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           ${destinasi.map(item => `
