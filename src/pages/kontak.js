@@ -161,7 +161,7 @@ export const renderKontak = async (queryParams) => {
 
     if (!form || !alertBox) return;
 
-    const WHATSAPP_NUMBER = '6285727163035';
+    const WHATSAPP_NUMBER = (profil.whatsapp || profil.telepon || '6285727163035').replace(/[^0-9]/g, '').replace(/^0/, '62');
 
     const isValidUuid = (value) => {
       return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
@@ -195,9 +195,6 @@ export const renderKontak = async (queryParams) => {
       });
     };
 
-
-
-
     const showAlert = (type, message) => {
       if (type === 'success') {
         alertBox.className =
@@ -211,14 +208,13 @@ export const renderKontak = async (queryParams) => {
       alertBox.classList.remove('hidden');
     };
 
-
     const createWhatsAppMessage = ({
       nama,
       email,
       telepon,
       tanggal,
       jumlahOrang,
-      paketId,
+      paketNama,
       catatan
     }) => {
       return `
@@ -233,11 +229,10 @@ Saya ingin melakukan reservasi.
 📱 WhatsApp: ${telepon}
 📅 Tanggal kunjungan: ${formatTanggal(tanggal)}
 👥 Jumlah peserta: ${jumlahOrang} orang
-🎫 Paket ID: ${paketId || '-'}
+🎫 Paket: ${paketNama || 'Kunjungan Mandiri'}
 📝 Catatan: ${catatan || '-'}
 
-🕐 Waktu pengajuan:
-${formatWaktu()}
+🕐 Waktu pengajuan: ${formatWaktu()}
 
 Mohon informasi terkait ketersediaan dan proses selanjutnya.
 
@@ -246,11 +241,8 @@ Terima kasih 🙏
     };
 
     const openWhatsApp = (reservationData) => {
-      if (!WHATSAPP_NUMBER || WHATSAPP_NUMBER.includes('XXXXXXXX')) {
-        console.warn(
-          'Nomor WhatsApp belum dikonfigurasi.'
-        );
-
+      if (!WHATSAPP_NUMBER) {
+        console.warn('Nomor WhatsApp belum dikonfigurasi.');
         return false;
       }
 
@@ -316,13 +308,15 @@ Terima kasih 🙏
 
       mockData.reservasi.unshift(newResObj);
 
+      const selectedPaket = paketList.find(p => p.id === rawPaketId);
+
       const reservationData = {
         nama: namaInput,
         email: emailInput,
         telepon: teleponInput,
         tanggal: tglInput,
         jumlahOrang: paxInput,
-        paketId: paketIdInput,
+        paketNama: selectedPaket ? selectedPaket.nama : 'Kunjungan Mandiri',
         catatan: catatanInput
       };
 
