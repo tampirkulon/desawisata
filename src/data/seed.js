@@ -20,7 +20,11 @@ export const mockData = {
     populasi: '2.850 Jiwa',
     instagram: 'https://instagram.com/desawisatatampirkulon',
     facebook: 'https://facebook.com/desawisatatampirkulon',
-    youtube: 'https://youtube.com/c/DesaWisataTampirkulon'
+    youtube: 'https://youtube.com/c/DesaWisataTampirkulon',
+    footer_deskripsi: 'Desa Wisata Tampirkulon adalah destinasi yang memadukan keindahan alam pegunungan dengan kearifan lokal yang kental. Kami berkomitmen untuk melestarikan warisan budaya dan alam demi masa depan yang berkelanjutan.',
+    footer_copyright: '© {year} Desa Wisata Tampirkulon. Hak Cipta Dilindungi.',
+    footer_show_social: true,
+    footer_quick_links: ['beranda', 'destinasi', 'paket', 'profil', 'galeri', 'blog']
   },
   kategori_wisata: [
     { id: 'cat-1', nama: 'Wisata Alam', deskripsi: 'Hamparan sawah dan udara sejuk pegunungan.', icon: '🌱', urutan: 1 },
