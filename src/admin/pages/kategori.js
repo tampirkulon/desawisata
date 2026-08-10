@@ -100,7 +100,7 @@ export const renderAdminKategori = async () => {
 
     container.querySelectorAll('.action-edit').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         const item = kategoriList.find(k => k.id === id);
         if (item) openFormModal(item);
       });
@@ -108,7 +108,7 @@ export const renderAdminKategori = async () => {
 
     container.querySelectorAll('.action-delete').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         const count = destinasiList.filter(d => d.kategori_id === id).length;
 
         if (count > 0) {

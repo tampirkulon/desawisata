@@ -18,28 +18,17 @@ import {
 import { mockData } from '../../data/seed.js';
 
 
-/**
- * =========================================================
- * ADMIN - KELOLA ULASAN
- * =========================================================
- */
+
 
 export const renderAdminUlasan = async () => {
 
-    // =======================================================
-    // AUTH
-    // =======================================================
+ 
 
     const isAuthed = await auth.requireAuth();
 
     if (!isAuthed) {
         return document.createElement('div');
     }
-
-
-    // =======================================================
-    // STATE
-    // =======================================================
 
     let ulasanList = mockData.ulasan || [];
     let activeFilter = 'all';
@@ -405,35 +394,29 @@ export const renderAdminUlasan = async () => {
     // BIND EVENTS
     // =======================================================
 
-    const bindEvents = (dataToRender) => {
+  
+const handleDetailClick = (event) => {
+  const { id } = event.currentTarget.dataset;
 
-        initAdminSidebarEvents();
+  const item = ulasanList.find(
+    (review) => String(review.id) === String(id)
+  );
 
-        initTableSearch(container);
+  if (item) {
+    openDetailModal(item);
+  }
+};
 
+const bindEvents = (dataToRender) => {
+  initAdminSidebarEvents();
+  initTableSearch(container);
 
-        // =====================================================
-        // FILTER
-        // =====================================================
+  container
+    .querySelectorAll('.action-detail-ulasan')
+    .forEach((button) => {
+      button.addEventListener('click', handleDetailClick);
+    });
 
-        container
-            .querySelectorAll('.filter-ulasan-btn')
-            .forEach((button) => {
-
-                button.addEventListener(
-                    'click',
-                    (event) => {
-
-                        activeFilter =
-                            event.currentTarget
-                                .getAttribute('data-filter');
-
-                        renderPage();
-
-                    }
-                );
-
-            });
 
 
         // =====================================================
@@ -638,8 +621,8 @@ export const renderAdminUlasan = async () => {
         container.querySelectorAll('.btn-toggle-publish').forEach((button) => {
   button.addEventListener('click', async (e) => {
     const btn = e.currentTarget;
-    const id = btn.getAttribute('data-id');
-    const currentStatus = btn.getAttribute('data-published') === 'true';
+    const id = btn.dataset('data-id');
+    const currentStatus = btn.dataset('data-published') === 'true';
     const newStatus = !currentStatus; // Balikkan nilai (true <-> false)
 
     try {
@@ -675,7 +658,7 @@ export const renderAdminUlasan = async () => {
 
                         const id =
                             event.currentTarget
-                                .getAttribute('data-id');
+                                .dataset('data-id');
 
 
                         const item =
@@ -707,11 +690,11 @@ export const renderAdminUlasan = async () => {
 
 
                         const id =
-                            target.getAttribute('data-id');
+                            target.dataset('data-id');
 
 
                         const currentPublished =
-                            target.getAttribute(
+                            target.dataset(
                                 'data-published'
                             ) === 'true';
 

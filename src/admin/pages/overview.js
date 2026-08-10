@@ -6,6 +6,8 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 import { mockData } from '../../data/seed.js';
 import { getDateRange, fetchDashboardStats, exportDashboardReport } from '../services/dashboard-data.js';
 
+
+
 export const renderAdminOverview = async () => {
   const isAuthed = await auth.requireAuth();
   if (!isAuthed) return document.createElement('div');
@@ -27,10 +29,6 @@ export const renderAdminOverview = async () => {
   const container = document.createElement('div');
   container.className = 'dashboard-wrapper donezo-bg';
 
-  // ============================================================
-  // CHART HELPER FUNCTIONS
-  // ============================================================
-
   const _renderChartBars = (chartData) => {
     if (!chartData || chartData.length === 0) {
       return '<div class="flex-1 flex items-center justify-center text-xs text-slate-400 font-medium py-8">Belum ada data kunjungan di periode ini.</div>';
@@ -38,25 +36,26 @@ export const renderAdminOverview = async () => {
     const maxVal = Math.max(...chartData.map(d => d.value), 1);
     const displayData = chartData; // Display all grouped buckets (5 hours, 7 days, 4 weeks, 12 months)
 
-    return displayData.map((item) => {
-      const pct = Math.max(5, Math.round((item.value / maxVal) * 92));
-      const isPeak = item.value === maxVal && item.value > 0;
-      const barColor = isPeak
-        ? 'bg-[#316342]'
-        : item.value > maxVal * 0.7
-          ? 'bg-[#316342]/80'
-          : item.value > maxVal * 0.4
-            ? 'bg-[#4ADE80]'
-            : 'bg-slate-200/80';
+    const getBarColor = (value, maxVal, isPeak) => {
+    if (isPeak) return 'bg-[#316342]';
+    if (value > maxVal * 0.7) return 'bg-[#316342]/80';
+    if (value > maxVal * 0.4) return 'bg-[#4ADE80]';
+    return 'bg-slate-200/80';
+  };
 
-      return `
-        <div class="group flex flex-col items-center gap-1.5 flex-1 h-full justify-end relative cursor-pointer min-w-0">
-          ${isPeak ? `<span class="absolute -top-7 px-1.5 py-0.5 rounded-md bg-emerald-50 text-[#316342] font-bold text-[9px] sm:text-[10px] border border-emerald-200 shadow-2xs whitespace-nowrap">Puncak</span>` : ''}
-          <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute ${isPeak ? '-top-14' : '-top-11'} left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
-            <span>${item.label}: <strong>${item.value} Wisatawan</strong></span>
-            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-          </div>
-          <div class="w-full max-w-[32px] sm:max-w-[38px] ${barColor} group-hover:bg-[#316342] rounded-full transition-all duration-300 ${isPeak ? 'shadow-md' : ''}" style="height: ${pct}%"></div>
+  return displayData.map((item) => {
+    const pct = Math.max(5, Math.round((item.value / maxVal) * 92));
+    const isPeak = item.value === maxVal && item.value > 0;
+    const barColor = getBarColor(item.value, maxVal, isPeak);
+
+    return `
+      <div class="group flex flex-col items-center gap-1.5 flex-1 h-full justify-end relative cursor-pointer min-w-0">
+        ${isPeak ? `<span class="absolute -top-7 px-1.5 py-0.5 rounded-md bg-emerald-50 text-[#316342] font-bold text-[9px] sm:text-[10px] border border-emerald-200 shadow-2xs whitespace-nowrap">Puncak</span>` : ''}
+        <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute ${isPeak ? '-top-14' : '-top-11'} left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
+          <span>${item.label}: <strong>${item.value} Wisatawan</strong></span>
+          <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+        </div>
+        <div class="w-full max-w-[32px] sm:max-w-[38px] ${barColor} group-hover:bg-[#316342] rounded-full transition-all duration-300 ${isPeak ? 'shadow-md' : ''}" style="height: ${pct}%"></div>
           <span class="text-[10px] sm:text-[11px] font-semibold text-center whitespace-nowrap truncate w-full ${isPeak ? 'text-[#316342] font-bold' : 'text-slate-400 group-hover:text-slate-700'}" title="${item.label}">${item.label}</span>
         </div>
       `;
@@ -485,33 +484,33 @@ export const renderAdminOverview = async () => {
   // BIND CONTENT EVENTS
   // ============================================================
 
+  const updatePeriodButtonStyles = (buttons, selectedPeriod) => {
+    buttons.forEach(b => {
+      const p = b.dataset.period;
+      const isSelected = p === selectedPeriod;
+      b.className = `global-period-btn px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 ${
+        isSelected ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+      }`;
+    });
+  };
+
   const bindContentEvents = () => {
     // --- GLOBAL PERIOD FILTER ---
-    viewContent.querySelectorAll('.global-period-btn').forEach(btn => {
+    const periodButtons = viewContent.querySelectorAll('.global-period-btn');
+
+    periodButtons.forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const period = e.currentTarget.getAttribute('data-period');
+        const { period } = e.currentTarget.dataset;
+
         if (period === selectedPeriod) return;
 
         selectedPeriod = period;
 
-        // Instant UI feedback: Highlight active button immediately without animation extra DOM nodes
-        viewContent.querySelectorAll('.global-period-btn').forEach(b => {
-          const p = b.getAttribute('data-period');
-          const isSelected = p === selectedPeriod;
-          b.className = `global-period-btn px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 ${
-            isSelected
-              ? 'bg-[#316342] text-white shadow-sm'
-              : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
-          }`;
-        });
-
-        const { label } = getDateRange(period);
-        showToast(`Menampilkan data periode: ${label}`, 'info');
-
-        await loadData();
-        renderDashboardContent();
+        // Instant UI feedback: Highlight active button immediately
+        updatePeriodButtonStyles(periodButtons, selectedPeriod);
       });
     });
+  
 
     // --- EXPORT REPORT BUTTON ---
     const exportBtn = viewContent.querySelector('#export-report-btn');
@@ -526,7 +525,7 @@ export const renderAdminOverview = async () => {
     // --- Quick Confirm Reservasi ---
     viewContent.querySelectorAll('.quick-confirm-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const rawId = e.currentTarget.getAttribute('data-id');
+        const rawId = e.currentTarget.dataset('data-id');
         btn.disabled = true;
         btn.innerText = 'Updating...';
 
@@ -549,29 +548,23 @@ export const renderAdminOverview = async () => {
     });
 
     // --- Quick Complete Reservasi ---
-    viewContent.querySelectorAll('.quick-complete-btn').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const rawId = e.currentTarget.getAttribute('data-id');
-        btn.disabled = true;
-        btn.innerText = 'Updating...';
+  viewContent.querySelectorAll('.quick-complete-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const { id: rawId } = e.currentTarget.dataset;
 
-        if (isSupabaseConfigured()) {
-          try {
-            await supabase.from('reservasi').update({ status: 'selesai' }).eq('id', rawId);
-            showToast('Reservasi ditandai selesai!', 'success');
-          } catch (err) {
-            showToast('Gagal update status: ' + err.message, 'error');
-          }
-        } else {
-          const item = mockData.reservasi.find(r => r.id === rawId);
-          if (item) item.status = 'selesai';
-          showToast('Reservasi ditandai selesai (Demo mode)!', 'success');
+      btn.disabled = true;
+      btn.innerText = 'Updating...';
+
+      if (isSupabaseConfigured()) {
+        try {
+          await supabase.from('reservasi').update({ status: 'selesai' }).eq('id', rawId);
+          showToast('Reservasi ditandai selesai!', 'success');
+        } catch (err) {
+          showToast('Gagal update status: ' + err.message, 'error');
         }
-
-        await loadData();
-        renderDashboardContent();
-      });
+      }
     });
+  });
 
     // --- Sambut Wisatawan Button (Interactive Check-In Modal) ---
     const sambutBtn = viewContent.querySelector('#sambut-wisatawan-btn');
@@ -638,7 +631,7 @@ export const renderAdminOverview = async () => {
 
     modalDiv.querySelectorAll('.checkin-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const resId = e.currentTarget.getAttribute('data-id');
+        const resId = e.currentTarget.dataset('data-id');
         btn.disabled = true;
         btn.innerHTML = 'Memproses...';
 
@@ -665,7 +658,7 @@ export const renderAdminOverview = async () => {
     // --- Testimonial Moderation ---
     viewContent.querySelectorAll('.approve-test-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         btn.disabled = true;
         btn.innerText = 'Menyetujui...';
 
@@ -689,7 +682,7 @@ export const renderAdminOverview = async () => {
 
     viewContent.querySelectorAll('.reject-test-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         btn.disabled = true;
 
         if (isSupabaseConfigured() && supabase) {

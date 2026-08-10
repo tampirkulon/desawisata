@@ -70,7 +70,7 @@ export const initTablePagination = (container, options = {}) => {
   const pagStart = container.querySelector('#pag-start');
   const pagEnd = container.querySelector('#pag-end');
   const pagTotal = container.querySelector('#pag-total');
-  const pagInfo = container.querySelector('#pag-info');
+  
 
   if (!tbody) return;
 
@@ -100,85 +100,100 @@ export const initTablePagination = (container, options = {}) => {
     }
   });
 
-  const renderPagination = () => {
-    const allRows = Array.from(tbody.querySelectorAll('tr:not(.no-search-results)'));
-    
-    // Filter matching rows based on query
-    const matchingRows = allRows.filter(row => {
-      if (!currentQuery) return true;
-      const cells = Array.from(row.querySelectorAll('td'));
-      const searchableCells = cells.filter((_, idx) => !excludedIndices.has(idx));
-      const text = (searchableCells.length > 0 ? searchableCells.map(c => c.textContent).join(' ') : row.textContent).toLowerCase();
-      return text.includes(currentQuery);
+  // Helper 1: Text Extraction (Complexity: 2)
+const getRowText = (row, excludedIndices) => {
+  const cells = Array.from(row.querySelectorAll('td'));
+  const searchable = cells.filter((_, idx) => !excludedIndices.has(idx));
+  const source = searchable.length > 0 ? searchable : [row];
+  return source.map(c => c.textContent).join(' ').toLowerCase();
+};
+
+// Helper 2: Filter Rows (Complexity: 2)
+const filterRows = (rows, query, excludedIndices) => {
+  if (!query) return rows;
+  return rows.filter(row => getRowText(row, excludedIndices).includes(query));
+};
+
+// Helper 3: No-Results Empty State Row (Complexity: 3)
+const updateNoResultsRow = (tbody, totalMatching, query, headers) => {
+  let noResultRow = tbody.querySelector('.no-search-results');
+  const showEmptyState = totalMatching === 0 && query !== '';
+
+  if (!showEmptyState) {
+    if (noResultRow) noResultRow.style.display = 'none';
+    return;
+  }
+
+  const message = `Tidak ada data yang sesuai dengan pencarian "<strong>${query}</strong>"`;
+  if (!noResultRow) {
+    const colCount = headers.length || 5;
+    noResultRow = document.createElement('tr');
+    noResultRow.className = 'no-search-results';
+    noResultRow.innerHTML = `<td colspan="${colCount}" style="text-align: center; color: var(--neutral-600); padding: 32px 16px;">${message}</td>`;
+    tbody.appendChild(noResultRow);
+  } else {
+    noResultRow.style.display = '';
+    noResultRow.querySelector('td').innerHTML = message;
+  }
+};
+
+// Helper 4: Page Button Generator (Complexity: 2)
+const renderPageButtons = (container, totalPages) => {
+  if (!container) return;
+  container.innerHTML = '';
+
+  for (let p = 1; p <= totalPages; p++) {
+    const pageBtn = document.createElement('button');
+    pageBtn.type = 'button';
+    pageBtn.innerText = p;
+    const activeClass = 'bg-[#316342] text-white shadow-xs';
+    const inactiveClass = 'text-slate-600 hover:bg-slate-100 border border-slate-200';
+    pageBtn.className = `w-7 h-7 rounded-lg font-bold text-xs transition-colors cursor-pointer flex items-center justify-center ${
+      p === currentPage ? activeClass : inactiveClass
+    }`;
+
+    pageBtn.addEventListener('click', () => {
+      currentPage = p;
+      renderPagination();
     });
+    container.appendChild(pageBtn);
+  }
+};
 
-    const totalMatching = matchingRows.length;
-    const totalPages = Math.max(1, Math.ceil(totalMatching / pageSize));
+// Helper 5: Pagination Controls & Labels (Complexity: 4)
+const updatePaginationUI = (totalMatching, totalPages, startIdx, endIdx) => {
+  if (pagStart) pagStart.innerText = totalMatching === 0 ? 0 : startIdx + 1;
+  if (pagEnd) pagEnd.innerText = endIdx;
+  if (pagTotal) pagTotal.innerText = totalMatching;
 
-    if (currentPage > totalPages) currentPage = totalPages;
-    if (currentPage < 1) currentPage = 1;
+  if (prevBtn) prevBtn.disabled = currentPage <= 1;
+  if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
 
-    const startIdx = (currentPage - 1) * pageSize;
-    const endIdx = Math.min(startIdx + pageSize, totalMatching);
+  renderPageButtons(pagesContainer, totalPages);
+};
 
-    // Hide all rows first
-    allRows.forEach(r => { r.style.display = 'none'; });
+// Main Function (Cognitive Complexity: 3)
+const renderPagination = () => {
+  const allRows = Array.from(tbody.querySelectorAll('tr:not(.no-search-results)'));
+  const matchingRows = filterRows(allRows, currentQuery, excludedIndices);
 
-    // Show only active page matching rows
-    matchingRows.slice(startIdx, endIdx).forEach(r => {
-      r.style.display = '';
-    });
+  const totalMatching = matchingRows.length;
+  const totalPages = Math.max(1, Math.ceil(totalMatching / pageSize));
 
-    // Handle no matching search indicator
-    let noResultRow = tbody.querySelector('.no-search-results');
-    if (totalMatching === 0 && currentQuery !== '') {
-      if (!noResultRow) {
-        const colCount = headers.length || 5;
-        noResultRow = document.createElement('tr');
-        noResultRow.className = 'no-search-results';
-        noResultRow.innerHTML = `
-          <td colspan="${colCount}" style="text-align: center; color: var(--neutral-600); padding: 32px 16px;">
-            Tidak ada data yang sesuai dengan pencarian "<strong>${currentQuery}</strong>"
-          </td>
-        `;
-        tbody.appendChild(noResultRow);
-      } else {
-        noResultRow.style.display = '';
-        noResultRow.querySelector('td').innerHTML = `Tidak ada data yang sesuai dengan pencarian "<strong>${currentQuery}</strong>"`;
-      }
-    } else if (noResultRow) {
-      noResultRow.style.display = 'none';
-    }
+  // Clamps currentPage safely in 1 line
+  currentPage = Math.min(Math.max(1, currentPage), totalPages);
 
-    // Update Pagination Info
-    if (pagStart) pagStart.innerText = totalMatching === 0 ? 0 : startIdx + 1;
-    if (pagEnd) pagEnd.innerText = endIdx;
-    if (pagTotal) pagTotal.innerText = totalMatching;
+  const startIdx = (currentPage - 1) * pageSize;
+  const endIdx = Math.min(startIdx + pageSize, totalMatching);
 
-    // Update Prev / Next Buttons
-    if (prevBtn) prevBtn.disabled = currentPage <= 1;
-    if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+  // Toggle visible rows
+  allRows.forEach(r => { r.style.display = 'none'; });
+  matchingRows.slice(startIdx, endIdx).forEach(r => { r.style.display = ''; });
 
-    // Render Page Number Buttons
-    if (pagesContainer) {
-      pagesContainer.innerHTML = '';
-      for (let p = 1; p <= totalPages; p++) {
-        const pageBtn = document.createElement('button');
-        pageBtn.type = 'button';
-        pageBtn.innerText = p;
-        pageBtn.className = `w-7 h-7 rounded-lg font-bold text-xs transition-colors cursor-pointer flex items-center justify-center ${
-          p === currentPage
-            ? 'bg-[#316342] text-white shadow-xs'
-            : 'text-slate-600 hover:bg-slate-100 border border-slate-200'
-        }`;
-        pageBtn.addEventListener('click', () => {
-          currentPage = p;
-          renderPagination();
-        });
-        pagesContainer.appendChild(pageBtn);
-      }
-    }
-  };
+  // Update auxiliary UI components
+  updateNoResultsRow(tbody, totalMatching, currentQuery, headers);
+  updatePaginationUI(totalMatching, totalPages, startIdx, endIdx);
+};
 
   // Search input handler
   if (searchInput) {

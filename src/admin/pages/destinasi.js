@@ -112,7 +112,7 @@ export const renderAdminDestinasi = async () => {
 
     container.querySelectorAll('.action-edit').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         const item = destinasiList.find(d => d.id === id);
         if (item) openFormModal(item);
       });
@@ -120,7 +120,7 @@ export const renderAdminDestinasi = async () => {
 
     container.querySelectorAll('.action-delete').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         openConfirmModal({
           message: 'Apakah Anda yakin ingin menghapus destinasi wisata ini?',
           onConfirm: async () => {
@@ -137,7 +137,7 @@ export const renderAdminDestinasi = async () => {
 
     container.querySelectorAll('[data-action="toggle"]').forEach(badge => {
       badge.addEventListener('click', async (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         const item = destinasiList.find(d => String(d.id) === String(id));
         if (!item) return;
 

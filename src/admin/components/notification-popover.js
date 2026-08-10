@@ -8,26 +8,34 @@ const getReadNotifIds = () => {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
   } catch (e) {
+    console.warn(`Failed to read notification IDs from localStorage (${STORAGE_KEY}):`, e);
     return [];
   }
 };
 
 const saveReadNotifId = (id) => {
   const current = getReadNotifIds();
+
   if (!current.includes(id)) {
     current.push(id);
+
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
-    } catch (e) {}
+    } catch (e) {
+      console.error(`Failed to save notification ID (${id}) to localStorage (${STORAGE_KEY}):`, e);
+    }
   }
 };
 
 const saveAllReadNotifIds = (ids) => {
   const current = getReadNotifIds();
   const updated = Array.from(new Set([...current, ...ids]));
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-  } catch (e) {}
+  } catch (e) {
+    console.error(`Failed to save notification IDs to localStorage (${STORAGE_KEY}):`, e);
+  }
 };
 
 /**
@@ -94,7 +102,10 @@ export const fetchNotificationData = async () => {
   });
 
   // Sort unread first, then by date
-  notifications.sort((a, b) => (a.isRead === b.isRead ? 0 : a.isRead ? 1 : -1));
+  notifications.sort((a, b) => {
+    if (a.isRead === b.isRead) return 0;
+    return a.isRead ? 1 : -1;
+  });
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
@@ -232,17 +243,24 @@ export const toggleNotificationPopover = async () => {
   document.body.appendChild(popover);
 
   // Bind click items
+  // Bind click items
   popover.querySelectorAll('.notif-item-row').forEach(row => {
     row.addEventListener('click', (e) => {
-      const id = e.currentTarget.getAttribute('data-id');
-      const link = e.currentTarget.getAttribute('data-link');
-      saveReadNotifId(id);
+      const { id, link } = e.currentTarget.dataset;
+
+      if (id) {
+        saveReadNotifId(id);
+      }
+
       popover.remove();
+
       if (link) {
         window.location.hash = link;
       }
     });
   });
+
+  // Bind mark all as read button
 
   // Bind mark all as read button
   popover.querySelector('#mark-all-read-btn')?.addEventListener('click', () => {

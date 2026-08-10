@@ -9,11 +9,28 @@ export const renderProfil = async () => {
   const container = document.createElement('div');
   container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background';
 
+  
+
   const defaultHeroBg = 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80&fm=webp';
+  const formatInstagramUrl = (handleOrUrl) => {
+    if (!handleOrUrl) return '';
+    if (handleOrUrl.startsWith('http')) return handleOrUrl;
+    return `https://instagram.com/${handleOrUrl.replace(/^@/, '')}`;
+  };
+
+  const formatYoutubeUrl = (handleOrUrl) => {
+    if (!handleOrUrl) return '';
+    if (handleOrUrl.startsWith('http')) return handleOrUrl;
+    return `https://youtube.com/${handleOrUrl}`;
+  };
+
   const sejarahParagraphs = (profil.sejarah || 'Desa Tampirkulon memiliki sejarah panjang yang terjalin erat dengan perkembangan peradaban agraris di lereng pegunungan.').split('\n').filter(p => p.trim());
   const misiItems = (profil.misi || 'Melestarikan nilai-nilai budaya lokal.\nMenjaga keseimbangan ekosistem dan kebersihan lingkungan.\nMeningkatkan kesejahteraan ekonomi masyarakat.').split('\n').filter(m => m.trim());
-  const cleanWhatsapp = profil.whatsapp ? profil.whatsapp.replace(/[^0-9]/g, '') : '';
+  const cleanWhatsapp = profil.whatsapp ? profil.whatsapp.replace(/\D/g, '') : '';
   const namaDesa = profil.nama_desa || 'Desa Wisata Tampirkulon';
+
+  const instagramUrl = formatInstagramUrl(profil.instagram);
+  const youtubeUrl = formatYoutubeUrl(profil.youtube);
 
   container.innerHTML = `
     ${renderNavbar()}
@@ -75,7 +92,7 @@ export const renderProfil = async () => {
                   ${misiItems.map(item => `
                     <li class="flex items-start gap-3 text-sm text-on-surface-variant">
                       <span class="material-symbols-outlined text-[#3E7B27] text-xl mt-0.5 shrink-0">check_circle</span>
-                      <span class="leading-relaxed">${item.replace(/^[0-9]+[.)]\s*/, '')}</span>
+                      <span class="leading-relaxed">${item.replace(/\D/g, '')}</span>
                     </li>
                   `).join('')}
                 </ul>
@@ -154,13 +171,13 @@ export const renderProfil = async () => {
 
               <div class="flex items-center gap-3 pt-1">
                 ${profil.instagram ? `
-                  <a href="${profil.instagram.startsWith('http') ? profil.instagram : 'https://instagram.com/' + profil.instagram.replace(/^@/, '')}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-[#E1306C] hover:bg-[#C13584] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
+                  <a href="${instagramUrl}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-[#E1306C] hover:bg-[#C13584] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
                     ${IconInstagram('w-4 h-4 fill-white shrink-0')}
                     <span>Instagram</span>
                   </a>
                 ` : ''}
                 ${profil.youtube ? `
-                  <a href="${profil.youtube.startsWith('http') ? profil.youtube : 'https://youtube.com/' + profil.youtube}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-[#FF0000] hover:bg-[#CC0000] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
+                  <a href="${youtubeUrl}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 rounded-xl bg-[#FF0000] hover:bg-[#CC0000] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
                     ${IconYouTube('w-4 h-4 fill-white shrink-0')}
                     <span>YouTube</span>
                   </a>

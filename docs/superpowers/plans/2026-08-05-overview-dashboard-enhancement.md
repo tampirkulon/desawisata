@@ -820,7 +820,7 @@ Replace the entire `bindEvents` function with:
     // --- GLOBAL PERIOD FILTER ---
     container.querySelectorAll('.global-period-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const period = e.currentTarget.getAttribute('data-period');
+        const period = e.currentTarget.dataset('data-period');
         if (period === selectedPeriod) return;
         selectedPeriod = period;
         showToast(`Menampilkan data periode: ${getDateRange(period).label}`, 'info');
@@ -832,7 +832,7 @@ Replace the entire `bindEvents` function with:
     // --- Quick Confirm Reservasi ---
     container.querySelectorAll('.quick-confirm-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const rawId = e.currentTarget.getAttribute('data-id');
+        const rawId = e.currentTarget.dataset('data-id');
         btn.disabled = true;
         btn.innerText = 'Updating...';
 
@@ -865,7 +865,7 @@ Replace the entire `bindEvents` function with:
     // --- Testimonial Moderation ---
     container.querySelectorAll('.approve-test-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         btn.disabled = true;
         btn.innerText = 'Menyetujui...';
 
@@ -889,7 +889,7 @@ Replace the entire `bindEvents` function with:
 
     container.querySelectorAll('.reject-test-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         btn.disabled = true;
 
         if (isSupabaseConfigured() && supabase) {

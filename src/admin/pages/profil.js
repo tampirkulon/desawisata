@@ -240,38 +240,42 @@ export const renderAdminProfil = async () => {
     }
 
     // Auto-clean WhatsApp input helper
-    const waInput = container.querySelector('#prof-whatsapp');
-    if (waInput) {
-      waInput.addEventListener('blur', (e) => {
-        let val = e.target.value.trim().replace(/[^0-9]/g, '');
-        if (val.startsWith('08')) {
-          val = '628' + val.substring(2);
-          e.target.value = val;
-        }
-      });
-    }
+    // Auto-clean WhatsApp input helper
+  const waInput = container.querySelector('#prof-whatsapp');
 
-    // Form submission
-    const form = container.querySelector('#profil-desa-form');
+  if (waInput) {
+    waInput.addEventListener('blur', (e) => {
+      let val = e.target.value.trim().replace(/\D/g, '');
+
+      if (val.startsWith('08')) {
+        val = '628' + val.substring(2);
+        e.target.value = val;
+      }
+    });
+  }
+
+  // Form submission
+  const form = container.querySelector('#profil-desa-form');
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const saveBtn = container.querySelector('#save-profil-btn');
-        saveBtn.disabled = true;
-        saveBtn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span> Menyimpan...';
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span> Menyimpan...';
 
-        let rawWa = document.getElementById('prof-whatsapp')?.value.trim() || '';
-        let cleanedWa = rawWa.replace(/[^0-9]/g, '');
-        if (cleanedWa.startsWith('08')) {
-          cleanedWa = '628' + cleanedWa.substring(2);
-        }
+  let rawWa = document.getElementById('prof-whatsapp')?.value.trim() || '';
+  let cleanedWa = rawWa.replace(/\D/g, '');
 
-        const payload = {
-          nama_desa: document.getElementById('prof-nama')?.value.trim() || profil.nama_desa,
-          tagline: document.getElementById('prof-tagline')?.value.trim() || profil.tagline,
-          logo_url: document.getElementById('prof-logo')?.value || profil.logo_url || '',
-          banner_url: document.getElementById('prof-banner')?.value || profil.banner_url || '',
+  if (cleanedWa.startsWith('08')) {
+    cleanedWa = '628' + cleanedWa.substring(2);
+  }
+
+  const payload = {
+    nama_desa: document.getElementById('prof-nama')?.value.trim() || profil.nama_desa,
+    tagline: document.getElementById('prof-tagline')?.value.trim() || profil.tagline,
+    logo_url: document.getElementById('prof-logo')?.value || profil.logo_url || '',
+    banner_url: document.getElementById('prof-banner')?.value || profil.banner_url || '',
           luas_wilayah: document.getElementById('prof-luas')?.value.trim() || profil.luas_wilayah,
           populasi: document.getElementById('prof-populasi')?.value.trim() || profil.populasi,
           sejarah: document.getElementById('prof-sejarah')?.value.trim() || profil.sejarah,

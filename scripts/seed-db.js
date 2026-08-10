@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import readline from 'node:readline';

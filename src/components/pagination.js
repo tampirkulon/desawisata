@@ -10,17 +10,17 @@ export const renderPagination = ({ totalItems, itemsPerPage, currentPage, labelI
   const end = Math.min(currentPage * itemsPerPage, totalItems);
 
   // Generate page numbers array (with ellipsis if totalPages > 7)
+  // Generate page numbers array (with ellipsis if totalPages > 7)
   let pages = [];
+
   if (totalPages <= 7) {
     for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else if (currentPage <= 4) {
+    pages = [1, 2, 3, 4, 5, '...', totalPages];
+  } else if (currentPage >= totalPages - 3) {
+    pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
   } else {
-    if (currentPage <= 4) {
-      pages = [1, 2, 3, 4, 5, '...', totalPages];
-    } else if (currentPage >= totalPages - 3) {
-      pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
-    } else {
-      pages = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
-    }
+    pages = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
   }
 
   return `
@@ -72,7 +72,7 @@ export const renderPagination = ({ totalItems, itemsPerPage, currentPage, labelI
 export const initPaginationEvents = (container, { onPageChange }) => {
   container.querySelectorAll('.pagination-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const page = Number.parseInt(e.currentTarget.getAttribute('data-page'), 10);
+      const page = Number.parseInt(e.currentTarget.dataset('data-page'), 10);
       if (!Number.isNaN(page) && onPageChange) {
         onPageChange(page);
       }

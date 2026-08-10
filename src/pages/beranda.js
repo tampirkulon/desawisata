@@ -318,7 +318,7 @@ export const renderBeranda = async () => {
 
     container.querySelectorAll('.beranda-destinasi-card').forEach(card => {
       card.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         const item = destinasi.find(d => d.id === id);
         if (item) openDestinasiModal(item);
       });

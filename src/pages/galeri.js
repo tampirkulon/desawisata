@@ -103,7 +103,7 @@ export const renderGaleri = async () => {
 
     container.querySelectorAll('.galeri-filter-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        activeFilter = e.currentTarget.getAttribute('data-cat');
+        activeFilter = e.currentTarget.dataset('data-cat');
         currentPage = 1;
         container.innerHTML = renderContent();
         bindEvents();
@@ -112,7 +112,7 @@ export const renderGaleri = async () => {
 
     container.querySelectorAll('.gallery-item').forEach(item => {
       item.addEventListener('click', (e) => {
-        const globalIdx = Number.parseInt(e.currentTarget.getAttribute('data-global-idx'), 10);
+        const globalIdx = Number.parseInt(e.currentTarget.dataset('data-global-idx'), 10);
         const filteredList = activeFilter === 'all' ? galeriList : galeriList.filter(g => g.kategori === activeFilter);
         openLightbox(filteredList, globalIdx);
       });

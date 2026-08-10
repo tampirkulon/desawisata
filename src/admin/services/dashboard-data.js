@@ -85,19 +85,20 @@ export const fetchDashboardStats = async (startDate, endDate, period = 'minggu')
     };
 
     if (isSupabaseConfigured() && supabase) {
-      try {
-        await _fetchPreviousFromSupabase(prevStats, prevRange.startDate, prevRange.endDate);
-      } catch (e) {
-        _fetchPreviousFromMock(prevStats, prevRange.startDate, prevRange.endDate);
-      }
-    } else {
+    try {
+      await _fetchPreviousFromSupabase(prevStats, prevRange.startDate, prevRange.endDate);
+    } catch (e) {
+      console.warn('Failed to fetch previous statistics from Supabase, falling back to mock data:', e);
       _fetchPreviousFromMock(prevStats, prevRange.startDate, prevRange.endDate);
     }
+  } else {
+    _fetchPreviousFromMock(prevStats, prevRange.startDate, prevRange.endDate);
+  }
 
-    stats.growth.growthSelesai = _calcPctGrowth(stats.reservasiSelesai, prevStats.reservasiSelesai);
-    stats.growth.growthPending = _calcPctGrowth(stats.reservasiPending, prevStats.reservasiPending);
-    stats.growth.growthPendapatan = _calcPctGrowth(stats.estimasiPendapatan, prevStats.estimasiPendapatan);
-    stats.growth.periodComparisonLabel = prevRange.comparisonLabel;
+  stats.growth.growthSelesai = _calcPctGrowth(stats.reservasiSelesai, prevStats.reservasiSelesai);
+  stats.growth.growthPending = _calcPctGrowth(stats.reservasiPending, prevStats.reservasiPending);
+  stats.growth.growthPendapatan = _calcPctGrowth(stats.estimasiPendapatan, prevStats.estimasiPendapatan);
+  stats.growth.periodComparisonLabel = prevRange.comparisonLabel;
   }
 
   return stats;
@@ -135,7 +136,7 @@ export const exportDashboardReport = (stats, periodLabel) => {
   link.setAttribute('download', `Laporan-Dashboard-DesaWisata-${periodLabel.replace(/\s+/g, '_')}.csv`);
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
+  document.body.childNodes.remove(link);
 };
 
 // ============================================================
@@ -201,13 +202,17 @@ const _fetchFromMock = (stats, startDate, endDate) => {
   });
 
   // Agenda hari ini (always today, regardless of period filter)
+  // Agenda hari ini (always today, regardless of period filter)
   const today = new Date().toISOString().split('T')[0];
+
   const todayReservations = mockData.reservasi.filter(r => {
     const d = r.tanggal_kunjungan;
-    return d && d.split('T')[0] === today && r.status !== 'dibatalkan';
+    return d?.split('T')[0] === today && r.status !== 'dibatalkan';
   });
+
   stats.agendaHariIni = todayReservations.map(r => {
     const pkt = mockData.paket_wisata.find(p => p.id === r.paket_id);
+
     return {
       id: r.id,
       nama: r.nama || 'Tamu',
@@ -252,21 +257,33 @@ const _fetchFromMock = (stats, startDate, endDate) => {
 // SUPABASE FETCHER
 // ============================================================
 
+
+/**
+ * Constructs a filtered Supabase query for counting reservations.
+ * @private
+ */
+const _buildReservationCountQuery = (startDate, endDate, statusFilter) => {
+  let q = supabase.from('reservasi').select('*', { count: 'exact', head: true });
+
+  if (startDate) q = q.gte('tanggal_kunjungan', startDate);
+  if (endDate) q = q.lte('tanggal_kunjungan', endDate);
+
+  if (statusFilter === 'pending') {
+    return q.or('status.eq.baru,status.eq.pending');
+  }
+  if (statusFilter) {
+    return q.eq('status', statusFilter);
+  }
+
+  return q;
+};
+
 /** @private */
+/** Fetch summary stats from Supabase. @private */
 const _fetchFromSupabase = async (stats, startDate, endDate) => {
   const today = new Date().toISOString().split('T')[0];
-
-  const buildCountQuery = (statusFilter) => {
-    let q = supabase.from('reservasi').select('*', { count: 'exact', head: true });
-    if (startDate) q = q.gte('tanggal_kunjungan', startDate);
-    q = q.lte('tanggal_kunjungan', endDate);
-    if (statusFilter === 'pending') {
-      q = q.or('status.eq.baru,status.eq.pending');
-    } else if (statusFilter) {
-      q = q.eq('status', statusFilter);
-    }
-    return q;
-  };
+  const buildCountQuery = (statusFilter) =>
+    _buildReservationCountQuery(startDate, endDate || today, statusFilter);
 
   let revQuery = supabase.from('reservasi')
     .select('jumlah_orang, paket_wisata(harga)')
@@ -503,7 +520,7 @@ const _groupByWeek = (records, startDate, endDate) => {
     const weekRecords = records.filter(r => {
       const d = r.tanggal_kunjungan;
       if (!d) return false;
-      const dayNum = parseInt((typeof d === 'string' ? d.split('T')[0] : d).split('-')[2], 10);
+      const dayNum = Number.parseInt((typeof d === 'string' ? d.split('T')[0] : d).split('-')[2], 10);
       return dayNum >= w.startDay && dayNum <= w.endDay;
     });
     const totalPax = weekRecords.reduce((sum, r) => sum + (r.jumlah_orang || 1), 0);

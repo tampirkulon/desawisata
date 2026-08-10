@@ -68,7 +68,7 @@ export const openDestinasiModal = (destinasi) => {
   // Bind Thumbnail Clicks
   modal.querySelectorAll('.modal-thumb').forEach(thumb => {
     thumb.addEventListener('click', (e) => {
-      const src = e.currentTarget.getAttribute('data-src');
+      const src = e.currentTarget.dataset('data-src');
       modal.querySelector('#modal-main-img').src = src;
       modal.querySelectorAll('.modal-thumb').forEach(t => t.classList.remove('border-primary'));
       e.currentTarget.classList.add('border-primary');

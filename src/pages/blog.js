@@ -128,7 +128,7 @@ export const renderBlog = async () => {
 
     container.querySelectorAll('.read-article-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         const art = artikelList.find(a => a.id === id);
         if (art) openArticleModal(art);
       });

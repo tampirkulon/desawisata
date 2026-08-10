@@ -21,11 +21,11 @@ export const convertImageToWebP = (file, options = {}) => {
   } = options;
 
   return new Promise((resolve) => {
-    if (!file || !file.type.startsWith('image/')) {
+    if (!file?.type?.startsWith('image/')) {
       return resolve({
         file,
-        originalSize: file ? file.size : 0,
-        newSize: file ? file.size : 0,
+        originalSize: file?.size ?? 0,
+        newSize: file?.size ?? 0,
         savingsPercent: 0,
         dataUrl: '',
       });

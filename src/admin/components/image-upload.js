@@ -34,59 +34,58 @@ export const initImageUploaderEvents = (inputId, folderPath = 'uploads') => {
 
   if (!dropzone || !fileInput) return;
 
-  const processFile = async (rawFile) => {
-    if (!rawFile) return;
+  const uploadImageToSupabase = async (supabase, webpFile, folderPath) => {
+  const randomBytes = crypto.getRandomValues(new Uint8Array(8));
+  const randomHex = Array.from(randomBytes, b => b.toString(16).padStart(2, '0')).join('');
+  const fileName = `${Date.now()}_${randomHex}.webp`;
+  const filePath = `${folderPath}/${fileName}`;
 
-    if (rawFile.size > 10 * 1024 * 1024) {
-      showToast('Ukuran file maksimal 10MB', 'error');
-      return;
-    }
+  const { error } = await supabase.storage.from('images').upload(filePath, webpFile, {
+    contentType: 'image/webp',
+    upsert: true,
+  });
 
-    showToast('Mengonversi gambar ke format WebP...', 'info');
+  if (error) throw error;
 
-    // Automatically convert any image format (JPG, PNG, GIF, BMP) to optimized WebP
-    const { file: webpFile, savingsPercent, dataUrl } = await convertImageToWebP(rawFile);
+  const { data: publicUrlData } = supabase.storage
+    .from('images')
+    .getPublicUrl(filePath);
 
-    if (isSupabaseConfigured() && supabase) {
-      try {
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.webp`;
-        const filePath = `${folderPath}/${fileName}`;
+  return publicUrlData.publicUrl;
+};
 
-        const { error } = await supabase.storage.from('images').upload(filePath, webpFile, {
-          contentType: 'image/webp',
-          upsert: true,
-        });
+const processFile = async (rawFile) => {
+  if (!rawFile) return;
 
-        if (error) throw error;
+  if (rawFile.size > 10 * 1024 * 1024) {
+    showToast('Ukuran file maksimal 10MB', 'error');
+    return;
+  }
 
-        const { 
-         } = supabase.storage
-          .from('images')
-          .getPublicUrl(filePath);
+  showToast('Mengonversi gambar ke format WebP...', 'info');
 
-        const imageUrl = publicUrlData.publicUrl;
+const { file: webpFile, savingsPercent, dataUrl } = await convertImageToWebP(rawFile);
 
-        hiddenInput.value = imageUrl;
-        previewImg.src = imageUrl;
-        previewContainer.style.display = 'block';
-        showToast(`Gambar berhasil dikonversi ke WebP${savingsPercent > 0 ? ` (hemat ${savingsPercent}%)` : ''} & diunggah!`, 'success');
-      } catch (err) {
-        console.error('Storage upload error, using WebP Data URL fallback:', err);
-        
-        // Fallback to WebP Data URL
-        hiddenInput.value = dataUrl;
-        previewImg.src = dataUrl;
-        previewContainer.style.display = 'block';
-        showToast(`Gambar dikonversi ke WebP${savingsPercent > 0 ? ` (hemat ${savingsPercent}%)` : ''} & siap disimpan!`, 'success');
-      }
-    } else {
-      // Demo / offline mode: use WebP Data URL
-      hiddenInput.value = dataUrl;
-      previewImg.src = dataUrl;
-      previewContainer.style.display = 'block';
-      showToast(`[Demo] Gambar dikonversi ke format WebP${savingsPercent > 0 ? ` (hemat ${savingsPercent}%)` : ''}.`, 'success');
-    }
-  };
+const savingsMessage = savingsPercent > 0 ? ` (hemat ${savingsPercent}%)` : '';
+
+let finalUrl = dataUrl;
+let message = `[Demo] Gambar dikonversi ke format WebP${savingsMessage}.`;
+
+if (isSupabaseConfigured() && supabase) {
+  try {
+    finalUrl = await uploadImageToSupabase(supabase, webpFile, folderPath);
+    message = `Gambar berhasil dikonversi ke WebP${savingsMessage} & diunggah!`;
+  } catch (err) {
+    console.error('Storage upload error, using WebP Data URL fallback:', err);
+    message = `Gambar dikonversi ke WebP${savingsMessage} & siap disimpan!`;
+  }
+}
+
+  hiddenInput.value = finalUrl;
+  previewImg.src = finalUrl;
+  previewContainer.style.display = 'block';
+  showToast(message, 'success');
+};
 
   dropzone.addEventListener('click', () => fileInput.click());
 

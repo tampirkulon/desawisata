@@ -8,15 +8,18 @@ const EXTRA_STORAGE_KEY = 'desa_wisata_profil_extra';
  * Robust converter for Google Maps inputs (Handles regular URLs, place links, query links, coords, or iframe embed code).
  */
 export const formatGoogleMapsEmbed = (input) => {
-  if (!input || !input.trim()) return '';
+  if (!input?.trim()) return '';
+
   const trimmed = input.trim();
 
   // 1. If it's already an iframe tag
   if (trimmed.includes('<iframe')) {
     const srcMatch = trimmed.match(/src=["']([^"']+)["']/i);
-    if (srcMatch && srcMatch[1]) {
+
+    if (srcMatch?.[1]) {
       return `<iframe class="w-full h-full border-0 rounded-xl" src="${srcMatch[1]}" loading="lazy" allowfullscreen></iframe>`;
     }
+
     return trimmed.replace('<iframe', '<iframe class="w-full h-full border-0 rounded-xl"');
   }
 
@@ -27,7 +30,8 @@ export const formatGoogleMapsEmbed = (input) => {
 
   // 3. Extract exact pin lat/lng from Google Maps data string (!3d... !4d...)
   const pinMatch = trimmed.match(/!3d(-?\d+(?:\.\d+)?)(?:!4d(-?\d+(?:\.\d+)?))/);
-  if (pinMatch && pinMatch[1] && pinMatch[2]) {
+
+  if (pinMatch?.[1] && pinMatch?.[2]) {
     const lat = pinMatch[1];
     const lng = pinMatch[2];
     return `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=${lat},${lng}&hl=id&z=16&output=embed" loading="lazy" allowfullscreen></iframe>`;
@@ -35,7 +39,8 @@ export const formatGoogleMapsEmbed = (input) => {
 
   // 4. Extract @lat,lng from URL
   const atMatch = trimmed.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
-  if (atMatch && atMatch[1] && atMatch[2]) {
+
+  if (atMatch?.[1] && atMatch?.[2]) {
     const lat = atMatch[1];
     const lng = atMatch[2];
     return `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=${lat},${lng}&hl=id&z=16&output=embed" loading="lazy" allowfullscreen></iframe>`;
@@ -43,15 +48,17 @@ export const formatGoogleMapsEmbed = (input) => {
 
   // 5. Extract place name from /place/PlaceName
   const placeMatch = trimmed.match(/\/place\/([^/@?#]+)/);
-  if (placeMatch && placeMatch[1]) {
-    const placeName = decodeURIComponent(placeMatch[1].replace(/\+/g, ' '));
+
+  if (placeMatch?.[1]) {
+    const placeName = decodeURIComponent(placeMatch[1].replaceAll('+', ' '));
     return `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=${encodeURIComponent(placeName)}&hl=id&z=16&output=embed" loading="lazy" allowfullscreen></iframe>`;
   }
 
   // 6. If it contains ?q=query
   const qMatch = trimmed.match(/[?&]q=([^&#]+)/);
-  if (qMatch && qMatch[1]) {
-    const query = decodeURIComponent(qMatch[1].replace(/\+/g, ' '));
+
+  if (qMatch?.[1]) {
+    const query = decodeURIComponent(qMatch[1].replaceAll('+', ' '));
     return `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=${encodeURIComponent(query)}&hl=id&z=16&output=embed" loading="lazy" allowfullscreen></iframe>`;
   }
 
@@ -109,12 +116,18 @@ export const getProfilDesa = async () => {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(profil));
           if (data.banner_url || data.logo_url) {
-            localStorage.setItem(EXTRA_STORAGE_KEY, JSON.stringify({
-              banner_url: data.banner_url || profil.banner_url || '',
-              logo_url: data.logo_url || profil.logo_url || ''
-            }));
+            localStorage.setItem(
+              EXTRA_STORAGE_KEY,
+              JSON.stringify({
+                banner_url: data.banner_url || profil.banner_url || '',
+                logo_url: data.logo_url || profil.logo_url || '',
+              })
+            );
           }
-        } catch (_) {}
+        } catch (storageErr) {
+          // Ignore localStorage errors (e.g., quota exceeded or private browsing mode)
+          console.debug('Failed to cache profile extra details to localStorage:', storageErr);
+        }
       }
     } catch (err) {
       console.warn('Supabase profile fetch error, using local cache:', err);
@@ -124,6 +137,83 @@ export const getProfilDesa = async () => {
   return profil;
 };
 
+
+/** Saves profile data to local storage and dispatches update event. @private */
+const _persistProfileLocally = (merged) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    localStorage.setItem(
+      EXTRA_STORAGE_KEY,
+      JSON.stringify({
+        banner_url: merged.banner_url || '',
+        logo_url: merged.logo_url || '',
+      })
+    );
+  } catch (e) {
+    console.warn('Failed to save profile to localStorage:', e);
+  }
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('desa-profil-updated', { detail: merged }));
+  }
+};
+
+/** Handles Supabase fallback logic for schema cache or missing column errors. @private */
+const _syncFallbackToSupabase = async (payload, mergedId) => {
+  const sanitized = { ...payload };
+  delete sanitized.logo_url;
+  delete sanitized.banner_url;
+
+  if (mergedId) {
+    await supabase.from('profil_desa').update(sanitized).eq('id', mergedId);
+  } else {
+    await supabase.from('profil_desa').upsert([sanitized]);
+  }
+};
+
+/** Syncs profile payload directly to Supabase. @private */
+const _syncToSupabase = async (payload, merged) => {
+  if (!isSupabaseConfigured() || !supabase) return;
+
+  try {
+    if (merged.id) {
+      const { error } = await supabase
+        .from('profil_desa')
+        .update(payload)
+        .eq('id', merged.id);
+
+      if (error) throw error;
+    } else {
+      const { data, error } = await supabase
+        .from('profil_desa')
+        .upsert([payload])
+        .select();
+
+      if (error) throw error;
+
+      if (data?.[0]?.id) {
+        merged.id = data[0].id;
+        mockData.profil_desa.id = data[0].id;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      }
+    }
+  } catch (err) {
+    console.warn('Primary Supabase save failed, attempting sanitized fallback:', err);
+
+    const isSchemaError = err.message && (
+      err.message.includes('logo_url') ||
+      err.message.includes('banner_url') ||
+      err.message.includes('schema cache')
+    );
+
+    if (isSchemaError) {
+      await _syncFallbackToSupabase(payload, merged.id);
+    } else {
+      throw err;
+    }
+  }
+};
+
 /**
  * Save updated profile data to memory, localStorage, and Supabase.
  */
@@ -131,65 +221,14 @@ export const saveProfilDesa = async (payload) => {
   const current = getProfilDesaSync();
   const merged = { ...current, ...payload };
 
-  // 1. Update in-memory seed object
+  // 1. Update in-memory state
   Object.assign(mockData.profil_desa, merged);
 
-  // 2. Persist to localStorage
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-    localStorage.setItem(EXTRA_STORAGE_KEY, JSON.stringify({
-      banner_url: merged.banner_url || '',
-      logo_url: merged.logo_url || ''
-    }));
-  } catch (e) {
-    console.warn('Failed to save profile to localStorage:', e);
-  }
+  // 2. Persist to localStorage & trigger event
+  _persistProfileLocally(merged);
 
-  // 3. Dispatch global event for immediate reactivity across open tabs/views
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('desa-profil-updated', { detail: merged }));
-  }
-
-  // 4. Sync to Supabase if configured
-  if (isSupabaseConfigured() && supabase) {
-    try {
-      if (merged.id) {
-        const { error } = await supabase
-          .from('profil_desa')
-          .update(payload)
-          .eq('id', merged.id);
-
-        if (error) throw error;
-      } else {
-        const { data, error } = await supabase
-          .from('profil_desa')
-          .upsert([payload])
-          .select();
-
-        if (error) throw error;
-        if (data && data[0] && data[0].id) {
-          merged.id = data[0].id;
-          mockData.profil_desa.id = data[0].id;
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-        }
-      }
-    } catch (err) {
-      console.warn('Primary Supabase save failed, attempting sanitized fallback:', err);
-      if (err.message && (err.message.includes('logo_url') || err.message.includes('banner_url') || err.message.includes('schema cache'))) {
-        const sanitized = { ...payload };
-        delete sanitized.logo_url;
-        delete sanitized.banner_url;
-
-        if (merged.id) {
-          await supabase.from('profil_desa').update(sanitized).eq('id', merged.id);
-        } else {
-          await supabase.from('profil_desa').upsert([sanitized]);
-        }
-      } else {
-        throw err;
-      }
-    }
-  }
+  // 3. Sync to Supabase
+  await _syncToSupabase(payload, merged);
 
   return merged;
 };

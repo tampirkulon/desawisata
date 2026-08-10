@@ -103,7 +103,7 @@ export const renderAdminPaket = async () => {
 
     container.querySelectorAll('.action-edit').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         const item = paketList.find(p => p.id === id);
         if (item) openFormModal(item);
       });
@@ -111,7 +111,7 @@ export const renderAdminPaket = async () => {
 
     container.querySelectorAll('.action-delete').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+        const id = e.currentTarget.dataset('data-id');
         openConfirmModal({
           message: 'Apakah Anda yakin ingin menghapus paket wisata ini?',
           onConfirm: async () => {
