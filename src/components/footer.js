@@ -11,47 +11,81 @@ const ALL_QUICK_LINKS = [
   { key: 'blog', hash: '#/blog', label: 'Blog Artikel' },
 ];
 
-export const renderFooter = (profilData = null) => {
-  const currentYear = new Date().getFullYear();
-  const profil = (profilData && Object.keys(profilData).length > 0)
-    ? profilData
-    : getProfilDesaSync();
+const instagramHtml = d.instagramLink
+    ? `<a href="${d.instagramLink}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="Instagram">
+        ${IconInstagram('w-4 h-4 fill-current')}
+      </a>`
+    : '';
 
-  const namaDesa = profil.nama_desa || 'Desa Wisata Tampirkulon';
-  const alamat = profil.alamat || 'Jl. Raya Tampirkulon No. 123, Candimulyo, Magelang, Jawa Tengah';
-  const telepon = profil.telepon || '+62 812-3456-7890';
+  const youtubeHtml = d.youtubeLink
+    ? `<a href="${d.youtubeLink}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="YouTube">
+        ${IconYouTube('w-4 h-4 fill-current')}
+      </a>`
+    : '';
+
+  const waHtml = d.waLink
+    ? `<a href="${d.waLink}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="WhatsApp">
+        ${IconWhatsApp('w-4 h-4 fill-current')}
+      </a>`
+    : '';
+
+  const socialContainerHtml = d.showSocial
+    ? `<div class="flex items-center gap-3 mt-2">
+        ${instagramHtml}
+        ${youtubeHtml}
+        ${waHtml}
+      </div>`
+    : '';
+
+
+
+/**
+ * Normalizes URL for social media links to prevent broken href targets.
+ * @private
+ */
+const _resolveSocialUrl = (value, baseUrl, prefixToRemove) => {
+  if (!value) return '';
+  if (value.startsWith('http')) return value;
+  const cleanHandle = prefixToRemove ? value.replace(prefixToRemove, '') : value;
+  return `${baseUrl}${cleanHandle}`;
+};
+
+/**
+ * Resolves link hrefs and display settings for footer contacts and quick links.
+ * @private
+ */
+const _getFooterData = (profilData) => {
+  const profil = profilData && Object.keys(profilData).length > 0 ? profilData : getProfilDesaSync();
+
   const whatsapp = profil.whatsapp || profil.telepon || '';
-  const email = profil.email || 'info@tampirkulon.desa.id';
-  const jamOperasional = profil.jam_operasional || '';
+  const waClean = whatsapp.replace(/\D/g, '').replace(/^0/, '62');
 
-  // Custom description with fallback
-  const footerDeskripsi = profil.footer_deskripsi?.trim() || 
-    'Desa Wisata Tampirkulon adalah destinasi yang memadukan keindahan alam pegunungan dengan kearifan lokal yang kental. Kami berkomitmen untuk melestarikan warisan budaya dan alam demi masa depan yang berkelanjutan.';
-
-  // Custom copyright with fallback & {year} placeholder replacement
-  const defaultCopyright = `© ${currentYear} ${namaDesa}. Hak Cipta Dilindungi.`;
-  const rawCopyright = profil.footer_copyright?.trim() || defaultCopyright;
-  const copyrightText = rawCopyright.replace(/{year}/gi, currentYear);
-
-  // Social media visibility & links
-  const showSocial = profil.footer_show_social !== false;
-  const instagramUrl = profil.instagram?.trim() || '';
-  const youtubeUrl = profil.youtube?.trim() || '';
-
-  // WhatsApp & Phone formatting
-  const waClean = whatsapp.replace(/[^0-9]/g, '').replace(/^0/, '62');
-  const waLink = waClean ? `https://wa.me/${waClean}` : '';
-  const telClean = telepon.replace(/[^0-9+]/g, '');
-  const telLink = telClean ? `tel:${telClean}` : '';
-  const emailClean = email.trim();
-  const emailLink = emailClean ? `mailto:${emailClean}` : '';
-
-  // Filtered Quick Links
   const activeKeys = Array.isArray(profil.footer_quick_links) && profil.footer_quick_links.length > 0
     ? profil.footer_quick_links
-    : ALL_QUICK_LINKS.map(l => l.key);
+    : ALL_QUICK_LINKS.map((l) => l.key);
 
-  const displayedLinks = ALL_QUICK_LINKS.filter(link => activeKeys.includes(link.key));
+  return {
+    profil,
+    namaDesa: profil.nama_desa || 'Desa Wisata Tampirkulon',
+    alamat: profil.alamat || 'Jl. Raya Tampirkulon No. 123, Candimulyo, Magelang, Jawa Tengah',
+    telepon: profil.telepon || '+62 812-3456-7890',
+    whatsapp,
+    email: profil.email || '',
+    footerDeskripsi: profil.footer_deskripsi || profil.deskripsi_singkat || 'Desa Wisata Tampirkulon menyajikan keindahan alam, budaya lokal, dan keramahan khas pedesaan.',
+    jamOperasional: profil.jam_operasional || '',
+    showSocial: profil.show_footer_social !== false,
+    instagramLink: _resolveSocialUrl(profil.instagram?.trim(), 'https://instagram.com/', /^@/),
+    youtubeLink: _resolveSocialUrl(profil.youtube?.trim(), 'https://youtube.com/'),
+    waLink: waClean ? `https://wa.me/${waClean}` : '',
+    telLink: profil.telepon ? `tel:${profil.telepon.replace(/\D/g, '')}` : '',
+    emailLink: profil.email?.trim() ? `mailto:${profil.email.trim()}` : '',
+    displayedLinks: ALL_QUICK_LINKS.filter((link) => activeKeys.includes(link.key)),
+  };
+};
+
+export const renderFooter = (profilData = null) => {
+  const currentYear = new Date().getFullYear();
+  const d = _getFooterData(profilData);
 
   return `
     <footer class="bg-primary-container text-on-primary w-full border-t border-outline-variant/20 mt-auto">
@@ -60,38 +94,25 @@ export const renderFooter = (profilData = null) => {
           <!-- Column 1: About & Social -->
           <div class="flex flex-col gap-4">
             <div class="font-display-lg text-2xl font-bold text-tertiary-fixed">
-              ${namaDesa}
+              ${d.namaDesa}
             </div>
             <p class="text-on-primary-container font-body-sm text-sm leading-relaxed whitespace-pre-line">
-              ${footerDeskripsi}
+              ${d.footerDeskripsi}
             </p>
-            ${showSocial ? `
-              <div class="flex items-center gap-3 mt-2">
-                ${instagramUrl ? `
-                  <a href="${instagramUrl.startsWith('http') ? instagramUrl : 'https://instagram.com/' + instagramUrl.replace(/^@/, '')}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="Instagram">
-                    ${IconInstagram('w-4 h-4 fill-current')}
-                  </a>
-                ` : ''}
-                ${youtubeUrl ? `
-                  <a href="${youtubeUrl.startsWith('http') ? youtubeUrl : 'https://youtube.com/' + youtubeUrl}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="YouTube">
-                    ${IconYouTube('w-4 h-4 fill-current')}
-                  </a>
-                ` : ''}
-                ${waLink ? `
-                  <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="WhatsApp">
-                    ${IconWhatsApp('w-4 h-4 fill-current')}
-                  </a>
-                ` : ''}
-              </div>
-            ` : ''}
+            ${socialContainerHtml}
           </div>
 
-          <!-- Column 2: Quick Links -->
+          <!-- Column 2: Navigation Links -->
           <div class="flex flex-col gap-4">
             <h4 class="font-title-lg text-lg text-tertiary-fixed font-semibold">Tautan Cepat</h4>
-            <ul class="flex flex-col gap-2 list-none p-0">
-              ${displayedLinks.map(link => `
-                <li><a href="${link.hash}" class="text-on-primary-container font-body-sm text-sm hover:text-tertiary-fixed transition-colors">${link.label}</a></li>
+            <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
+              ${d.displayedLinks.map((link) => `
+                <li>
+                  <a href="${link.hash}" class="text-on-primary-container hover:text-tertiary-fixed transition-colors text-sm font-medium inline-flex items-center gap-2">
+                    <span class="text-tertiary-fixed/60 text-xs">›</span>
+                    ${link.label}
+                  </a>
+                </li>
               `).join('')}
             </ul>
           </div>
@@ -99,43 +120,43 @@ export const renderFooter = (profilData = null) => {
           <!-- Column 3: Contact (Dynamically Connected to Profile Settings) -->
           <div class="flex flex-col gap-4">
             <h4 class="font-title-lg text-lg text-tertiary-fixed font-semibold">Kontak Kami</h4>
-            <ul class="flex flex-col gap-3 list-none p-0">
-              ${alamat ? `
+            <ul class="flex flex-col gap-3 list-none p-0 m-0">
+              ${d.alamat ? `
                 <li class="flex items-start gap-3 text-on-primary-container font-body-sm text-sm">
                   <span class="material-symbols-outlined text-tertiary-fixed text-lg mt-0.5 shrink-0">location_on</span>
-                  <span class="leading-relaxed">${alamat}</span>
+                  <span class="leading-relaxed">${d.alamat}</span>
                 </li>
               ` : ''}
-              ${whatsapp ? `
+              ${d.whatsapp ? `
                 <li class="flex items-center gap-3 text-on-primary-container font-body-sm text-sm">
                   <span class="material-symbols-outlined text-tertiary-fixed text-lg shrink-0">chat</span>
-                  <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="text-on-primary-container hover:text-tertiary-fixed transition-colors font-medium">
-                    ${whatsapp} (WhatsApp)
+                  <a href="${d.waLink}" target="_blank" rel="noopener noreferrer" class="text-on-primary-container hover:text-tertiary-fixed transition-colors font-medium">
+                    ${d.whatsapp} (WhatsApp)
                   </a>
                 </li>
               ` : ''}
-              ${telepon && telepon !== whatsapp ? `
+              ${d.telepon && d.telepon !== d.whatsapp ? `
                 <li class="flex items-center gap-3 text-on-primary-container font-body-sm text-sm">
                   <span class="material-symbols-outlined text-tertiary-fixed text-lg shrink-0">call</span>
-                  <a href="${telLink}" class="text-on-primary-container hover:text-tertiary-fixed transition-colors font-medium">
-                    ${telepon}
+                  <a href="${d.telLink}" class="text-on-primary-container hover:text-tertiary-fixed transition-colors font-medium">
+                    ${d.telepon}
                   </a>
                 </li>
               ` : ''}
-              ${email ? `
+              ${d.email ? `
                 <li class="flex items-center gap-3 text-on-primary-container font-body-sm text-sm">
                   <span class="material-symbols-outlined text-tertiary-fixed text-lg shrink-0">mail</span>
-                  <a href="${emailLink}" class="text-on-primary-container hover:text-tertiary-fixed transition-colors font-medium">
-                    ${email}
+                  <a href="${d.emailLink}" class="text-on-primary-container hover:text-tertiary-fixed transition-colors font-medium">
+                    ${d.email}
                   </a>
                 </li>
               ` : ''}
-              ${jamOperasional ? `
+              ${d.jamOperasional ? `
                 <li class="flex items-start gap-3 text-on-primary-container font-body-sm text-sm pt-2 border-t border-white/10 mt-1">
                   <span class="material-symbols-outlined text-tertiary-fixed text-lg mt-0.5 shrink-0">schedule</span>
                   <div class="flex flex-col">
                     <span class="text-[10px] uppercase font-bold text-tertiary-fixed tracking-wider">Jam Operasional</span>
-                    <span class="text-xs text-on-primary-container/90">${jamOperasional}</span>
+                    <span class="text-xs text-on-primary-container/90">${d.jamOperasional}</span>
                   </div>
                 </li>
               ` : ''}
@@ -143,17 +164,8 @@ export const renderFooter = (profilData = null) => {
           </div>
         </div>
 
-        <!-- Bottom Bar -->
-        <div class="pt-8 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div class="text-on-primary-container/70 font-body-sm text-xs">
-            ${copyrightText}
-          </div>
-          <div class="flex gap-6">
-            <a href="#/admin/login" class="text-on-primary-container/70 hover:text-tertiary-fixed transition-colors font-body-sm text-xs flex items-center gap-1">
-              <span class="material-symbols-outlined text-xs">admin_panel_settings</span>
-              <span>Portal Pengelola Desa</span>
-            </a>
-          </div>
+        <div class="pt-8 border-t border-white/10 text-center text-xs text-on-primary-container/80">
+          <p>© ${currentYear} ${d.namaDesa}. Hak Cipta Dilindungi.</p>
         </div>
       </div>
     </footer>

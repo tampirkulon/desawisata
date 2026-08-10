@@ -382,7 +382,7 @@ export const renderBeranda = async () => {
       if (dotsContainer) {
         dotsContainer.querySelectorAll('.testimonial-dot').forEach(dot => {
           dot.addEventListener('click', (e) => {
-            const idx = parseInt(e.currentTarget.getAttribute('data-index'), 10) || 0;
+            const idx = Number.parseInt(e.currentTarget.dataset('data-index'), 10) || 0;
             const targetCard = track.querySelector(`.testimonial-slide-card[data-index="${idx}"]`);
             if (targetCard) {
               targetCard.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });

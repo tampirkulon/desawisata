@@ -303,7 +303,6 @@ export const renderAdminProfil = async () => {
   let rawWa = document.getElementById('prof-whatsapp')?.value.trim() || '';
   let cleanedWa = rawWa.replace(/\D/g, '');
 
-<<<<<<< HEAD
   if (cleanedWa.startsWith('08')) {
     cleanedWa = '628' + cleanedWa.substring(2);
   }
@@ -313,17 +312,6 @@ export const renderAdminProfil = async () => {
     tagline: document.getElementById('prof-tagline')?.value.trim() || profil.tagline,
     logo_url: document.getElementById('prof-logo')?.value || profil.logo_url || '',
     banner_url: document.getElementById('prof-banner')?.value || profil.banner_url || '',
-=======
-        const selectedQuickLinks = Array.from(
-          container.querySelectorAll('input[name="footer_quick_link"]:checked')
-        ).map(cb => cb.value);
-
-        const payload = {
-          nama_desa: document.getElementById('prof-nama')?.value.trim() || profil.nama_desa,
-          tagline: document.getElementById('prof-tagline')?.value.trim() || profil.tagline,
-          logo_url: profil.logo_url || '',
-          banner_url: profil.banner_url || '',
->>>>>>> 6f2a4f201738aa7684e482448d675b788d3c7c7e
           luas_wilayah: document.getElementById('prof-luas')?.value.trim() || profil.luas_wilayah,
           populasi: document.getElementById('prof-populasi')?.value.trim() || profil.populasi,
           sejarah: document.getElementById('prof-sejarah')?.value.trim() || profil.sejarah,

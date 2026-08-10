@@ -159,7 +159,7 @@ export const renderKontak = async (queryParams) => {
 
     if (!form || !alertBox) return;
 
-    const WHATSAPP_NUMBER = (profil.whatsapp || profil.telepon || '6285727163035').replace(/[^0-9]/g, '').replace(/^0/, '62');
+    const WHATSAPP_NUMBER = (profil.whatsapp || profil.telepon || '6285727163035').replaceAll(/\D/g, '').replaceAll(/^0/, '62');
 
     const isValidUuid = (value) => {
       return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(

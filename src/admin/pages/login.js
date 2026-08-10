@@ -66,7 +66,7 @@ export const renderAdminLogin = () => {
 
         if (isSupabaseConfigured() && supabase) {
           try {
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;
             window.location.hash = '#/admin/overview';
           } catch (err) {

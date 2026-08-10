@@ -119,7 +119,6 @@ export const getProfilDesa = async () => {
         // Keep localStorage synchronized
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(profil));
-<<<<<<< HEAD
           if (data.banner_url || data.logo_url) {
             localStorage.setItem(
               EXTRA_STORAGE_KEY,
@@ -133,17 +132,6 @@ export const getProfilDesa = async () => {
           // Ignore localStorage errors (e.g., quota exceeded or private browsing mode)
           console.debug('Failed to cache profile extra details to localStorage:', storageErr);
         }
-=======
-          localStorage.setItem(EXTRA_STORAGE_KEY, JSON.stringify({
-            banner_url: data.banner_url || profil.banner_url || '',
-            logo_url: data.logo_url || profil.logo_url || '',
-            footer_deskripsi: data.footer_deskripsi || profil.footer_deskripsi || '',
-            footer_copyright: data.footer_copyright || profil.footer_copyright || '',
-            footer_show_social: data.footer_show_social !== undefined ? data.footer_show_social : profil.footer_show_social,
-            footer_quick_links: data.footer_quick_links || profil.footer_quick_links
-          }));
-        } catch (_) {}
->>>>>>> 6f2a4f201738aa7684e482448d675b788d3c7c7e
       }
     } catch (err) {
       console.warn('Supabase profile fetch error, using local cache:', err);
@@ -240,78 +228,11 @@ export const saveProfilDesa = async (payload) => {
   // 1. Update in-memory state
   Object.assign(mockData.profil_desa, merged);
 
-<<<<<<< HEAD
   // 2. Persist to localStorage & trigger event
   _persistProfileLocally(merged);
 
   // 3. Sync to Supabase
   await _syncToSupabase(payload, merged);
-=======
-  // 2. Persist to localStorage
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-    localStorage.setItem(EXTRA_STORAGE_KEY, JSON.stringify({
-      banner_url: merged.banner_url || '',
-      logo_url: merged.logo_url || '',
-      footer_deskripsi: merged.footer_deskripsi || '',
-      footer_copyright: merged.footer_copyright || '',
-      footer_show_social: merged.footer_show_social,
-      footer_quick_links: merged.footer_quick_links
-    }));
-  } catch (e) {
-    console.warn('Failed to save profile to localStorage:', e);
-  }
-
-  // 3. Dispatch global event for immediate reactivity across open tabs/views
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('desa-profil-updated', { detail: merged }));
-  }
-
-  // 4. Sync to Supabase if configured
-  if (isSupabaseConfigured() && supabase) {
-    try {
-      if (merged.id) {
-        const { error } = await supabase
-          .from('profil_desa')
-          .update(payload)
-          .eq('id', merged.id);
-
-        if (error) throw error;
-      } else {
-        const { data, error } = await supabase
-          .from('profil_desa')
-          .upsert([payload])
-          .select();
-
-        if (error) throw error;
-        if (data && data[0] && data[0].id) {
-          merged.id = data[0].id;
-          mockData.profil_desa.id = data[0].id;
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-        }
-      }
-    } catch (err) {
-      console.warn('Primary Supabase save failed, attempting sanitized fallback:', err);
-      if (err.message && (err.message.includes('logo_url') || err.message.includes('banner_url') || err.message.includes('footer_') || err.message.includes('schema cache') || err.message.includes('column'))) {
-        const sanitized = { ...payload };
-        delete sanitized.logo_url;
-        delete sanitized.banner_url;
-        delete sanitized.footer_deskripsi;
-        delete sanitized.footer_copyright;
-        delete sanitized.footer_show_social;
-        delete sanitized.footer_quick_links;
-
-        if (merged.id) {
-          await supabase.from('profil_desa').update(sanitized).eq('id', merged.id);
-        } else {
-          await supabase.from('profil_desa').upsert([sanitized]);
-        }
-      } else {
-        throw err;
-      }
-    }
-  }
->>>>>>> 6f2a4f201738aa7684e482448d675b788d3c7c7e
 
   return merged;
 };
