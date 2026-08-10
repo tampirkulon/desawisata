@@ -121,12 +121,13 @@ export const renderAdminReservasi = async () => {
     }
 
     container.querySelectorAll('.action-detail-rsv').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
-        const item = reservasiList.find(r => r.id === id);
-        if (item) openDetailModal(item);
-      });
-    });
+  btn.addEventListener('click', (e) => {
+   
+    const id = e.currentTarget.dataset.id;
+    const item = reservasiList.find(r => String(r.id) === String(id));
+    if (item) openDetailModal(item);
+  });
+});
   };
 
   const openDetailModal = (item) => {
