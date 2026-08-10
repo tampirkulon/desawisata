@@ -95,7 +95,7 @@ export const renderKontak = async (queryParams) => {
             </div>
 
             <button class="w-full md:w-auto bg-primary text-white px-8 py-3.5 rounded-full font-bold text-sm hover:bg-primary-container transition-all shadow-level-1" type="submit">
-              Kirim Reservasi Now
+              Kirim Reservasi
             </button>
           </form>
         </div>
@@ -139,9 +139,9 @@ export const renderKontak = async (queryParams) => {
           <!-- Map Box with Automatic URL / iframe converter -->
           <div class="bg-surface-variant rounded-2xl h-64 w-full relative overflow-hidden shadow-level-1 border border-outline-variant/50 flex items-center justify-center">
             ${profil.google_maps_embed
-              ? formatGoogleMapsEmbed(profil.google_maps_embed)
-              : `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
-            }
+      ? formatGoogleMapsEmbed(profil.google_maps_embed)
+      : `<iframe class="w-full h-full border-0 rounded-xl" src="https://maps.google.com/maps?q=-7.4728,110.2642&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>`
+    }
           </div>
         </div>
       </div>
