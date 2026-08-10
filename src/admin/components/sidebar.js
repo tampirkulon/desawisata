@@ -9,7 +9,7 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
     { key: 'artikel', hash: '#/admin/artikel', label: 'Artikel Blog', icon: 'rss_feed' },
     { key: 'galeri', hash: '#/admin/galeri', label: 'Galeri Foto', icon: 'imagesmode' },
     { key: 'reservasi', hash: '#/admin/reservasi', label: 'Reservasi', icon: 'event_note' },
-    { key: 'ulasan', hash: '#/admin/ulasan', label: 'Ulasan', icon: 'event_note' },
+    { key: 'ulasan', hash: '#/admin/ulasan', label: 'Ulasan', icon: 'rate_review' },
   ];
 
   const settingMenuItems = [

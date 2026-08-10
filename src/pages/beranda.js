@@ -4,17 +4,15 @@ import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
+import { getProfilDesa } from '../utils/profile-store.js';
 
 export const renderBeranda = async () => {
-  let profil = mockData.profil_desa;
+  let profil = await getProfilDesa();
   let destinasi = mockData.destinasi;
   let testimoniList = mockData.testimoni;
 
   if (isSupabaseConfigured()) {
     try {
-      const { data: profilData } = await supabase.from('profil_desa').select('*').single();
-      if (profilData) profil = profilData;
-
       const { data: destData } = await supabase.from('destinasi').select('*').eq('is_published', true).eq('is_unggulan', true).limit(3);
       if (destData && destData.length > 0) destinasi = destData;
 
@@ -224,10 +222,11 @@ export const renderBeranda = async () => {
       </div>
     </section>
 
-    <!-- Testimonials Section with Quote Watermarks -->
+    <!-- Testimonials Section with Interactive Carousel Slider -->
     <section class="py-16 md:py-24 bg-surface-container-low relative overflow-hidden" id="testimonials">
       <div class="max-w-container-max mx-auto px-4 md:px-12 relative z-10">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
+        <!-- Section Header with Actions & Slider Controls -->
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-10">
           <div class="text-center md:text-left">
             <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-secondary/20 text-primary text-xs font-bold uppercase tracking-wider mb-2">
               <span class="material-symbols-outlined text-sm">chat_bubble</span>
@@ -236,34 +235,67 @@ export const renderBeranda = async () => {
             <h2 class="font-display-lg text-3xl md:text-4xl font-bold text-primary mb-2">Kata Mereka</h2>
             <p class="font-body-md text-base text-on-surface-variant m-0">Pengalaman tak terlupakan dari pengunjung kami.</p>
           </div>
-          <button id="write-testimonial-btn" class="px-6 py-3.5 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-level-1 hover:shadow-md transition-all flex items-center gap-2 cursor-pointer">
-            <span class="material-symbols-outlined text-sm">rate_review</span>
-            <span>Tulis Ulasan & Kesan</span>
-          </button>
+
+          <div class="flex items-center gap-3">
+            <!-- Navigation Arrows for Slider -->
+            <div class="flex items-center gap-2 bg-white/80 backdrop-blur-md p-1.5 rounded-full border border-outline-variant/30 shadow-2xs">
+              <button id="testimonial-prev-btn" class="w-10 h-10 rounded-full flex items-center justify-center text-primary hover:bg-secondary-container transition-all cursor-pointer" title="Sebelumnya">
+                <span class="material-symbols-outlined text-xl">chevron_left</span>
+              </button>
+              <button id="testimonial-next-btn" class="w-10 h-10 rounded-full flex items-center justify-center text-primary hover:bg-secondary-container transition-all cursor-pointer" title="Selanjutnya">
+                <span class="material-symbols-outlined text-xl">chevron_right</span>
+              </button>
+            </div>
+
+            <!-- Write Review Button -->
+            <button id="write-testimonial-btn" class="px-5 py-3 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-level-1 hover:shadow-md transition-all flex items-center gap-2 cursor-pointer">
+              <span class="material-symbols-outlined text-sm">rate_review</span>
+              <span class="hidden sm:inline">Tulis Ulasan & Kesan</span>
+              <span class="sm:hidden">Tulis Ulasan</span>
+            </button>
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          ${testimoniList.map(t => `
-            <div class="relative overflow-hidden bg-white/90 backdrop-blur-md p-8 rounded-2xl border border-outline-variant/30 shadow-level-1 hover:shadow-xl hover:-translate-y-1.5 hover:border-secondary/50 transition-all duration-300 flex flex-col justify-between group">
+        <!-- Carousel Track Container -->
+        <div 
+          id="testimonial-slider-track"
+          class="flex gap-6 overflow-x-auto snap-x snap-mandatory py-4 -mx-4 px-4 scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        >
+          ${testimoniList.map((t, idx) => `
+            <div 
+              class="testimonial-slide-card w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] flex-shrink-0 snap-start relative overflow-hidden bg-white/95 backdrop-blur-md p-8 rounded-2xl border border-outline-variant/30 shadow-level-1 hover:shadow-xl hover:-translate-y-1.5 hover:border-secondary/50 transition-all duration-300 flex flex-col justify-between group select-none"
+              data-index="${idx}"
+            >
               <!-- Watermark Quote Icon -->
               <span class="material-symbols-outlined text-6xl text-primary/10 absolute top-4 right-4 pointer-events-none select-none">format_quote</span>
 
               <div class="relative z-10">
                 <div class="flex text-amber-500 mb-4 text-base tracking-wide drop-shadow-xs">${'★'.repeat(t.rating || 5)}${'☆'.repeat(5 - (t.rating || 5))}</div>
-                <p class="font-body-md italic text-on-surface-variant text-sm mb-6 leading-relaxed">
+                <p class="font-body-md italic text-on-surface-variant text-sm mb-6 leading-relaxed line-clamp-4" title="${t.pesan}">
                   "${t.pesan}"
                 </p>
               </div>
               <div class="flex items-center gap-3 relative z-10 pt-4 border-t border-outline-variant/20">
-                <div class="w-11 h-11 bg-gradient-to-br from-primary to-secondary text-white rounded-full flex items-center justify-center font-bold shadow-xs">
+                <div class="w-11 h-11 bg-gradient-to-br from-primary to-secondary text-white rounded-full flex items-center justify-center font-bold shadow-xs shrink-0">
                   ${(t.nama || 'A').charAt(0).toUpperCase()}
                 </div>
-                <div>
-                  <h4 class="font-bold text-sm text-on-surface">${t.nama}</h4>
-                  <span class="text-xs text-on-surface-variant">${t.asal || 'Pengunjung'}</span>
+                <div class="min-w-0 flex-1">
+                  <h4 class="font-bold text-sm text-on-surface truncate">${t.nama}</h4>
+                  <span class="text-xs text-on-surface-variant truncate block">${t.asal || 'Pengunjung'}</span>
                 </div>
               </div>
             </div>
+          `).join('')}
+        </div>
+
+        <!-- Dots Indicator -->
+        <div id="testimonial-dots-container" class="flex items-center justify-center gap-2 mt-6">
+          ${testimoniList.map((_, idx) => `
+            <button 
+              class="testimonial-dot h-2 rounded-full transition-all duration-300 cursor-pointer ${idx === 0 ? 'w-6 bg-primary' : 'w-2 bg-outline-variant/60 hover:bg-primary/50'}"
+              data-index="${idx}"
+              title="Slide ${idx + 1}"
+            ></button>
           `).join('')}
         </div>
       </div>
@@ -312,10 +344,12 @@ export const renderBeranda = async () => {
   setTimeout(() => {
     initNavbarEvents();
 
+    // Testimonial Modal
     container.querySelector('#write-testimonial-btn')?.addEventListener('click', () => {
       openTestimoniModal();
     });
 
+    // Destination card clicks
     container.querySelectorAll('.beranda-destinasi-card').forEach(card => {
       card.addEventListener('click', (e) => {
         const id = e.currentTarget.dataset('data-id');
@@ -323,6 +357,72 @@ export const renderBeranda = async () => {
         if (item) openDestinasiModal(item);
       });
     });
+
+    // Testimonial Slider Carousel Logic
+    const track = container.querySelector('#testimonial-slider-track');
+    const prevBtn = container.querySelector('#testimonial-prev-btn');
+    const nextBtn = container.querySelector('#testimonial-next-btn');
+    const dotsContainer = container.querySelector('#testimonial-dots-container');
+
+    if (track && prevBtn && nextBtn) {
+      const getCardStep = () => {
+        const firstCard = track.querySelector('.testimonial-slide-card');
+        return firstCard ? firstCard.offsetWidth + 24 : 360;
+      };
+
+      prevBtn.addEventListener('click', () => {
+        track.scrollBy({ left: -getCardStep(), behavior: 'smooth' });
+      });
+
+      nextBtn.addEventListener('click', () => {
+        track.scrollBy({ left: getCardStep(), behavior: 'smooth' });
+      });
+
+      // Dot click navigation
+      if (dotsContainer) {
+        dotsContainer.querySelectorAll('.testimonial-dot').forEach(dot => {
+          dot.addEventListener('click', (e) => {
+            const idx = parseInt(e.currentTarget.getAttribute('data-index'), 10) || 0;
+            const targetCard = track.querySelector(`.testimonial-slide-card[data-index="${idx}"]`);
+            if (targetCard) {
+              targetCard.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+            }
+          });
+        });
+      }
+
+      // Sync active state on scroll
+      const updateSliderUI = () => {
+        const scrollLeft = track.scrollLeft;
+        const maxScroll = track.scrollWidth - track.clientWidth;
+
+        prevBtn.disabled = scrollLeft <= 8;
+        prevBtn.classList.toggle('opacity-30', scrollLeft <= 8);
+        prevBtn.classList.toggle('pointer-events-none', scrollLeft <= 8);
+
+        nextBtn.disabled = scrollLeft >= maxScroll - 8;
+        nextBtn.classList.toggle('opacity-30', scrollLeft >= maxScroll - 8);
+        nextBtn.classList.toggle('pointer-events-none', scrollLeft >= maxScroll - 8);
+
+        if (dotsContainer) {
+          const step = getCardStep();
+          const activeIndex = Math.min(
+            testimoniList.length - 1,
+            Math.max(0, Math.round(scrollLeft / step))
+          );
+
+          dotsContainer.querySelectorAll('.testimonial-dot').forEach((dot, idx) => {
+            const isActive = idx === activeIndex;
+            dot.className = `testimonial-dot h-2 rounded-full transition-all duration-300 cursor-pointer ${
+              isActive ? 'w-6 bg-primary' : 'w-2 bg-outline-variant/60 hover:bg-primary/50'
+            }`;
+          });
+        }
+      };
+
+      track.addEventListener('scroll', updateSliderUI, { passive: true });
+      updateSliderUI();
+    }
   }, 0);
 
   return container;

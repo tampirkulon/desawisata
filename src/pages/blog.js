@@ -4,18 +4,16 @@ import { renderFooter } from '../components/footer.js';
 import { renderPagination, initPaginationEvents } from '../components/pagination.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
+import { getProfilDesa } from '../utils/profile-store.js';
 
 export const renderBlog = async () => {
   let artikelList = mockData.artikel;
-  let profil = mockData.profil_desa;
+  let profil = await getProfilDesa();
 
   if (isSupabaseConfigured()) {
     try {
       const { data: art } = await supabase.from('artikel').select('*').eq('status', 'published').order('created_at', { ascending: false });
       if (art && art.length > 0) artikelList = art;
-
-      const { data: prof } = await supabase.from('profil_desa').select('*').single();
-      if (prof) profil = prof;
     } catch (e) {
       console.warn('Fallback seed:', e);
     }

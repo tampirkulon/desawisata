@@ -4,18 +4,16 @@ import { openLightbox } from '../components/lightbox.js';
 import { renderPagination, initPaginationEvents } from '../components/pagination.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
+import { getProfilDesa } from '../utils/profile-store.js';
 
 export const renderGaleri = async () => {
   let galeriList = mockData.galeri;
-  let profil = mockData.profil_desa;
+  let profil = await getProfilDesa();
 
   if (isSupabaseConfigured()) {
     try {
       const { data } = await supabase.from('galeri').select('*').order('urutan', { ascending: true });
       if (data && data.length > 0) galeriList = data;
-
-      const { data: prof } = await supabase.from('profil_desa').select('*').single();
-      if (prof) profil = prof;
     } catch (e) {
       console.warn('Fallback seed:', e);
     }

@@ -1,12 +1,12 @@
-# 🌿 Desa Wisata Tampirkulon
+#  Desa Wisata Tampirkulon
 
 Website resmi dan sistem manajemen konten (CMS) untuk **Desa Wisata Tampirkulon**, Kecamatan Candimulyo, Kabupaten Magelang, Jawa Tengah. Platform ini menyajikan informasi ekowisata alam, agrowisata kebun durian, kekayaan seni budaya lokal, pemesanan paket wisata, serta media publikasi desa.
 
 ---
 
-## ✨ Fitur Utama
+##  Fitur Utama
 
-### 🌐 Halaman Publik
+###  Halaman Publik
 - **Beranda**: Hero section imersif dengan *ambient glass accents*, ringkasan kategori unggulan, destinasi terpopuler, ulasan pengunjung, dan banner ajakan interaktif.
 - **Profil Desa**: Informasi sejarah, visi & misi, demografi wilayah, struktur kelembagaan, serta peta lokasi Google Maps interaktif.
 - **Destinasi Wisata**: Katalog destinasi lengkap dengan filter kategori, detail harga tiket, jam operasional, dan modal deskripsi interaktif.
@@ -15,7 +15,7 @@ Website resmi dan sistem manajemen konten (CMS) untuk **Desa Wisata Tampirkulon*
 - **Kisah & Berita (Blog)**: Catatan perjalanan, pengumuman festival tahunan, dan artikel kebudayaan dengan **featured hero** dan **pagination**.
 - **Kontak & Reservasi**: Formulir pemesanan kunjungan langsung, integrasi chat WhatsApp, serta tautan media sosial resmi.
 
-### 🛡️ Dashboard Admin (CMS)
+###  Dashboard Admin (CMS)
 - **Autentikasi Aman**: Login berbasis Supabase Auth untuk pengelola desa.
 - **Dashboard Overview**: Ringkasan metrik statistik kunjungan, status reservasi masuk, serta shortcut aksi cepat.
 - **Manajemen Konten Lengkap**:
@@ -28,7 +28,7 @@ Website resmi dan sistem manajemen konten (CMS) untuk **Desa Wisata Tampirkulon*
 
 ---
 
-## 🛠️ Teknologi yang Digunakan
+## Teknologi yang Digunakan
 
 | Teknologi | Keterangan |
 |---|---|
@@ -40,7 +40,7 @@ Website resmi dan sistem manajemen konten (CMS) untuk **Desa Wisata Tampirkulon*
 
 ---
 
-## 🚀 Memulai (Quick Start)
+##  Memulai (Quick Start)
 
 ### 1. Prasyarat
 - [Node.js](https://nodejs.org/) (versi 18 ke atas disarankan)
@@ -117,17 +117,6 @@ desawisata/
 - `npm run preview`: Menjalankan server lokal untuk menguji bundle hasil build `dist/`.
 - `npm run db:check`: Memeriksa konektivitas dan struktur tabel database Supabase.
 - `npm run db:seed`: Menginisialisasi data awal (*seeding*) ke database Supabase.
-
----
-
-## 🤝 Kontribusi
-
-Kontribusi, saran perbaikan, dan laporan kendala selalu diterima!
-1. Fork repository ini
-2. Buat branch fitur baru (`git checkout -b feature/nama-fitur`)
-3. Commit perubahan Anda (`git commit -m "feat: tambah fitur baru"`)
-4. Push ke branch (`git push origin feature/nama-fitur`)
-5. Ajukan *Pull Request*
 
 ---
 

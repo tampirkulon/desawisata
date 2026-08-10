@@ -2,18 +2,16 @@ import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
+import { getProfilDesa } from '../utils/profile-store.js';
 
 export const renderPaket = async () => {
   let paketList = mockData.paket_wisata;
-  let profil = mockData.profil_desa;
+  let profil = await getProfilDesa();
 
   if (isSupabaseConfigured()) {
     try {
       const { data: p } = await supabase.from('paket_wisata').select('*').eq('is_published', true);
       if (p && p.length > 0) paketList = p;
-
-      const { data: prof } = await supabase.from('profil_desa').select('*').single();
-      if (prof) profil = prof;
     } catch (e) {
       console.warn('Fallback seed:', e);
     }

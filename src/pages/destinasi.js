@@ -3,13 +3,14 @@ import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
+import { getProfilDesa } from '../utils/profile-store.js';
 
 export const renderDestinasi = async (queryParams) => {
   const selectedId = queryParams ? queryParams.get('id') : null;
 
   let kategoriList = mockData.kategori_wisata;
   let destinasiList = mockData.destinasi;
-  let profil = mockData.profil_desa;
+  let profil = await getProfilDesa();
 
   if (isSupabaseConfigured()) {
     try {
@@ -18,9 +19,6 @@ export const renderDestinasi = async (queryParams) => {
 
       const { data: dest } = await supabase.from('destinasi').select('*').eq('is_published', true);
       if (dest && dest.length > 0) destinasiList = dest;
-
-      const { data: prof } = await supabase.from('profil_desa').select('*').single();
-      if (prof) profil = prof;
     } catch (e) {
       console.warn('Fallback seed:', e);
     }
