@@ -37,18 +37,18 @@ export const renderAdminOverview = async () => {
     const displayData = chartData; // Display all grouped buckets (5 hours, 7 days, 4 weeks, 12 months)
 
     const getBarColor = (value, maxVal, isPeak) => {
-    if (isPeak) return 'bg-[#316342]';
-    if (value > maxVal * 0.7) return 'bg-[#316342]/80';
-    if (value > maxVal * 0.4) return 'bg-[#4ADE80]';
-    return 'bg-slate-200/80';
-  };
+      if (isPeak) return 'bg-[#316342]';
+      if (value > maxVal * 0.7) return 'bg-[#316342]/80';
+      if (value > maxVal * 0.4) return 'bg-[#4ADE80]';
+      return 'bg-slate-200/80';
+    };
 
-  return displayData.map((item) => {
-    const pct = Math.max(5, Math.round((item.value / maxVal) * 92));
-    const isPeak = item.value === maxVal && item.value > 0;
-    const barColor = getBarColor(item.value, maxVal, isPeak);
+    return displayData.map((item) => {
+      const pct = Math.max(5, Math.round((item.value / maxVal) * 92));
+      const isPeak = item.value === maxVal && item.value > 0;
+      const barColor = getBarColor(item.value, maxVal, isPeak);
 
-    return `
+      return `
       <div class="group flex flex-col items-center gap-1.5 flex-1 h-full justify-end relative cursor-pointer min-w-0">
         ${isPeak ? `<span class="absolute -top-7 px-1.5 py-0.5 rounded-md bg-emerald-50 text-[#316342] font-bold text-[9px] sm:text-[10px] border border-emerald-200 shadow-2xs whitespace-nowrap">Puncak</span>` : ''}
         <div class="chart-tooltip opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 pointer-events-none absolute ${isPeak ? '-top-14' : '-top-11'} left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-medium py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
@@ -129,9 +129,9 @@ export const renderAdminOverview = async () => {
           <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-full px-1.5 py-1 shadow-2xs">
             ${periodButtons.map(p => `
               <button class="global-period-btn px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 ${selectedPeriod === p
-                ? 'bg-[#316342] text-white shadow-sm'
-                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
-              }" data-period="${p}">
+        ? 'bg-[#316342] text-white shadow-sm'
+        : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+      }" data-period="${p}">
                 ${periodLabels[p]}
               </button>
             `).join('')}
@@ -271,24 +271,24 @@ export const renderAdminOverview = async () => {
                       <td colspan="5" class="py-8 text-center text-slate-400">Belum ada reservasi di periode ini.</td>
                     </tr>
                   ` : d.recentReservations.map(res => {
-                    const s = res.status;
-                    let badgeStyle = 'bg-emerald-50 text-emerald-700 border-emerald-200';
-                    let statusText = 'Completed';
-                    if (s === 'baru' || s === 'pending') {
-                      badgeStyle = 'bg-amber-50 text-amber-700 border-amber-200';
-                      statusText = 'Pending';
-                    } else if (s === 'dikonfirmasi') {
-                      badgeStyle = 'bg-blue-50 text-blue-700 border-blue-200';
-                      statusText = 'In Progress';
-                    } else if (s === 'dibatalkan') {
-                      badgeStyle = 'bg-rose-50 text-rose-700 border-rose-200';
-                      statusText = 'Cancelled';
-                    }
+        const s = res.status;
+        let badgeStyle = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+        let statusText = 'Completed';
+        if (s === 'baru' || s === 'pending') {
+          badgeStyle = 'bg-amber-50 text-amber-700 border-amber-200';
+          statusText = 'Pending';
+        } else if (s === 'dikonfirmasi') {
+          badgeStyle = 'bg-blue-50 text-blue-700 border-blue-200';
+          statusText = 'In Progress';
+        } else if (s === 'dibatalkan') {
+          badgeStyle = 'bg-rose-50 text-rose-700 border-rose-200';
+          statusText = 'Cancelled';
+        }
 
-                    const waMsg = encodeURIComponent(`Halo ${res.nama_pemesan}, kami dari pengelola Desa Wisata Tampirkulon mengonfirmasi reservasi Anda (${res.paket}) untuk tanggal ${res.tanggal}.`);
-                    const waUrl = res.telepon ? `https://wa.me/${res.telepon.replace(/^0/, '62')}?text=${waMsg}` : '#';
+        const waMsg = encodeURIComponent(`Halo ${res.nama_pemesan}, kami dari pengelola Desa Wisata Tampirkulon mengonfirmasi reservasi Anda (${res.paket}) untuk tanggal ${res.tanggal}.`);
+        const waUrl = res.telepon ? `https://wa.me/${res.telepon.replace(/^0/, '62')}?text=${waMsg}` : '#';
 
-                    return `
+        return `
                       <tr class="border-b border-slate-50 hover:bg-slate-50/80 transition-colors">
                         <td class="py-3.5 px-3">
                           <div class="flex items-center gap-3">
@@ -329,7 +329,7 @@ export const renderAdminOverview = async () => {
                         </td>
                       </tr>
                     `;
-                  }).join('')}
+      }).join('')}
                 </tbody>
               </table>
             </div>
@@ -450,12 +450,12 @@ export const renderAdminOverview = async () => {
 
             <div class="flex flex-col gap-3.5">
               ${d.destinasiPopuler.length > 0 ? d.destinasiPopuler.map((dest, idx) => {
-                const colors = [
-                  'bg-emerald-100 text-[#316342]',
-                  'bg-blue-100 text-blue-700',
-                  'bg-amber-100 text-amber-700',
-                ];
-                return `
+        const colors = [
+          'bg-emerald-100 text-[#316342]',
+          'bg-blue-100 text-blue-700',
+          'bg-amber-100 text-amber-700',
+        ];
+        return `
                   <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100">
                     <div class="flex items-center gap-3">
                       <div class="w-8 h-8 rounded-lg ${colors[idx] || colors[2]} flex items-center justify-center font-bold text-xs">
@@ -468,7 +468,7 @@ export const renderAdminOverview = async () => {
                     </div>
                   </div>
                 `;
-              }).join('') : `
+      }).join('') : `
                 <div class="py-4 text-center text-xs text-slate-400 font-medium">Belum ada data kunjungan di periode ini.</div>
               `}
             </div>
@@ -488,9 +488,8 @@ export const renderAdminOverview = async () => {
     buttons.forEach(b => {
       const p = b.dataset.period;
       const isSelected = p === selectedPeriod;
-      b.className = `global-period-btn px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 ${
-        isSelected ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
-      }`;
+      b.className = `global-period-btn px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 ${isSelected ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+        }`;
     });
   };
 
@@ -510,7 +509,7 @@ export const renderAdminOverview = async () => {
         updatePeriodButtonStyles(periodButtons, selectedPeriod);
       });
     });
-  
+
 
     // --- EXPORT REPORT BUTTON ---
     const exportBtn = viewContent.querySelector('#export-report-btn');
@@ -548,23 +547,23 @@ export const renderAdminOverview = async () => {
     });
 
     // --- Quick Complete Reservasi ---
-  viewContent.querySelectorAll('.quick-complete-btn').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      const { id: rawId } = e.currentTarget.dataset;
+    viewContent.querySelectorAll('.quick-complete-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const { id: rawId } = e.currentTarget.dataset;
 
-      btn.disabled = true;
-      btn.innerText = 'Updating...';
+        btn.disabled = true;
+        btn.innerText = 'Updating...';
 
-      if (isSupabaseConfigured()) {
-        try {
-          await supabase.from('reservasi').update({ status: 'selesai' }).eq('id', rawId);
-          showToast('Reservasi ditandai selesai!', 'success');
-        } catch (err) {
-          showToast('Gagal update status: ' + err.message, 'error');
+        if (isSupabaseConfigured()) {
+          try {
+            await supabase.from('reservasi').update({ status: 'selesai' }).eq('id', rawId);
+            showToast('Reservasi ditandai selesai!', 'success');
+          } catch (err) {
+            showToast('Gagal update status: ' + err.message, 'error');
+          }
         }
-      }
+      });
     });
-  });
 
     // --- Sambut Wisatawan Button (Interactive Check-In Modal) ---
     const sambutBtn = viewContent.querySelector('#sambut-wisatawan-btn');
@@ -574,11 +573,11 @@ export const renderAdminOverview = async () => {
       });
     }
 
-  const _showSambutModal = () => {
-    const agenda = dashboardData.agendaHariIni || [];
-    const modalDiv = document.createElement('div');
-    modalDiv.className = 'fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 transition-all duration-300';
-    modalDiv.innerHTML = `
+    const _showSambutModal = () => {
+      const agenda = dashboardData.agendaHariIni || [];
+      const modalDiv = document.createElement('div');
+      modalDiv.className = 'fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 transition-all duration-300';
+      modalDiv.innerHTML = `
       <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
         <div class="flex items-center justify-between pb-4 border-b border-slate-100">
           <div class="flex items-center gap-2.5">
@@ -623,37 +622,47 @@ export const renderAdminOverview = async () => {
       </div>
     `;
 
-    document.body.appendChild(modalDiv);
+      document.body.appendChild(modalDiv);
 
-    const closeModal = () => modalDiv.remove();
-    modalDiv.querySelector('#close-sambut-modal')?.addEventListener('click', closeModal);
-    modalDiv.querySelector('#done-sambut-modal')?.addEventListener('click', closeModal);
+      // Dedicated handler for check-in button clicks
+      const handleCheckInClick = async (e) => {
+        const btn = e.currentTarget;
+        const resId = btn.dataset.id; // Fixed: dataset.id instead of dataset('data-id')
 
-    modalDiv.querySelectorAll('.checkin-btn').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const resId = e.currentTarget.dataset('data-id');
         btn.disabled = true;
         btn.innerHTML = 'Memproses...';
 
-        if (isSupabaseConfigured() && supabase) {
-          try {
-            await supabase.from('reservasi').update({ status: 'selesai' }).eq('id', resId);
-            showToast('Wisatawan berhasil Check-In!', 'success');
-          } catch (err) {
-            showToast('Gagal Check-In: ' + err.message, 'error');
-          }
-        } else {
-          const item = mockData.reservasi.find(r => r.id === resId);
-          if (item) item.status = 'selesai';
-          showToast('Wisatawan berhasil Check-In (Demo)!', 'success');
-        }
+        if (!isSupabaseConfigured() || !supabase) return;
 
-        closeModal();
-        await loadData();
-        renderDashboardContent();
+        try {
+          const { error } = await supabase
+            .from('reservasi')
+            .update({ status: 'selesai' })
+            .eq('id', resId);
+
+          if (error) throw error;
+
+          showToast('Wisatawan berhasil Check-In!', 'success');
+          btn.innerHTML = 'Selesai';
+        } catch (err) {
+          console.error('Check-in error:', err);
+          showToast('Gagal melakukan check-in', 'error');
+          btn.disabled = false;
+          btn.innerHTML = 'Check-in';
+        }
+      };
+
+      // Modal Close Handlers
+      const closeModal = () => modalDiv.remove();
+
+      modalDiv.querySelector('#close-sambut-modal')?.addEventListener('click', closeModal);
+      modalDiv.querySelector('#done-sambut-modal')?.addEventListener('click', closeModal);
+
+      // Event listener attachment (Max 2 levels deep)
+      modalDiv.querySelectorAll('.checkin-btn').forEach((btn) => {
+        btn.addEventListener('click', handleCheckInClick);
       });
-    });
-  };
+    };
 
     // --- Testimonial Moderation ---
     viewContent.querySelectorAll('.approve-test-btn').forEach(btn => {

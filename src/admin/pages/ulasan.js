@@ -311,7 +311,8 @@ export const renderAdminUlasan = async () => {
 
     container.querySelectorAll('.action-toggle-ulasan').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const id = e.currentTarget.dataset('data-id');
+        // PERBAIKAN: Gunakan .dataset.id atau .getAttribute('data-id')
+        const id = e.currentTarget.dataset.id;
         const item = ulasanList.find(u => String(u.id) === String(id));
         if (!item) return;
 
@@ -324,11 +325,13 @@ export const renderAdminUlasan = async () => {
 
     container.querySelectorAll('.action-delete-ulasan').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const id = e.currentTarget.dataset('data-id');
+        // PERBAIKAN: Gunakan .dataset.id atau .getAttribute('data-id')
+        const id = e.currentTarget.dataset.id;
         const item = ulasanList.find(u => String(u.id) === String(id));
         if (item) await deleteUlasan(item);
       });
     });
+
   };
 
   renderPage();

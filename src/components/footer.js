@@ -11,31 +11,9 @@ const ALL_QUICK_LINKS = [
   { key: 'blog', hash: '#/blog', label: 'Blog Artikel' },
 ];
 
-const instagramHtml = d.instagramLink
-    ? `<a href="${d.instagramLink}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="Instagram">
-        ${IconInstagram('w-4 h-4 fill-current')}
-      </a>`
-    : '';
 
-  const youtubeHtml = d.youtubeLink
-    ? `<a href="${d.youtubeLink}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="YouTube">
-        ${IconYouTube('w-4 h-4 fill-current')}
-      </a>`
-    : '';
 
-  const waHtml = d.waLink
-    ? `<a href="${d.waLink}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="WhatsApp">
-        ${IconWhatsApp('w-4 h-4 fill-current')}
-      </a>`
-    : '';
 
-  const socialContainerHtml = d.showSocial
-    ? `<div class="flex items-center gap-3 mt-2">
-        ${instagramHtml}
-        ${youtubeHtml}
-        ${waHtml}
-      </div>`
-    : '';
 
 
 
@@ -86,6 +64,32 @@ const _getFooterData = (profilData) => {
 export const renderFooter = (profilData = null) => {
   const currentYear = new Date().getFullYear();
   const d = _getFooterData(profilData);
+
+  const instagramHtml = d.instagramLink
+    ? `<a href="${d.instagramLink}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="Instagram">
+        ${IconInstagram('w-4 h-4 fill-current')}
+      </a>`
+    : '';
+
+  const youtubeHtml = d.youtubeLink
+    ? `<a href="${d.youtubeLink}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="YouTube">
+        ${IconYouTube('w-4 h-4 fill-current')}
+      </a>`
+    : '';
+
+  const waHtml = d.waLink
+    ? `<a href="${d.waLink}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="WhatsApp">
+        ${IconWhatsApp('w-4 h-4 fill-current')}
+      </a>`
+    : '';
+
+  const socialContainerHtml = d.showSocial
+    ? `<div class="flex items-center gap-3 mt-2">
+        ${instagramHtml}
+        ${youtubeHtml}
+        ${waHtml}
+      </div>`
+    : '';
 
   return `
     <footer class="bg-primary-container text-on-primary w-full border-t border-outline-variant/20 mt-auto">
