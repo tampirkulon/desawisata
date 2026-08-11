@@ -51,7 +51,10 @@ const _getFooterData = (profilData) => {
     email: profil.email || '',
     footerDeskripsi: profil.footer_deskripsi || profil.deskripsi_singkat || 'Desa Wisata Tampirkulon menyajikan keindahan alam, budaya lokal, dan keramahan khas pedesaan.',
     jamOperasional: profil.jam_operasional || '',
-    showSocial: profil.show_footer_social !== false,
+    showSocial: profil.footer_show_social !== undefined ? Boolean(profil.footer_show_social) : (profil.show_footer_social !== false),
+    copyrightText: (profil.footer_copyright || '© {year} {nama_desa}. Hak Cipta Dilindungi.')
+      .replace('{year}', String(new Date().getFullYear()))
+      .replace('{nama_desa}', profil.nama_desa || 'Desa Wisata Tampirkulon'),
     instagramLink: _resolveSocialUrl(profil.instagram?.trim(), 'https://instagram.com/', /^@/),
     youtubeLink: _resolveSocialUrl(profil.youtube?.trim(), 'https://youtube.com/'),
     waLink: waClean ? `https://wa.me/${waClean}` : '',
@@ -168,8 +171,9 @@ export const renderFooter = (profilData = null) => {
           </div>
         </div>
 
-        <div class="pt-8 border-t border-white/10 text-center text-xs text-on-primary-container/80">
-          <p>© ${currentYear} ${d.namaDesa}. Hak Cipta Dilindungi.</p>
+        <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-on-primary-container/80">
+          <p class="m-0">${d.copyrightText}</p>
+          <a href="#/admin/login" class="text-tertiary-fixed/80 hover:text-tertiary-fixed transition-colors">Portal Pengelola Desa</a>
         </div>
       </div>
     </footer>

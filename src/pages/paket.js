@@ -24,11 +24,13 @@ export const renderPaket = async () => {
   const container = document.createElement('div');
   container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background';
 
+  const heroBg = '/images/hero-tampirkulon.webp';
+
   container.innerHTML = `
     ${renderNavbar()}
 
     <!-- Header Page Section -->
-    <section class="w-full bg-primary relative flex items-center justify-center overflow-hidden text-center text-white px-6 pt-20" style="min-height: 391px; background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center;">
+    <section class="w-full bg-primary relative flex items-center justify-center overflow-hidden text-center text-white px-6 pt-20" style="min-height: 391px; background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${heroBg}'); background-size: cover; background-position: center;">
       <div class="max-w-container-max mx-auto text-center relative z-10 py-8">
         <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Pilih Paket Liburan Anda</h1>
         <p class="text-primary-fixed-dim max-w-2xl mx-auto font-body-md text-base md:text-lg text-white/90">Temukan pengalaman wisata desa yang otentik. Dari eksplorasi alam hingga lokakarya budaya, kami memiliki paket yang dirancang khusus untuk menciptakan memori tak terlupakan.</p>

@@ -54,7 +54,7 @@ export const renderKontak = async (queryParams) => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label class="block font-body-sm text-sm text-on-surface-variant font-semibold mb-2" for="nama_pemesan">Nama Lengkap *</label>
-                <input class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="nama_pemesan" placeholder="John Doe" type="text" required />
+                <input class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="nama_pemesan" placeholderi="John Doe" type="text" required />
               </div>
               <div>
                 <label class="block font-body-sm text-sm text-on-surface-variant font-semibold mb-2" for="email">Alamat Email *</label>
@@ -65,7 +65,7 @@ export const renderKontak = async (queryParams) => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label class="block font-body-sm text-sm text-on-surface-variant font-semibold mb-2" for="telepon">Nomor WhatsApp *</label>
-                <input class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="telepon" placeholder="+62 812-3456-7890" type="tel" required />
+                <input class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="telepon" placeholder="0812-3456-7890" type="tel" required />
               </div>
               <div>
                 <label class="block font-body-sm text-sm text-on-surface-variant font-semibold mb-2" for="tanggal_kunjungan">Tanggal Kunjungan *</label>
@@ -116,7 +116,7 @@ export const renderKontak = async (queryParams) => {
                 <span class="material-symbols-outlined text-tertiary-fixed text-2xl">call</span>
                 <div>
                   <span class="block font-label-caps text-xs text-on-primary-container font-bold uppercase mb-1">WHATSAPP / TELP</span>
-                  <span class="font-body-md text-sm text-white/90">${profil.whatsapp || profil.telepon || '+62 812-3456-7890'}</span>
+                  <span class="font-body-md text-sm text-white/90">${profil.whatsapp || profil.telepon || '0812-3456-7890'}</span>
                 </div>
               </li>
               <li class="flex items-center gap-4">
@@ -161,11 +161,11 @@ export const renderKontak = async (queryParams) => {
 
     const rawPhone = String(profil.whatsapp || profil.telepon || '6285727163035');
 
-// 1. Hapus semua karakter non-angka (\D)
-// 2. Ubah awalan '0' menjadi '62'
-const WHATSAPP_NUMBER = rawPhone
-  .replace(/\D/g, '')
-  .replace(/^0/, '62');
+    // 1. Hapus semua karakter non-angka (\D)
+    // 2. Ubah awalan '0' menjadi '62'
+    const WHATSAPP_NUMBER = rawPhone
+      .replace(/\D/g, '')
+      .replace(/^0/, '62');
 
     const isValidUuid = (value) => {
       return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(

@@ -11,7 +11,7 @@ export const renderProfil = async () => {
 
   
 
-  const defaultHeroBg = 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80&fm=webp';
+  const defaultHeroBg = '/images/hero-tampirkulon.webp';
   const formatInstagramUrl = (handleOrUrl) => {
     if (!handleOrUrl) return '';
     if (handleOrUrl.startsWith('http')) return handleOrUrl;
@@ -36,7 +36,7 @@ export const renderProfil = async () => {
     ${renderNavbar()}
 
     <!-- Header Page Section (Static as Original) -->
-    <section class="w-full bg-[#123524] relative flex items-center justify-center overflow-hidden text-center text-white px-6 pt-20" style="min-height: 391px; background-image: linear-gradient(rgba(18, 53, 36, 0.65), rgba(18, 53, 36, 0.65)), url('${defaultHeroBg}'); background-size: cover; background-position: center;">
+    <section class="w-full bg-[#123524] relative flex items-center justify-center overflow-hidden text-center text-white px-6 pt-20" style="min-height: 391px; background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('${defaultHeroBg}'); background-size: cover; background-position: center;">
       <div class="max-w-container-max mx-auto text-center relative z-10 py-8">
         <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Profil Desa Wisata Tampirkulon</h1>
         <p class="text-[#EFE3C2] max-w-2xl mx-auto font-body-md text-base md:text-lg text-white/90">Mengenal lebih dekat warisan budaya, keindahan alam, dan visi pembangunan berkelanjutan di jantung Jawa Tengah.</p>

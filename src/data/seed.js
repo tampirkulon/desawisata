@@ -6,7 +6,7 @@ export const mockData = {
     nama_desa: 'Desa Wisata Tampirkulon',
     tagline: 'Keindahan Alam & Pesona Budaya Candimulyo',
     logo_url: '',
-    banner_url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80&fm=webp',
+    banner_url: '/images/hero-tampirkulon.webp',
     sejarah: 'Desa Tampirkulon terletak di Kecamatan Candimulyo, Kabupaten Magelang, Jawa Tengah. Dikenal dengan hamparan sawah terasering yang asri, kebun durian khas Candimulyo, serta seni budaya tradisional yang masih terjaga kelestariannya.',
     visi: 'Mewujudkan Desa Wisata Tampirkulon sebagai destinasi berdaya saing tinggi, berkelanjutan, dan berorientasi pada pelestarian alam serta kearifan lokal.',
     misi: '1. Mengembangkan destinasi wisata berbasis potensi lokal.\n2. Meningkatkan kesejahteraan ekonomi masyarakat desa.\n3. Memberikan pelayanan terbaik bagi wisatawan.',

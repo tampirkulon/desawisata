@@ -26,17 +26,15 @@ export const renderBeranda = async () => {
   const container = document.createElement('div');
   container.className = 'w-full min-h-screen flex flex-col';
 
-  container.innerHTML = `
-    ${renderNavbar()}
+  const heroBg = '/images/hero-tampirkulon.webp';
 
-    <!-- Header / Hero Section (Stitch Exact Design + Glassmorphic Accents) -->
-    <header class="relative min-h-screen flex items-center justify-center text-center text-white pt-16 pb-20 md:pb-28 overflow-hidden" id="home">
-      <div class="absolute inset-0 bg-cover bg-center z-0 scale-105 transition-transform duration-1000" style="background-image: url('https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1920&q=80');"></div>
-      <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-primary/85 z-0"></div>
-      
-      <!-- Ambient hero glow -->
-      <div class="absolute top-1/3 -left-20 w-80 h-80 bg-secondary/20 rounded-full blur-3xl pointer-events-none z-0"></div>
-      <div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-primary-light/20 rounded-full blur-3xl pointer-events-none z-0"></div>
+  container.innerHTML = `
+      ${renderNavbar()}
+
+      <!-- Header / Hero Section (Stitch Exact Design + Glassmorphic Accents) -->
+      <header class="relative min-h-screen flex items-center justify-center text-center text-white pt-16 pb-20 md:pb-28 overflow-hidden" id="home">
+        <div class="absolute inset-0 bg-cover bg-center z-0 scale-105 transition-transform duration-1000" style="background-image: url('${heroBg}');"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-black/50 z-0"></div>
 
       <div class="relative z-10 max-w-4xl px-6 -mt-12 md:-mt-20 flex flex-col items-center text-white">
 
