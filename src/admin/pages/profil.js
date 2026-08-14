@@ -306,8 +306,8 @@ export const renderAdminProfil = async () => {
   if (cleanedWa.startsWith('08')) {
     cleanedWa = '628' + cleanedWa.substring(2);
   }
-const quickLinkElements = container.querySelectorAll('input[name="quick_links"]:checked');
-      const selectedQuickLinks = Array.from(quickLinkElements).map(el => el.value);
+  const quickLinkElements = container.querySelectorAll('input[name="footer_quick_link"]:checked, input[name="quick_links"]:checked');
+  const selectedQuickLinks = Array.from(quickLinkElements).map(el => el.value);
   const payload = {
     nama_desa: document.getElementById('prof-nama')?.value.trim() || profil.nama_desa,
     tagline: document.getElementById('prof-tagline')?.value.trim() || profil.tagline,

@@ -29,7 +29,10 @@ export const renderAdminLogin = () => {
           </div>
 
           <div>
-            <label class="block font-label-caps text-xs text-primary font-bold uppercase tracking-wider mb-2" for="password">Password</label>
+            <div class="flex items-center justify-between mb-2">
+              <label class="block font-label-caps text-xs text-primary font-bold uppercase tracking-wider m-0" for="password">Password</label>
+              <a href="#/admin/forgot-password" class="text-xs font-semibold text-primary hover:text-secondary transition-colors">Lupa Password?</a>
+            </div>
             <div class="relative">
               <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-outline">
                 <span class="material-symbols-outlined text-xl">lock</span>

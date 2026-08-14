@@ -113,6 +113,58 @@ const noSocialFooter = renderFooter({
 });
 assert(!noSocialFooter.includes('instagram.com/custom'), 'Footer hides social links when footer_show_social is false');
 
+// Test Suite 5: Auth Recovery Service & Password Validation
+console.log('\n🔑 Suite 5: Auth Password Recovery Logic');
+import { auth } from '../src/utils/auth.js';
+
+// Forgot password empty email validation
+const resEmpty = await auth.forgotPassword('');
+assert(resEmpty.success === false, 'forgotPassword rejects empty email');
+assert(resEmpty.error.includes('wajib diisi'), 'forgotPassword returns appropriate error message on empty email');
+
+// Forgot password valid email
+const resValid = await auth.forgotPassword('admin@tampirkulon.desa.id');
+assert(resValid.success === true, 'forgotPassword succeeds with valid email');
+assert(Boolean(resValid.message), 'forgotPassword returns success message');
+
+// Reset password validation (< 6 chars)
+const resShort = await auth.resetPassword('12345');
+assert(resShort.success === false, 'resetPassword rejects password shorter than 6 characters');
+
+// Reset password valid
+const resValidPwd = await auth.resetPassword('securePassword123');
+assert(resValidPwd.success === true, 'resetPassword accepts valid password');
+
+// Logout execution
+let logoutRan = false;
+try {
+  await auth.logout();
+  logoutRan = true;
+} catch (e) {
+  logoutRan = false;
+}
+assert(logoutRan === true, 'auth.logout executes safely without throwing unhandled exceptions');
+
+// Test Suite 6: SPA Hash Router & Supabase Auth Fragment Parsing
+console.log('\n🧭 Suite 6: SPA Hash Router & Supabase Auth Fragment Parsing');
+import { router } from '../src/utils/router.js';
+
+const r1 = router._extractRouteAndParams('#/admin/reset-password#access_token=eyJhbGciOi...&type=recovery');
+assert(r1.path === '#/admin/reset-password', 'Router correctly extracts base route path from double-hash URL');
+assert(r1.queryParams.get('type') === 'recovery', 'Router parses type=recovery from double-hash URL');
+assert(r1.queryParams.get('access_token') === 'eyJhbGciOi...', 'Router parses access_token from double-hash URL');
+
+const r2 = router._extractRouteAndParams('#/admin/destinasi?cat=alam');
+assert(r2.path === '#/admin/destinasi', 'Router correctly extracts base route from query string URL');
+assert(r2.queryParams.get('cat') === 'alam', 'Router parses query string parameters');
+
+const r3 = router._extractRouteAndParams('#access_token=abc123xyz&type=recovery');
+assert(r3.path === '#/admin/reset-password', 'Router automatically redirects recovery tokens on root to #/admin/reset-password');
+
+const r4 = router._extractRouteAndParams('#error=access_denied&error_code=otp_expired&error_description=Email+link+is+invalid+or+has+expired');
+assert(r4.path === '#/admin/reset-password', 'Router intercepts Supabase auth error URLs and routes to reset password');
+assert(r4.queryParams.get('error_code') === 'otp_expired', 'Router parses error_code from error URL');
+
 console.log('\n==============================================');
 console.log(`TOTAL TESTS: ${passed + failed} | PASSED: ${passed} | FAILED: ${failed}`);
 if (failed > 0) {

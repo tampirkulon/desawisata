@@ -11,6 +11,8 @@ import { renderKontak } from './pages/kontak.js';
 
 // Admin Dashboard Pages
 import { renderAdminLogin } from './admin/pages/login.js';
+import { renderAdminForgotPassword } from './admin/pages/forgot-password.js';
+import { renderAdminResetPassword } from './admin/pages/reset-password.js';
 import { renderAdminOverview } from './admin/pages/overview.js';
 import { renderAdminDestinasi } from './admin/pages/destinasi.js';
 import { renderAdminKategori } from './admin/pages/kategori.js';
@@ -32,6 +34,8 @@ router.addRoute('#/kontak', (params) => renderKontak(params));
 
 // Register Admin Routes
 router.addRoute('#/admin/login', (params) => renderAdminLogin(params));
+router.addRoute('#/admin/forgot-password', (params) => renderAdminForgotPassword(params));
+router.addRoute('#/admin/reset-password', (params) => renderAdminResetPassword(params));
 router.addRoute('#/admin/overview', (params) => renderAdminOverview(params));
 router.addRoute('#/admin/dashboard', (params) => renderAdminOverview(params));
 router.addRoute('#/admin/destinasi', (params) => renderAdminDestinasi(params));
