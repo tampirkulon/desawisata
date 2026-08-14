@@ -7,11 +7,14 @@ class Router {
     this.container = null;
     this.progressBar = null;
     
-    window.addEventListener('hashchange', () => this.handleRoute());
-    window.addEventListener('DOMContentLoaded', () => this.handleRoute());
+    if (typeof window !== 'undefined') {
+      window.addEventListener('hashchange', () => this.handleRoute());
+      window.addEventListener('DOMContentLoaded', () => this.handleRoute());
+    }
   }
 
   init(containerId) {
+    if (typeof document === 'undefined') return;
     this.container = document.getElementById(containerId);
     this._ensureProgressBar();
     this.handleRoute();
@@ -108,12 +111,16 @@ class Router {
       }
       
       // Scroll to top
-      window.scrollTo(0, 0);
+      if (typeof window !== 'undefined') {
+        window.scrollTo(0, 0);
+      }
     }
   }
 
   navigate(path) {
-    window.location.hash = path;
+    if (typeof window !== 'undefined') {
+      window.location.hash = path;
+    }
   }
 }
 

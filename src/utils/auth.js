@@ -49,5 +49,63 @@ export const auth = {
       return false;
     }
     return true;
+  },
+
+  async forgotPassword(email, redirectTo = null) {
+    const trimmedEmail = (email || '').trim();
+    if (!trimmedEmail) {
+      return { success: false, error: 'Alamat email wajib diisi.' };
+    }
+
+    if (!isSupabaseConfigured() || !supabase) {
+      return { 
+        success: true, 
+        isDemo: true, 
+        message: `(Mode Demo) Tautan pemulihan password telah disimulasikan untuk email: ${trimmedEmail}` 
+      };
+    }
+
+    try {
+      const redirectUrl = redirectTo || (typeof window !== 'undefined' ? `${window.location.origin}/#/admin/reset-password` : '');
+      const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
+        redirectTo: redirectUrl,
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, message: 'Tautan reset password telah dikirim ke email Anda. Silakan periksa kotak masuk atau spam.' };
+    } catch (e) {
+      return { success: false, error: e.message || 'Terjadi kesalahan saat memproses permintaan.' };
+    }
+  },
+
+  async resetPassword(newPassword) {
+    if (!newPassword || newPassword.length < 6) {
+      return { success: false, error: 'Password baru minimal harus 6 karakter.' };
+    }
+
+    if (!isSupabaseConfigured() || !supabase) {
+      return { 
+        success: true, 
+        isDemo: true, 
+        message: '(Mode Demo) Password berhasil diperbarui secara lokal.' 
+      };
+    }
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, message: 'Password Anda berhasil diperbarui. Silakan login kembali.' };
+    } catch (e) {
+      return { success: false, error: e.message || 'Terjadi kesalahan saat memperbarui password.' };
+    }
   }
 };
