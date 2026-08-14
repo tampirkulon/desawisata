@@ -1,5 +1,6 @@
 import { auth } from '../../utils/auth.js';
 import { router } from '../../utils/router.js';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 
 export const renderAdminResetPassword = (queryParams) => {
   const container = document.createElement('div');
@@ -106,12 +107,33 @@ export const renderAdminResetPassword = (queryParams) => {
     </div>
   `;
 
-  setTimeout(() => {
+  setTimeout(async () => {
     const form = container.querySelector('#reset-form');
     const alertBox = container.querySelector('#reset-alert');
     const submitBtn = container.querySelector('#reset-submit-btn');
     const btnText = container.querySelector('#reset-btn-text');
     const btnIcon = container.querySelector('#reset-btn-icon');
+
+    // Auto-establish recovery session if tokens are in URL
+    if (isSupabaseConfigured() && supabase && typeof window !== 'undefined') {
+      const fullUrl = window.location.href;
+      const codeMatch = fullUrl.match(/[?&#]code=([^&]+)/);
+      const tokenMatch = fullUrl.match(/[?&#]access_token=([^&]+)/);
+      const refreshMatch = fullUrl.match(/[?&#]refresh_token=([^&]+)/);
+
+      try {
+        if (codeMatch) {
+          await supabase.auth.exchangeCodeForSession(decodeURIComponent(codeMatch[1]));
+        } else if (tokenMatch) {
+          await supabase.auth.setSession({
+            access_token: decodeURIComponent(tokenMatch[1]),
+            refresh_token: refreshMatch ? decodeURIComponent(refreshMatch[1]) : '',
+          });
+        }
+      } catch (err) {
+        console.warn('Initial recovery session sync warning:', err);
+      }
+    }
 
     // Check if URL has error params from expired/invalid Supabase recovery link
     const errorMsg = queryParams?.get('error_description') || queryParams?.get('error');

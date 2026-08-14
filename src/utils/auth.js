@@ -95,6 +95,54 @@ export const auth = {
     }
 
     try {
+      // 1. Ensure active recovery session exists
+      let { data: { session } } = await supabase.auth.getSession();
+
+      if (!session && typeof window !== 'undefined') {
+        const fullUrl = window.location.href;
+
+        // Try PKCE code exchange if present
+        const codeMatch = fullUrl.match(/[?&#]code=([^&]+)/);
+        if (codeMatch) {
+          try {
+            const { data: exchanged, error: codeErr } = await supabase.auth.exchangeCodeForSession(decodeURIComponent(codeMatch[1]));
+            if (!codeErr && exchanged?.session) {
+              session = exchanged.session;
+            }
+          } catch (e) {
+            console.warn('exchangeCodeForSession warning:', e);
+          }
+        }
+
+        // Try access_token / refresh_token extraction if present
+        if (!session) {
+          const tokenMatch = fullUrl.match(/[?&#]access_token=([^&]+)/);
+          const refreshMatch = fullUrl.match(/[?&#]refresh_token=([^&]+)/);
+
+          if (tokenMatch) {
+            try {
+              const { data: setSessionData, error: setErr } = await supabase.auth.setSession({
+                access_token: decodeURIComponent(tokenMatch[1]),
+                refresh_token: refreshMatch ? decodeURIComponent(refreshMatch[1]) : '',
+              });
+              if (!setErr && setSessionData?.session) {
+                session = setSessionData.session;
+              }
+            } catch (e) {
+              console.warn('setSession warning:', e);
+            }
+          }
+        }
+      }
+
+      if (!session) {
+        return {
+          success: false,
+          error: 'Sesi pemulihan tidak ditemukan atau tautan telah kedaluwarsa. Silakan ajukan ulang tautan lupa password.'
+        };
+      }
+
+      // 2. Update user password
       const { error } = await supabase.auth.updateUser({
         password: newPassword,
       });
@@ -103,7 +151,14 @@ export const auth = {
         return { success: false, error: error.message };
       }
 
-      return { success: true, message: 'Password Anda berhasil diperbarui. Silakan login kembali.' };
+      // 3. Clear session so user logs in cleanly with new password
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        // ignore
+      }
+
+      return { success: true, message: 'Password Anda berhasil diperbarui. Silakan login kembali dengan password baru.' };
     } catch (e) {
       return { success: false, error: e.message || 'Terjadi kesalahan saat memperbarui password.' };
     }
