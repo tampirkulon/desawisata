@@ -513,7 +513,6 @@ export const renderAdminOverview = async () => {
 
     selectedPeriod = period;
 
-<<<<<<< HEAD
     // Optional: langsung ubah warna tombol
     updatePeriodButtonStyles(periodButtons, selectedPeriod);
 
@@ -524,16 +523,6 @@ export const renderAdminOverview = async () => {
     renderDashboardContent();
   });
 });
-=======
-        // Visual loading feedback
-        btn.innerHTML = '<span class="material-symbols-outlined text-xs animate-spin">sync</span> Memuat...';
-        btn.disabled = true;
-
-        await loadData();
-        renderDashboardContent();
-      });
-    });
->>>>>>> 0a23e05c60fdd99c9d6e4ed1611b8a465224a38c
 
     // --- EXPORT REPORT BUTTON (CSV) ---
     const exportBtn = viewContent.querySelector('#export-report-btn');
