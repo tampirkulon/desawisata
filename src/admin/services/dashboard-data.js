@@ -1,6 +1,14 @@
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 import { mockData } from '../../data/seed.js';
 
+/** Formats a Date object to YYYY-MM-DD string in local timezone @private */
+const _formatLocalDate = (d) => {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 /**
  * Calculate start/end ISO date strings for a given period.
  * @param {'hari'|'minggu'|'bulan'|'tahun'|'semua'} period
@@ -8,7 +16,7 @@ import { mockData } from '../../data/seed.js';
  */
 export const getDateRange = (period) => {
   const now = new Date();
-  const endDate = now.toISOString().split('T')[0]; // YYYY-MM-DD
+  const endDate = _formatLocalDate(now);
 
   switch (period) {
     case 'hari': {
@@ -17,15 +25,15 @@ export const getDateRange = (period) => {
     case 'minggu': {
       const start = new Date(now);
       start.setDate(now.getDate() - 6);
-      return { startDate: start.toISOString().split('T')[0], endDate, label: '7 Hari Terakhir' };
+      return { startDate: _formatLocalDate(start), endDate, label: '7 Hari Terakhir' };
     }
     case 'bulan': {
       const start = new Date(now.getFullYear(), now.getMonth(), 1);
-      return { startDate: start.toISOString().split('T')[0], endDate, label: 'Bulan Ini' };
+      return { startDate: _formatLocalDate(start), endDate, label: 'Bulan Ini' };
     }
     case 'tahun': {
       const start = new Date(now.getFullYear(), 0, 1);
-      return { startDate: start.toISOString().split('T')[0], endDate, label: 'Tahun Ini' };
+      return { startDate: _formatLocalDate(start), endDate, label: 'Tahun Ini' };
     }
     case 'semua':
     default:
@@ -51,6 +59,7 @@ export const fetchDashboardStats = async (startDate, endDate, period = 'minggu')
     totalGaleri: 0,
     estimasiPendapatan: 0,
     recentReservations: [],
+    allReservations: [],
     agendaHariIni: [],
     destinasiPopuler: [],
     chartData: [],
@@ -105,11 +114,15 @@ export const fetchDashboardStats = async (startDate, endDate, period = 'minggu')
 };
 
 /**
- * Export dashboard statistics and latest reservations to a CSV file.
+ * Export dashboard statistics and all period reservations to a CSV file.
  * @param {object} stats 
  * @param {string} periodLabel 
  */
 export const exportDashboardReport = (stats, periodLabel) => {
+  const reservationList = (stats.allReservations && stats.allReservations.length > 0)
+    ? stats.allReservations
+    : stats.recentReservations || [];
+
   const lines = [
     `"LAPORAN RINGKASAN DASHBOARD DESA WISATA TAMPIRKULON"`,
     `"Periode: ${periodLabel}"`,
@@ -122,21 +135,137 @@ export const exportDashboardReport = (stats, periodLabel) => {
     `"Estimasi Pendapatan", "Rp ${stats.estimasiPendapatan.toLocaleString('id-ID')}"`,
     `"Total Destinasi Aktif", "${stats.totalDestinasi}"`,
     ``,
-    `"DAFTAR RESERVASI TERBARU"`,
+    `"DAFTAR RESERVASI (${periodLabel.toUpperCase()})"`,
     `"ID", "Tamu", "Telepon", "Paket Wisata", "Tanggal", "Jumlah Pax", "Status"`,
-    ...stats.recentReservations.map(r =>
-      `"${r.displayId}", "${r.nama_pemesan}", "${r.telepon}", "${r.paket}", "${r.tanggal}", "${r.jumlah_orang}", "${r.status}"`
+    ...reservationList.map(r =>
+      `"${r.displayId || r.rawId || ''}", "${(r.nama_pemesan || '').replace(/"/g, '""')}", "${(r.telepon || '').replace(/"/g, '""')}", "${(r.paket || '').replace(/"/g, '""')}", "${r.tanggal || ''}", "${r.jumlah_orang || 1}", "${(r.status || '').toUpperCase()}"`
     ),
   ];
 
-  const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + lines.join('\n');
-  const encodedUri = encodeURI(csvContent);
+  if (typeof window === 'undefined') return lines.join('\n');
+
+  const csvContent = '\uFEFF' + lines.join('\r\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
+  link.setAttribute('href', url);
   link.setAttribute('download', `Laporan-Dashboard-DesaWisata-${periodLabel.replace(/\s+/g, '_')}.csv`);
   document.body.appendChild(link);
   link.click();
-  document.body.childNodes.remove(link);
+  setTimeout(() => {
+    link.remove();
+    URL.revokeObjectURL(url);
+  }, 100);
+};
+
+/**
+ * Opens a print-friendly dialog for the dashboard summary report.
+ * @param {object} stats 
+ * @param {string} periodLabel 
+ */
+export const printDashboardReport = (stats, periodLabel) => {
+  if (typeof window === 'undefined') return;
+
+  const reservationList = (stats.allReservations && stats.allReservations.length > 0)
+    ? stats.allReservations
+    : stats.recentReservations || [];
+
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    window.print();
+    return;
+  }
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+      <meta charset="utf-8">
+      <title>Laporan Dashboard - ${periodLabel}</title>
+      <style>
+        body { font-family: system-ui, -apple-system, sans-serif; color: #1e293b; padding: 32px; margin: 0; }
+        .header { text-align: center; margin-bottom: 24px; border-bottom: 2px solid #0f172a; padding-bottom: 16px; }
+        .header h1 { margin: 0 0 6px 0; font-size: 20px; color: #316342; }
+        .header p { margin: 0; font-size: 12px; color: #64748b; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+        .metric-card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; text-align: center; }
+        .metric-card .title { font-size: 10px; font-weight: bold; color: #64748b; text-transform: uppercase; }
+        .metric-card .value { font-size: 18px; font-weight: bold; color: #0f172a; margin-top: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 12px; }
+        th, td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
+        th { background: #f1f5f9; font-weight: bold; color: #334155; }
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .badge-selesai { background: #dcfce7; color: #166534; }
+        .badge-dikonfirmasi { background: #dbeafe; color: #1e40af; }
+        .badge-baru, .badge-pending { background: #fef3c7; color: #92400e; }
+        @media print {
+          body { padding: 0; }
+          button { display: none; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>DESA WISATA TAMPIRKULON</h1>
+        <p>Laporan Ringkasan Operasional & Reservasi • Periode: ${periodLabel} • Dicetak: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="title">Kunjungan Selesai</div>
+          <div class="value">${stats.reservasiSelesai}</div>
+        </div>
+        <div class="metric-card">
+          <div class="title">Reservasi Diproses</div>
+          <div class="value">${stats.reservasiDikonfirmasi}</div>
+        </div>
+        <div class="metric-card">
+          <div class="title">Perlu Konfirmasi</div>
+          <div class="value">${stats.reservasiPending}</div>
+        </div>
+        <div class="metric-card">
+          <div class="title">Estimasi Pendapatan</div>
+          <div class="value">Rp ${(stats.estimasiPendapatan || 0).toLocaleString('id-ID')}</div>
+        </div>
+      </div>
+
+      <h3 style="font-size: 14px; margin: 0 0 8px 0;">Daftar Reservasi (${periodLabel})</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>No / ID</th>
+            <th>Nama Tamu</th>
+            <th>Telepon</th>
+            <th>Paket Wisata</th>
+            <th>Tanggal Kunjungan</th>
+            <th>Pax</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${reservationList.length === 0 ? '<tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 20px;">Tidak ada data reservasi pada periode ini.</td></tr>' : reservationList.map((r, i) => `
+            <tr>
+              <td>${r.displayId || `#RES-${i+1}`}</td>
+              <td><strong>${r.nama_pemesan || 'Tamu'}</strong></td>
+              <td>${r.telepon || '-'}</td>
+              <td>${r.paket || 'Kunjungan Mandiri'}</td>
+              <td>${r.tanggal || '-'}</td>
+              <td>${r.jumlah_orang || 1} Orang</td>
+              <td><span class="badge badge-${(r.status || '').toLowerCase()}">${(r.status || '').toUpperCase()}</span></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+
+      <script>
+        window.onload = () => {
+          window.print();
+        };
+      </script>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
 };
 
 // ============================================================
@@ -186,8 +315,8 @@ const _fetchFromMock = (stats, startDate, endDate) => {
       return sum + (pax * price);
     }, 0);
 
-  // Recent reservations (from filtered set, max 5)
-  stats.recentReservations = filtered.slice(0, 5).map((r, i) => {
+  // All reservations matching period filter
+  stats.allReservations = filtered.map((r, i) => {
     const pkt = mockData.paket_wisata.find(p => p.id === r.paket_id);
     return {
       rawId: r.id,
@@ -200,6 +329,9 @@ const _fetchFromMock = (stats, startDate, endDate) => {
       status: (r.status || 'baru').toLowerCase(),
     };
   });
+
+  // Recent reservations (top 5 preview)
+  stats.recentReservations = stats.allReservations.slice(0, 5);
 
   // Agenda hari ini (always today, regardless of period filter)
   // Agenda hari ini (always today, regardless of period filter)
@@ -363,7 +495,7 @@ const _fetchFromSupabase = async (stats, startDate, endDate) => {
   }
 
   if (recData && recData.length > 0) {
-    stats.recentReservations = recData.map((r, i) => ({
+    stats.allReservations = recData.map((r, i) => ({
       rawId: r.id,
       displayId: `#RES-${String(i + 1).padStart(3, '0')}`,
       nama_pemesan: r.nama || 'Tamu',
@@ -375,6 +507,7 @@ const _fetchFromSupabase = async (stats, startDate, endDate) => {
       jumlah_orang: r.jumlah_orang || 1,
       status: (r.status || 'baru').toLowerCase(),
     }));
+    stats.recentReservations = stats.allReservations.slice(0, 5);
   }
 
   if (agendaData) {
@@ -578,7 +711,7 @@ const _getPreviousPeriodRange = (period) => {
     case 'hari': {
       const yesterday = new Date(now);
       yesterday.setDate(now.getDate() - 1);
-      const str = yesterday.toISOString().split('T')[0];
+      const str = _formatLocalDate(yesterday);
       return { startDate: str, endDate: str, comparisonLabel: 'vs kemarin' };
     }
     case 'minggu': {
@@ -587,8 +720,8 @@ const _getPreviousPeriodRange = (period) => {
       const prevStart = new Date(prevEnd);
       prevStart.setDate(prevEnd.getDate() - 6);
       return {
-        startDate: prevStart.toISOString().split('T')[0],
-        endDate: prevEnd.toISOString().split('T')[0],
+        startDate: _formatLocalDate(prevStart),
+        endDate: _formatLocalDate(prevEnd),
         comparisonLabel: 'vs 7 hari sebelumnya',
       };
     }
@@ -596,8 +729,8 @@ const _getPreviousPeriodRange = (period) => {
       const prevStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
       const prevEnd = new Date(now.getFullYear(), now.getMonth(), 0);
       return {
-        startDate: prevStart.toISOString().split('T')[0],
-        endDate: prevEnd.toISOString().split('T')[0],
+        startDate: _formatLocalDate(prevStart),
+        endDate: _formatLocalDate(prevEnd),
         comparisonLabel: 'vs bulan lalu',
       };
     }
@@ -605,8 +738,8 @@ const _getPreviousPeriodRange = (period) => {
       const prevStart = new Date(now.getFullYear() - 1, 0, 1);
       const prevEnd = new Date(now.getFullYear() - 1, 11, 31);
       return {
-        startDate: prevStart.toISOString().split('T')[0],
-        endDate: prevEnd.toISOString().split('T')[0],
+        startDate: _formatLocalDate(prevStart),
+        endDate: _formatLocalDate(prevEnd),
         comparisonLabel: 'vs tahun lalu',
       };
     }
