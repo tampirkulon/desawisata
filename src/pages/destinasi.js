@@ -38,7 +38,7 @@ export const renderDestinasi = async (queryParams) => {
       ${renderNavbar()}
 
       <!-- Page Header -->
-      <section class="relative flex items-center justify-center overflow-hidden w-full bg-neutral-900 pt-20 px-6 text-center text-white min-h-[420px] md:min-h-[460px]">
+      <section class="relative flex items-center justify-center overflow-hidden w-full bg-neutral-900 pt-20 px-6 text-center text-white" style="min-height: 391px;">
         <div class="absolute inset-0 z-0">
           <img alt="Destinasi Desa Wisata Tampirkulon" class="w-full h-full object-cover brightness-95" style="object-position: center 70%;" src="/images/destinasi-header.jpg" loading="eager" decoding="async" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/45"></div>
