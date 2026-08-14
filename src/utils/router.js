@@ -89,6 +89,18 @@ class Router {
       };
     }
 
+    // Special case: Supabase auth error redirects (e.g. #error=access_denied&error_code=otp_expired...)
+    if (
+      (hash.includes('error_code=') || hash.includes('error_description=') || hash.startsWith('#error=')) &&
+      !hash.startsWith('#/admin/reset-password') &&
+      !hash.startsWith('#/admin/forgot-password')
+    ) {
+      return {
+        path: '#/admin/reset-password',
+        queryParams: new URLSearchParams(hash.replace(/^#\/?/, '').replaceAll('#', '&'))
+      };
+    }
+
     let path = hash;
     let queryPart = '';
 

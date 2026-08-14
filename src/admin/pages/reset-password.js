@@ -137,9 +137,31 @@ export const renderAdminResetPassword = (queryParams) => {
 
     // Check if URL has error params from expired/invalid Supabase recovery link
     const errorMsg = queryParams?.get('error_description') || queryParams?.get('error');
+    const errorCode = queryParams?.get('error_code');
+
     if (errorMsg && alertBox) {
-      alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-rose-100 text-rose-800 border border-rose-300';
-      alertBox.innerHTML = '❌ Tautan tidak valid atau telah kedaluwarsa: ' + decodeURIComponent(errorMsg.replace(/\+/g, ' '));
+      alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-rose-50 text-rose-900 border border-rose-200';
+      const isExpired = errorCode === 'otp_expired' || errorMsg.includes('expired') || errorMsg.includes('invalid');
+
+      alertBox.innerHTML = `
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-rose-600 text-xl flex-shrink-0 mt-0.5">error</span>
+          <div class="space-y-2">
+            <p class="font-bold text-rose-900 m-0">Tautan Pemulihan Tidak Valid atau Sudah Kedaluwarsa</p>
+            <p class="text-xs text-rose-700 font-normal leading-relaxed m-0">
+              ${isExpired 
+                ? 'Tautan dari email hanya berlaku satu kali penggunaan dan memiliki batas waktu kadaluwarsa. Silakan ajukan tautan baru melalui form Lupa Password.' 
+                : decodeURIComponent(errorMsg.replace(/\+/g, ' '))}
+            </p>
+            <div class="pt-1.5">
+              <a href="#/admin/forgot-password" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs">
+                <span>Ajukan Tautan Baru</span>
+                <span class="material-symbols-outlined text-xs">arrow_forward</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
       alertBox.classList.remove('hidden');
     }
 

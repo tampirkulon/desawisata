@@ -161,6 +161,10 @@ assert(r2.queryParams.get('cat') === 'alam', 'Router parses query string paramet
 const r3 = router._extractRouteAndParams('#access_token=abc123xyz&type=recovery');
 assert(r3.path === '#/admin/reset-password', 'Router automatically redirects recovery tokens on root to #/admin/reset-password');
 
+const r4 = router._extractRouteAndParams('#error=access_denied&error_code=otp_expired&error_description=Email+link+is+invalid+or+has+expired');
+assert(r4.path === '#/admin/reset-password', 'Router intercepts Supabase auth error URLs and routes to reset password');
+assert(r4.queryParams.get('error_code') === 'otp_expired', 'Router parses error_code from error URL');
+
 console.log('\n==============================================');
 console.log(`TOTAL TESTS: ${passed + failed} | PASSED: ${passed} | FAILED: ${failed}`);
 if (failed > 0) {
