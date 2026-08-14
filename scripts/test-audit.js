@@ -145,6 +145,22 @@ try {
 }
 assert(logoutRan === true, 'auth.logout executes safely without throwing unhandled exceptions');
 
+// Test Suite 6: SPA Hash Router & Supabase Auth Fragment Parsing
+console.log('\n🧭 Suite 6: SPA Hash Router & Supabase Auth Fragment Parsing');
+import { router } from '../src/utils/router.js';
+
+const r1 = router._extractRouteAndParams('#/admin/reset-password#access_token=eyJhbGciOi...&type=recovery');
+assert(r1.path === '#/admin/reset-password', 'Router correctly extracts base route path from double-hash URL');
+assert(r1.queryParams.get('type') === 'recovery', 'Router parses type=recovery from double-hash URL');
+assert(r1.queryParams.get('access_token') === 'eyJhbGciOi...', 'Router parses access_token from double-hash URL');
+
+const r2 = router._extractRouteAndParams('#/admin/destinasi?cat=alam');
+assert(r2.path === '#/admin/destinasi', 'Router correctly extracts base route from query string URL');
+assert(r2.queryParams.get('cat') === 'alam', 'Router parses query string parameters');
+
+const r3 = router._extractRouteAndParams('#access_token=abc123xyz&type=recovery');
+assert(r3.path === '#/admin/reset-password', 'Router automatically redirects recovery tokens on root to #/admin/reset-password');
+
 console.log('\n==============================================');
 console.log(`TOTAL TESTS: ${passed + failed} | PASSED: ${passed} | FAILED: ${failed}`);
 if (failed > 0) {

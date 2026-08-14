@@ -1,7 +1,7 @@
 import { auth } from '../../utils/auth.js';
 import { router } from '../../utils/router.js';
 
-export const renderAdminResetPassword = () => {
+export const renderAdminResetPassword = (queryParams) => {
   const container = document.createElement('div');
   container.className = 'min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-background via-surface-container-low to-primary-fixed/30 px-4 py-12';
 
@@ -112,6 +112,14 @@ export const renderAdminResetPassword = () => {
     const submitBtn = container.querySelector('#reset-submit-btn');
     const btnText = container.querySelector('#reset-btn-text');
     const btnIcon = container.querySelector('#reset-btn-icon');
+
+    // Check if URL has error params from expired/invalid Supabase recovery link
+    const errorMsg = queryParams?.get('error_description') || queryParams?.get('error');
+    if (errorMsg && alertBox) {
+      alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-rose-100 text-rose-800 border border-rose-300';
+      alertBox.innerHTML = '❌ Tautan tidak valid atau telah kedaluwarsa: ' + decodeURIComponent(errorMsg.replace(/\+/g, ' '));
+      alertBox.classList.remove('hidden');
+    }
 
     const pwdInput = container.querySelector('#new-password');
     const confirmInput = container.querySelector('#confirm-password');

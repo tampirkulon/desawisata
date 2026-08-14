@@ -72,14 +72,60 @@ class Router {
     this.routes[path] = { handler, isProtected };
   }
 
+  _extractRouteAndParams(rawHash) {
+    let hash = (rawHash || '#/').trim();
+    if (!hash.startsWith('#')) {
+      hash = '#' + hash;
+    }
+
+    // Special case: Supabase auth recovery tokens (e.g. #access_token=...&type=recovery or #type=recovery)
+    if (
+      (hash.includes('type=recovery') || hash.includes('type=invite') || hash.includes('type=magiclink')) &&
+      !hash.startsWith('#/admin/reset-password')
+    ) {
+      return {
+        path: '#/admin/reset-password',
+        queryParams: new URLSearchParams(hash.replace(/^#\/?/, '').replaceAll('#', '&'))
+      };
+    }
+
+    let path = hash;
+    let queryPart = '';
+
+    if (path.startsWith('#/')) {
+      const delimMatch = path.substring(2).search(/[?&#]/);
+      if (delimMatch !== -1) {
+        const cutIdx = 2 + delimMatch;
+        queryPart = path.substring(cutIdx + 1);
+        path = path.substring(0, cutIdx);
+      }
+    } else {
+      const delimMatch = path.search(/[?&#]/);
+      if (delimMatch !== -1) {
+        queryPart = path.substring(delimMatch + 1);
+        path = path.substring(0, delimMatch);
+      }
+    }
+
+    if (!path.startsWith('#/')) {
+      path = '#/' + path.replace(/^#+/, '');
+    }
+
+    const queryParams = new URLSearchParams();
+    if (queryPart) {
+      const normalizedQuery = queryPart.replaceAll('#', '&');
+      const parsed = new URLSearchParams(normalizedQuery);
+      parsed.forEach((val, key) => queryParams.set(key, val));
+    }
+
+    return { path, queryParams };
+  }
+
   async handleRoute() {
     if (!this.container) return;
 
-    let hash = window.location.hash || '#/';
-    let [path, queryString] = hash.split('?');
-
-    // Parse query params
-    const queryParams = new URLSearchParams(queryString || '');
+    const rawHash = typeof window !== 'undefined' ? window.location.hash : '#/';
+    const { path, queryParams } = this._extractRouteAndParams(rawHash);
 
     const routeConfig = this.routes[path] || this.routes['#/'];
     
