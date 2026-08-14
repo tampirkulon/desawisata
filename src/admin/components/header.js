@@ -1,6 +1,5 @@
 import { openAdminSearchModal, initGlobalSearchShortcut } from './search-modal.js';
 import { toggleNotificationPopover, fetchNotificationData, updateHeaderNotifBadge } from './notification-popover.js';
-import { auth } from '../../utils/auth.js';
 
 export const renderAdminHeader = (pageTitle = 'Dashboard') => {
   setTimeout(async () => {
@@ -21,16 +20,6 @@ export const renderAdminHeader = (pageTitle = 'Dashboard') => {
       notifBtn.addEventListener('click', (e) => {
         e.preventDefault();
         toggleNotificationPopover();
-      });
-    }
-
-    // Bind header logout button
-    const headerLogoutBtn = document.getElementById('admin-header-logout-btn');
-    if (headerLogoutBtn && !headerLogoutBtn.dataset.bound) {
-      headerLogoutBtn.dataset.bound = 'true';
-      headerLogoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        auth.logout();
       });
     }
 
@@ -57,15 +46,15 @@ export const renderAdminHeader = (pageTitle = 'Dashboard') => {
       <!-- Right: Action Buttons, Notifications & User Profile -->
       <div class="flex items-center gap-5">
         <!-- Notification -->
-        <div class="flex items-center gap-3 border-r border-slate-200 pr-5">
+        <div class="flex items-center gap-3">
           <button id="admin-notif-btn" type="button" title="Notifikasi" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors relative cursor-pointer">
             <span class="material-symbols-outlined text-lg">notifications</span>
             <span id="admin-notif-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-rose-500 text-white text-[10px] font-bold rounded-full items-center justify-center px-1 ring-2 ring-white shadow-xs"></span>
           </button>
         </div>
 
-        <!-- User Profile Card & Quick Logout -->
-        <div class="flex items-center gap-3">
+        <!-- User Profile Card -->
+        <div class="flex items-center gap-3 pl-2 border-l border-slate-200">
           <div class="w-10 h-10 rounded-full bg-[#316342] text-white flex items-center justify-center font-bold text-sm shadow-md ring-2 ring-emerald-100">
             P
           </div>
@@ -73,9 +62,6 @@ export const renderAdminHeader = (pageTitle = 'Dashboard') => {
             <span class="text-xs font-bold text-slate-800 leading-tight">Pengelola Desa</span>
             <span class="text-[11px] font-medium text-slate-400">admin@tampirkulon.id</span>
           </div>
-          <button id="admin-header-logout-btn" type="button" title="Keluar dari Admin" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600 flex items-center justify-center transition-colors cursor-pointer ml-1">
-            <span class="material-symbols-outlined text-lg">logout</span>
-          </button>
         </div>
       </div>
     </header>
