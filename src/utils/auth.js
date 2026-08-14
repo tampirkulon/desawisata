@@ -72,7 +72,14 @@ export const auth = {
       });
 
       if (error) {
-        return { success: false, error: error.message };
+        let msg = error.message;
+        const lowerMsg = (msg || '').toLowerCase();
+        if (lowerMsg.includes('rate limit') || error.code === 'over_email_send_rate_limit') {
+          msg = 'Terlalu banyak permintaan pengiriman email dalam waktu singkat (Rate Limit). Harap tunggu beberapa menit sebelum mencoba mengirim tautan kembali demi keamanan.';
+        } else if (lowerMsg.includes('user not found')) {
+          msg = 'Email tidak terdaftar sebagai pengguna admin.';
+        }
+        return { success: false, error: msg };
       }
 
       return { success: true, message: 'Tautan reset password telah dikirim ke email Anda. Silakan periksa kotak masuk atau spam.' };
