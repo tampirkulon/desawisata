@@ -38,14 +38,14 @@ export const renderDestinasi = async (queryParams) => {
       ${renderNavbar()}
 
       <!-- Page Header -->
-      <section class="relative flex items-center justify-center overflow-hidden w-full bg-primary pt-20 px-6 text-center text-white" style="min-height: 391px;">
+      <section class="relative flex items-center justify-center overflow-hidden w-full bg-neutral-900 pt-20 px-6 text-center text-white min-h-[420px] md:min-h-[460px]">
         <div class="absolute inset-0 z-0">
-          <img alt="Tampirkulon Heritage" class="w-full h-full object-cover opacity-30" src="https://lh3.googleusercontent.com/aida/AP1WRLv0kmPyXlx735C-3FBTB_btvd6IOzpOfv8reV4yrmbXWSpYqTUCgFkZ_2PuSVRtioFNOUL_7vEfh9ykgRLvufo9vdRONN04mxuEumo797mDUt6r-DwXjhT8pZHuKBVfRgc3KcVFFHdy8NgyVVD17ZnV22HDZWY5H1at2jNZuOgrJ-kgBsda7pjf_0_rL9fYtVDavMg9G7Qv7iqE8gyLZpw9eZryb4JbvYGL_t-Hb1rDIcleP0-J6wiUfg" loading="lazy" decoding="async" />
-          <div class="absolute inset-0 bg-primary/60 backdrop-blur-[2px]"></div>
+          <img alt="Destinasi Desa Wisata Tampirkulon" class="w-full h-full object-cover brightness-95" style="object-position: center 70%;" src="/images/destinasi-header.jpg" loading="eager" decoding="async" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/45"></div>
         </div>
         <div class="relative z-10 max-w-container-max mx-auto px-4 text-center py-8">
-          <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Eksplorasi Destinasi Kami</h1>
-          <p class="font-body-md text-base md:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
+          <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">Eksplorasi Destinasi Kami</h1>
+          <p class="font-body-md text-base md:text-lg text-white/95 max-w-2xl mx-auto leading-relaxed drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]">
             Temukan keindahan alam yang tak tertandingi, kekayaan budaya yang otentik, dan pengalaman tak terlupakan di Desa Wisata Tampirkulon.
           </p>
         </div>
