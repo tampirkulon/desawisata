@@ -113,8 +113,11 @@ export const mockData = {
     { id: 'gal-2', judul: 'Pemandangan Terasering Sawah', url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80&fm=webp', tipe: 'foto', kategori: 'Alam' }
   ],
   testimoni: [
-    { id: 'test-1', nama: 'Budi Santoso', asal: 'Semarang', pesan: 'Durian Candimulyo di Tampirkulon luar biasa manis dan gurih!', rating: 5, is_shown: true },
-    { id: 'test-2', nama: 'Siti Rahmawati', asal: 'Yogyakarta', pesan: 'Sangat senang bisa menyusuri terasering sawah bersama keluarga.', rating: 5, is_shown: true }
+    { id: 'test-1', nama: 'Budi Santoso', asal: 'Semarang', pesan: 'Durian Candimulyo di Tampirkulon luar biasa manis dan legit! Pengalaman memetik langsung dari pohon sangat berkesan bagi keluarga.', rating: 5, is_shown: true },
+    { id: 'test-2', nama: 'Siti Rahmawati', asal: 'Yogyakarta', pesan: 'Sangat senang bisa menyusuri terasering sawah bersama anak-anak. Udaranya sejuk dan warga desanya sangat ramah menyambut kami.', rating: 5, is_shown: true },
+    { id: 'test-3', nama: 'Hendrawan Pratama', asal: 'Jakarta', pesan: 'Paket wisatanya sangat teratur dan lengkap. Masakan tradisional khas desa dan pertunjukan tari Dayakan membuat liburan sangat bermakna.', rating: 5, is_shown: true },
+    { id: 'test-4', nama: 'Dewi Lestari', asal: 'Surabaya', pesan: 'Tempat yang sangat tepat untuk refreshing dari hiruk pikuk kota. Suasana sawah hijau dan kopi desanya juara!', rating: 5, is_shown: true },
+    { id: 'test-5', nama: 'Rian Kurniawan', asal: 'Solo', pesan: 'Spot foto terasering sawah luar biasa estetik saat matahari terbit. Fasilitas homestay nyaman dan bersih.', rating: 5, is_shown: true }
   ],
   reservasi: [
     {
