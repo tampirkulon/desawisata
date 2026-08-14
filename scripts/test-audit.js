@@ -193,6 +193,7 @@ const csvOutput = exportDashboardReport(stats, 'Bulan Ini');
 assert(csvOutput.includes('LAPORAN RINGKASAN DASHBOARD DESA WISATA TAMPIRKULON'), 'exportDashboardReport outputs header title');
 assert(csvOutput.includes('METRIK UTAMA'), 'exportDashboardReport outputs metrics header');
 assert(csvOutput.includes('DAFTAR RESERVASI'), 'exportDashboardReport outputs reservations table header');
+assert(csvOutput.includes('"Email"'), 'exportDashboardReport includes Email column header');
 
 console.log('\n==============================================');
 console.log(`TOTAL TESTS: ${passed + failed} | PASSED: ${passed} | FAILED: ${failed}`);

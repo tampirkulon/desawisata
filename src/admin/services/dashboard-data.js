@@ -136,9 +136,9 @@ export const exportDashboardReport = (stats, periodLabel) => {
     `"Total Destinasi Aktif", "${stats.totalDestinasi}"`,
     ``,
     `"DAFTAR RESERVASI (${periodLabel.toUpperCase()})"`,
-    `"ID", "Tamu", "Telepon", "Paket Wisata", "Tanggal", "Jumlah Pax", "Status"`,
+    `"ID", "Tamu", "Email", "Telepon", "Paket Wisata", "Tanggal Kunjungan", "Jumlah Pax", "Status"`,
     ...reservationList.map(r =>
-      `"${r.displayId || r.rawId || ''}", "${(r.nama_pemesan || '').replace(/"/g, '""')}", "${(r.telepon || '').replace(/"/g, '""')}", "${(r.paket || '').replace(/"/g, '""')}", "${r.tanggal || ''}", "${r.jumlah_orang || 1}", "${(r.status || '').toUpperCase()}"`
+      `"${r.displayId || r.rawId || ''}", "${(r.nama_pemesan || '').replace(/"/g, '""')}", "${(r.email || '').replace(/"/g, '""')}", "${(r.telepon || '').replace(/"/g, '""')}", "${(r.paket || '').replace(/"/g, '""')}", "${r.tanggal || ''}", "${r.jumlah_orang || 1}", "${(r.status || '').toUpperCase()}"`
     ),
   ];
 
@@ -235,6 +235,7 @@ export const printDashboardReport = (stats, periodLabel) => {
           <tr>
             <th>No / ID</th>
             <th>Nama Tamu</th>
+            <th>Email</th>
             <th>Telepon</th>
             <th>Paket Wisata</th>
             <th>Tanggal Kunjungan</th>
@@ -243,10 +244,11 @@ export const printDashboardReport = (stats, periodLabel) => {
           </tr>
         </thead>
         <tbody>
-          ${reservationList.length === 0 ? '<tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 20px;">Tidak ada data reservasi pada periode ini.</td></tr>' : reservationList.map((r, i) => `
+          ${reservationList.length === 0 ? '<tr><td colspan="8" style="text-align: center; color: #94a3b8; padding: 20px;">Tidak ada data reservasi pada periode ini.</td></tr>' : reservationList.map((r, i) => `
             <tr>
               <td>${r.displayId || `#RES-${i+1}`}</td>
               <td><strong>${r.nama_pemesan || 'Tamu'}</strong></td>
+              <td>${r.email || '-'}</td>
               <td>${r.telepon || '-'}</td>
               <td>${r.paket || 'Kunjungan Mandiri'}</td>
               <td>${r.tanggal || '-'}</td>
@@ -322,6 +324,7 @@ const _fetchFromMock = (stats, startDate, endDate) => {
       rawId: r.id,
       displayId: `#RES-${String(i + 1).padStart(3, '0')}`,
       nama_pemesan: r.nama || r.nama_pemesan || 'Tamu',
+      email: r.email || '',
       telepon: r.telepon || '',
       paket: pkt ? pkt.nama : 'Kunjungan Mandiri',
       tanggal: r.tanggal_kunjungan,
@@ -499,6 +502,7 @@ const _fetchFromSupabase = async (stats, startDate, endDate) => {
       rawId: r.id,
       displayId: `#RES-${String(i + 1).padStart(3, '0')}`,
       nama_pemesan: r.nama || 'Tamu',
+      email: r.email || '',
       telepon: r.telepon || '',
       paket: r.paket_wisata?.nama || 'Kunjungan Mandiri',
       tanggal: r.tanggal_kunjungan
