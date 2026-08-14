@@ -116,6 +116,7 @@ export const renderAdminOverview = async () => {
     const { label: periodLabel } = getDateRange(selectedPeriod);
     const periodButtons = ['hari', 'minggu', 'bulan', 'tahun', 'semua'];
     const periodLabels = { hari: 'Hari Ini', minggu: '7 Hari', bulan: 'Bulan Ini', tahun: 'Tahun Ini', semua: 'Semua' };
+    console.log(selectedPeriod);
 
     viewContent.innerHTML = `
       <!-- Page Header & Global Period Filter -->
@@ -498,17 +499,23 @@ export const renderAdminOverview = async () => {
     const periodButtons = viewContent.querySelectorAll('.global-period-btn');
 
     periodButtons.forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const { period } = e.currentTarget.dataset;
+  btn.addEventListener('click', async (e) => {
+    const { period } = e.currentTarget.dataset;
 
-        if (period === selectedPeriod) return;
+    if (period === selectedPeriod) return;
 
-        selectedPeriod = period;
+    selectedPeriod = period;
 
-        // Instant UI feedback: Highlight active button immediately
-        updatePeriodButtonStyles(periodButtons, selectedPeriod);
-      });
-    });
+    // Optional: langsung ubah warna tombol
+    updatePeriodButtonStyles(periodButtons, selectedPeriod);
+
+    // Ambil data sesuai periode baru
+    await loadData();
+
+    // Render ulang dashboard
+    renderDashboardContent();
+  });
+});
 
 
     // --- EXPORT REPORT BUTTON ---
