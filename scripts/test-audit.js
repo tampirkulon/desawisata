@@ -135,6 +135,16 @@ assert(resShort.success === false, 'resetPassword rejects password shorter than 
 const resValidPwd = await auth.resetPassword('securePassword123');
 assert(resValidPwd.success === true, 'resetPassword accepts valid password');
 
+// Logout execution
+let logoutRan = false;
+try {
+  await auth.logout();
+  logoutRan = true;
+} catch (e) {
+  logoutRan = false;
+}
+assert(logoutRan === true, 'auth.logout executes safely without throwing unhandled exceptions');
+
 console.log('\n==============================================');
 console.log(`TOTAL TESTS: ${passed + failed} | PASSED: ${passed} | FAILED: ${failed}`);
 if (failed > 0) {

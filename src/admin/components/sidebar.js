@@ -84,12 +84,26 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
 
 export const renderSidebar = renderAdminSidebar;
 
-export const initAdminSidebarEvents = () => {
-  const logoutBtn = document.getElementById('admin-logout-btn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+export const initAdminSidebarEvents = (container = document) => {
+  const root = container || document;
+  const logoutBtn = root.querySelector ? root.querySelector('#admin-logout-btn') : document.getElementById('admin-logout-btn');
+  if (logoutBtn && !logoutBtn.dataset.bound) {
+    logoutBtn.dataset.bound = 'true';
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       auth.logout();
     });
   }
 };
+
+// Global delegated event listener for sidebar logout button
+if (typeof document !== 'undefined') {
+  document.addEventListener('click', (e) => {
+    const logoutBtn = e.target.closest('#admin-logout-btn');
+    if (logoutBtn) {
+      e.preventDefault();
+      auth.logout();
+    }
+  });
+}
 

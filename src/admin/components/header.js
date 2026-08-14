@@ -1,5 +1,6 @@
 import { openAdminSearchModal, initGlobalSearchShortcut } from './search-modal.js';
 import { toggleNotificationPopover, fetchNotificationData, updateHeaderNotifBadge } from './notification-popover.js';
+import { auth } from '../../utils/auth.js';
 
 export const renderAdminHeader = (pageTitle = 'Dashboard') => {
   setTimeout(async () => {
@@ -20,6 +21,16 @@ export const renderAdminHeader = (pageTitle = 'Dashboard') => {
       notifBtn.addEventListener('click', (e) => {
         e.preventDefault();
         toggleNotificationPopover();
+      });
+    }
+
+    // Bind header logout button
+    const headerLogoutBtn = document.getElementById('admin-header-logout-btn');
+    if (headerLogoutBtn && !headerLogoutBtn.dataset.bound) {
+      headerLogoutBtn.dataset.bound = 'true';
+      headerLogoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        auth.logout();
       });
     }
 
@@ -53,7 +64,7 @@ export const renderAdminHeader = (pageTitle = 'Dashboard') => {
           </button>
         </div>
 
-        <!-- User Profile Card -->
+        <!-- User Profile Card & Quick Logout -->
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-full bg-[#316342] text-white flex items-center justify-center font-bold text-sm shadow-md ring-2 ring-emerald-100">
             P
@@ -62,6 +73,9 @@ export const renderAdminHeader = (pageTitle = 'Dashboard') => {
             <span class="text-xs font-bold text-slate-800 leading-tight">Pengelola Desa</span>
             <span class="text-[11px] font-medium text-slate-400">admin@tampirkulon.id</span>
           </div>
+          <button id="admin-header-logout-btn" type="button" title="Keluar dari Admin" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600 flex items-center justify-center transition-colors cursor-pointer ml-1">
+            <span class="material-symbols-outlined text-lg">logout</span>
+          </button>
         </div>
       </div>
     </header>
