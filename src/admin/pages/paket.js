@@ -103,15 +103,15 @@ export const renderAdminPaket = async () => {
 
     container.querySelectorAll('.action-edit').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
-        const item = paketList.find(p => p.id === id);
+        const id = e.currentTarget.dataset.id;
+        const item = paketList.find(p => String(p.id) === String(id));
         if (item) openFormModal(item);
       });
     });
 
     container.querySelectorAll('.action-delete').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
+        const id = e.currentTarget.dataset.id;
         openConfirmModal({
           message: 'Apakah Anda yakin ingin menghapus paket wisata ini?',
           onConfirm: async () => {
@@ -121,6 +121,10 @@ export const renderAdminPaket = async () => {
                 showToast('Gagal menghapus paket: ' + error.message, 'error');
                 return;
               }
+            } else {
+              paketList = paketList.filter(p => String(p.id) !== String(id));
+              const idx = mockData.paket_wisata.findIndex(p => String(p.id) === String(id));
+              if (idx !== -1) mockData.paket_wisata.splice(idx, 1);
             }
             showToast('Paket berhasil dihapus.', 'success');
             await loadData();

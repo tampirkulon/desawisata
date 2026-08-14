@@ -99,15 +99,15 @@ export const renderAdminArtikel = async () => {
 
     container.querySelectorAll('.action-edit').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
-        const item = artikelList.find(a => a.id === id);
+        const id = e.currentTarget.dataset.id;
+        const item = artikelList.find(a => String(a.id) === String(id));
         if (item) openFormModal(item);
       });
     });
 
     container.querySelectorAll('.action-delete').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
+        const id = e.currentTarget.dataset.id;
         openConfirmModal({
           message: 'Apakah Anda yakin ingin menghapus artikel ini?',
           onConfirm: async () => {
@@ -117,6 +117,10 @@ export const renderAdminArtikel = async () => {
                 showToast('Gagal menghapus artikel: ' + error.message, 'error');
                 return;
               }
+            } else {
+              artikelList = artikelList.filter(a => String(a.id) !== String(id));
+              const idx = mockData.artikel.findIndex(a => String(a.id) === String(id));
+              if (idx !== -1) mockData.artikel.splice(idx, 1);
             }
             showToast('Artikel berhasil dihapus.', 'success');
             await loadData();

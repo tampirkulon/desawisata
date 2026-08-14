@@ -91,7 +91,7 @@ export const renderAdminReservasi = async () => {
 
     container.querySelectorAll('.filter-rsv-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        activeFilter = e.currentTarget.dataset('data-status');
+        activeFilter = e.currentTarget.dataset.status;
         renderPage();
       });
     });

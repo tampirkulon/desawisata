@@ -100,16 +100,16 @@ export const renderAdminKategori = async () => {
 
     container.querySelectorAll('.action-edit').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
-        const item = kategoriList.find(k => k.id === id);
+        const id = e.currentTarget.dataset.id;
+        const item = kategoriList.find(k => String(k.id) === String(id));
         if (item) openFormModal(item);
       });
     });
 
     container.querySelectorAll('.action-delete').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
-        const count = destinasiList.filter(d => d.kategori_id === id).length;
+        const id = e.currentTarget.dataset.id;
+        const count = destinasiList.filter(d => String(d.kategori_id) === String(id)).length;
 
         if (count > 0) {
           showToast(`Gagal hapus: Kategori masih digunakan oleh ${count} destinasi.`, 'error');
@@ -125,6 +125,10 @@ export const renderAdminKategori = async () => {
                 showToast('Gagal menghapus kategori: ' + error.message, 'error');
                 return;
               }
+            } else {
+              kategoriList = kategoriList.filter(k => String(k.id) !== String(id));
+              const idx = mockData.kategori_wisata.findIndex(k => String(k.id) === String(id));
+              if (idx !== -1) mockData.kategori_wisata.splice(idx, 1);
             }
             showToast('Kategori berhasil dihapus.', 'success');
             await loadData();

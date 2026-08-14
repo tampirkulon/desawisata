@@ -235,7 +235,7 @@ export const renderAdminUlasan = async () => {
 
     container.querySelectorAll('.filter-ulasan-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        activeFilter = e.currentTarget.dataset('data-filter');
+        activeFilter = e.currentTarget.dataset.filter;
         renderPage();
       });
     });
@@ -303,7 +303,7 @@ export const renderAdminUlasan = async () => {
 
     container.querySelectorAll('.action-detail-ulasan').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
+        const id = e.currentTarget.dataset.id;
         const item = ulasanList.find(u => String(u.id) === String(id));
         if (item) openDetailModal(item);
       });

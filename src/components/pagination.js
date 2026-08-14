@@ -72,7 +72,7 @@ export const renderPagination = ({ totalItems, itemsPerPage, currentPage, labelI
 export const initPaginationEvents = (container, { onPageChange }) => {
   container.querySelectorAll('.pagination-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const page = Number.parseInt(e.currentTarget.dataset('data-page'), 10);
+      const page = Number.parseInt(e.currentTarget.dataset.page, 10);
       if (!Number.isNaN(page) && onPageChange) {
         onPageChange(page);
       }

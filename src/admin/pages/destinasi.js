@@ -112,20 +112,28 @@ export const renderAdminDestinasi = async () => {
 
     container.querySelectorAll('.action-edit').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
-        const item = destinasiList.find(d => d.id === id);
+        const id = e.currentTarget.dataset.id;
+        const item = destinasiList.find(d => String(d.id) === String(id));
         if (item) openFormModal(item);
       });
     });
 
     container.querySelectorAll('.action-delete').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
+        const id = e.currentTarget.dataset.id;
         openConfirmModal({
           message: 'Apakah Anda yakin ingin menghapus destinasi wisata ini?',
           onConfirm: async () => {
-            if (isSupabaseConfigured()) {
-              await supabase.from('destinasi').delete().eq('id', id);
+            if (isSupabaseConfigured() && supabase) {
+              const { error } = await supabase.from('destinasi').delete().eq('id', id);
+              if (error) {
+                showToast('Gagal menghapus destinasi: ' + error.message, 'error');
+                return;
+              }
+            } else {
+              destinasiList = destinasiList.filter(d => String(d.id) !== String(id));
+              const idx = mockData.destinasi.findIndex(d => String(d.id) === String(id));
+              if (idx !== -1) mockData.destinasi.splice(idx, 1);
             }
             showToast('Destinasi berhasil dihapus.', 'success');
             await loadData();
@@ -137,13 +145,13 @@ export const renderAdminDestinasi = async () => {
 
     container.querySelectorAll('[data-action="toggle"]').forEach(badge => {
       badge.addEventListener('click', async (e) => {
-        const id = e.currentTarget.dataset('data-id');
+        const id = e.currentTarget.dataset.id;
         const item = destinasiList.find(d => String(d.id) === String(id));
         if (!item) return;
 
         const newStatus = !item.is_published;
 
-        if (isSupabaseConfigured()) {
+        if (isSupabaseConfigured() && supabase) {
           await supabase.from('destinasi').update({ is_published: newStatus }).eq('id', id);
         } else {
           item.is_published = newStatus;

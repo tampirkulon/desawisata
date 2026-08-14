@@ -350,8 +350,8 @@ export const renderBeranda = async () => {
     // Destination card clicks
     container.querySelectorAll('.beranda-destinasi-card').forEach(card => {
       card.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
-        const item = destinasi.find(d => d.id === id);
+        const id = e.currentTarget.dataset.id;
+        const item = destinasi.find(d => String(d.id) === String(id));
         if (item) openDestinasiModal(item);
       });
     });
@@ -380,7 +380,7 @@ export const renderBeranda = async () => {
       if (dotsContainer) {
         dotsContainer.querySelectorAll('.testimonial-dot').forEach(dot => {
           dot.addEventListener('click', (e) => {
-            const idx = Number.parseInt(e.currentTarget.dataset('data-index'), 10) || 0;
+            const idx = Number.parseInt(e.currentTarget.dataset.index, 10) || 0;
             const targetCard = track.querySelector(`.testimonial-slide-card[data-index="${idx}"]`);
             if (targetCard) {
               targetCard.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });

@@ -113,7 +113,7 @@ export const renderDestinasi = async (queryParams) => {
 
     container.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        activeCategory = e.currentTarget.dataset('data-cat');
+        activeCategory = e.currentTarget.dataset.cat;
         container.innerHTML = renderContent();
         bindEvents();
       });
@@ -121,8 +121,8 @@ export const renderDestinasi = async (queryParams) => {
 
     container.querySelectorAll('.destinasi-card-item').forEach(card => {
       card.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
-        const item = destinasiList.find(d => d.id === id);
+        const id = e.currentTarget.dataset.id;
+        const item = destinasiList.find(d => String(d.id) === String(id));
         if (item) openDestinasiModal(item);
       });
     });

@@ -524,7 +524,7 @@ export const renderAdminOverview = async () => {
     // --- Quick Confirm Reservasi ---
     viewContent.querySelectorAll('.quick-confirm-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const rawId = e.currentTarget.dataset('data-id');
+        const rawId = e.currentTarget.dataset.id;
         btn.disabled = true;
         btn.innerText = 'Updating...';
 
@@ -667,7 +667,7 @@ export const renderAdminOverview = async () => {
     // --- Testimonial Moderation ---
     viewContent.querySelectorAll('.approve-test-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const id = e.currentTarget.dataset('data-id');
+        const id = e.currentTarget.dataset.id;
         btn.disabled = true;
         btn.innerText = 'Menyetujui...';
 
@@ -679,7 +679,7 @@ export const renderAdminOverview = async () => {
             showToast('Gagal menyetujui ulasan: ' + err.message, 'error');
           }
         } else {
-          const item = mockData.testimoni.find(t => t.id === id);
+          const item = mockData.testimoni.find(t => String(t.id) === String(id));
           if (item) item.is_shown = true;
           showToast('Ulasan disetujui (Demo mode)!', 'success');
         }
@@ -691,7 +691,7 @@ export const renderAdminOverview = async () => {
 
     viewContent.querySelectorAll('.reject-test-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const id = e.currentTarget.dataset('data-id');
+        const id = e.currentTarget.dataset.id;
         btn.disabled = true;
 
         if (isSupabaseConfigured() && supabase) {
@@ -702,7 +702,7 @@ export const renderAdminOverview = async () => {
             showToast('Gagal menghapus ulasan: ' + err.message, 'error');
           }
         } else {
-          const idx = mockData.testimoni.findIndex(t => t.id === id);
+          const idx = mockData.testimoni.findIndex(t => String(t.id) === String(id));
           if (idx !== -1) mockData.testimoni.splice(idx, 1);
           showToast('Ulasan dihapus (Demo mode).', 'info');
         }

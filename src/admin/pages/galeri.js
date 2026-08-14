@@ -213,15 +213,15 @@ export const renderAdminGaleri = async () => {
 
     container.querySelectorAll('.action-edit-gal').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
-        const item = galeriList.find(g => g.id === id);
+        const id = e.currentTarget.dataset.id;
+        const item = galeriList.find(g => String(g.id) === String(id));
         if (item) openUploadModal(item);
       });
     });
 
     container.querySelectorAll('.action-del-gal').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
+        const id = e.currentTarget.dataset.id;
         openConfirmModal({
           message: 'Apakah Anda yakin ingin menghapus media ini dari galeri?',
           onConfirm: async () => {
@@ -231,6 +231,10 @@ export const renderAdminGaleri = async () => {
                 showToast('Gagal menghapus media: ' + error.message, 'error');
                 return;
               }
+            } else {
+              galeriList = galeriList.filter(g => String(g.id) !== String(id));
+              const idx = mockData.galeri.findIndex(g => String(g.id) === String(id));
+              if (idx !== -1) mockData.galeri.splice(idx, 1);
             }
             showToast('Media berhasil dihapus.', 'success');
             await loadData();

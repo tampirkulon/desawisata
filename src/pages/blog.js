@@ -126,8 +126,8 @@ export const renderBlog = async () => {
 
     container.querySelectorAll('.read-article-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset('data-id');
-        const art = artikelList.find(a => a.id === id);
+        const id = e.currentTarget.dataset.id;
+        const art = artikelList.find(a => String(a.id) === String(id));
         if (art) openArticleModal(art);
       });
     });
