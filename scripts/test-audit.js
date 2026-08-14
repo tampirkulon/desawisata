@@ -165,6 +165,36 @@ const r4 = router._extractRouteAndParams('#error=access_denied&error_code=otp_ex
 assert(r4.path === '#/admin/reset-password', 'Router intercepts Supabase auth error URLs and routes to reset password');
 assert(r4.queryParams.get('error_code') === 'otp_expired', 'Router parses error_code from error URL');
 
+// Test Suite 7: Dashboard Services & Export Formatting
+console.log('\n📊 Suite 7: Dashboard Services & Export Formatting');
+import { getDateRange, fetchDashboardStats, exportDashboardReport } from '../src/admin/services/dashboard-data.js';
+
+// Date ranges
+const rangeHari = getDateRange('hari');
+assert(rangeHari.startDate === rangeHari.endDate, 'getDateRange("hari") returns same start and end date');
+assert(rangeHari.label === 'Hari Ini', 'getDateRange("hari") returns correct label');
+
+const rangeBulan = getDateRange('bulan');
+assert(Boolean(rangeBulan.startDate), 'getDateRange("bulan") returns non-empty start date');
+assert(rangeBulan.startDate.endsWith('-01'), 'getDateRange("bulan") starts on first day of month');
+
+const rangeSemua = getDateRange('semua');
+assert(rangeSemua.startDate === null, 'getDateRange("semua") returns null startDate');
+
+// Dashboard data fetch
+const stats = await fetchDashboardStats(rangeBulan.startDate, rangeBulan.endDate, 'bulan');
+assert(typeof stats.reservasiSelesai === 'number', 'fetchDashboardStats returns numeric reservasiSelesai');
+assert(Array.isArray(stats.allReservations), 'fetchDashboardStats includes allReservations array');
+assert(Array.isArray(stats.recentReservations), 'fetchDashboardStats includes recentReservations array');
+assert(stats.recentReservations.length <= 5, 'recentReservations is capped at max 5 items');
+
+// Export CSV formatting
+const csvOutput = exportDashboardReport(stats, 'Bulan Ini');
+assert(csvOutput.includes('LAPORAN RINGKASAN DASHBOARD DESA WISATA TAMPIRKULON'), 'exportDashboardReport outputs header title');
+assert(csvOutput.includes('METRIK UTAMA'), 'exportDashboardReport outputs metrics header');
+assert(csvOutput.includes('DAFTAR RESERVASI'), 'exportDashboardReport outputs reservations table header');
+assert(csvOutput.includes('"Email"'), 'exportDashboardReport includes Email column header');
+
 console.log('\n==============================================');
 console.log(`TOTAL TESTS: ${passed + failed} | PASSED: ${passed} | FAILED: ${failed}`);
 if (failed > 0) {

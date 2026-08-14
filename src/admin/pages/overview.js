@@ -4,7 +4,7 @@ import { renderAdminHeader } from '../components/header.js';
 import { showToast } from '../../components/toast.js';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 import { mockData } from '../../data/seed.js';
-import { getDateRange, fetchDashboardStats, exportDashboardReport } from '../services/dashboard-data.js';
+import { getDateRange, fetchDashboardStats, exportDashboardReport, printDashboardReport } from '../services/dashboard-data.js';
 
 
 
@@ -138,10 +138,17 @@ export const renderAdminOverview = async () => {
             `).join('')}
           </div>
 
-          <button id="export-report-btn" class="px-4 py-2 rounded-full bg-[#316342] hover:bg-[#254d33] text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm">
-            <span class="material-symbols-outlined text-sm">download</span>
-            Ekspor Laporan
-          </button>
+          <!-- Export & Print Actions -->
+          <div class="flex items-center gap-2">
+            <button id="export-report-btn" class="px-4 py-2 rounded-full bg-[#316342] hover:bg-[#254d33] text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer" title="Unduh data laporan dalam format CSV / Excel">
+              <span class="material-symbols-outlined text-sm">download</span>
+              <span>Ekspor CSV</span>
+            </button>
+            <button id="print-report-btn" class="px-4 py-2 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer" title="Cetak laporan atau simpan sebagai PDF">
+              <span class="material-symbols-outlined text-sm">print</span>
+              <span>Cetak / PDF</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -506,6 +513,7 @@ export const renderAdminOverview = async () => {
 
     selectedPeriod = period;
 
+<<<<<<< HEAD
     // Optional: langsung ubah warna tombol
     updatePeriodButtonStyles(periodButtons, selectedPeriod);
 
@@ -516,15 +524,33 @@ export const renderAdminOverview = async () => {
     renderDashboardContent();
   });
 });
+=======
+        // Visual loading feedback
+        btn.innerHTML = '<span class="material-symbols-outlined text-xs animate-spin">sync</span> Memuat...';
+        btn.disabled = true;
 
+        await loadData();
+        renderDashboardContent();
+      });
+    });
+>>>>>>> 0a23e05c60fdd99c9d6e4ed1611b8a465224a38c
 
-    // --- EXPORT REPORT BUTTON ---
+    // --- EXPORT REPORT BUTTON (CSV) ---
     const exportBtn = viewContent.querySelector('#export-report-btn');
     if (exportBtn) {
       exportBtn.addEventListener('click', () => {
         const periodLabels = { hari: 'Hari Ini', minggu: '7 Hari Terakhir', bulan: 'Bulan Ini', tahun: 'Tahun Ini', semua: 'Semua Waktu' };
         exportDashboardReport(dashboardData, periodLabels[selectedPeriod] || selectedPeriod);
-        showToast('Laporan ringkasan dashboard berhasil diunduh!', 'success');
+        showToast('Laporan CSV dashboard berhasil diunduh!', 'success');
+      });
+    }
+
+    // --- PRINT REPORT BUTTON (PDF / PRINT VIEW) ---
+    const printBtn = viewContent.querySelector('#print-report-btn');
+    if (printBtn) {
+      printBtn.addEventListener('click', () => {
+        const periodLabels = { hari: 'Hari Ini', minggu: '7 Hari Terakhir', bulan: 'Bulan Ini', tahun: 'Tahun Ini', semua: 'Semua Waktu' };
+        printDashboardReport(dashboardData, periodLabels[selectedPeriod] || selectedPeriod);
       });
     }
 

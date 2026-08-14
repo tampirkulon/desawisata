@@ -16,8 +16,23 @@ export const renderBeranda = async () => {
       const { data: destData } = await supabase.from('destinasi').select('*').eq('is_published', true).eq('is_unggulan', true).limit(3);
       if (destData && destData.length > 0) destinasi = destData;
 
-      const { data: testData } = await supabase.from('testimoni').select('*').eq('is_shown', true).limit(6);
-      if (testData && testData.length > 0) testimoniList = testData;
+      const { data: testData } = await supabase
+        .from('testimoni')
+        .select('*')
+        .eq('is_shown', true)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (testData && testData.length > 0) {
+        if (testData.length >= 3) {
+          testimoniList = testData;
+        } else {
+          // Combine approved online testimonials with seed fallback to guarantee a smooth slider experience
+          const existingIds = new Set(testData.map(t => t.id));
+          const supplementary = mockData.testimoni.filter(m => !existingIds.has(m.id));
+          testimoniList = [...testData, ...supplementary].slice(0, 6);
+        }
+      }
     } catch (e) {
       console.warn('Fallback seed:', e);
     }
@@ -376,13 +391,25 @@ const bindDestinasiCards = () => {
         return firstCard ? firstCard.offsetWidth + 24 : 360;
       };
 
-      prevBtn.addEventListener('click', () => {
-        track.scrollBy({ left: -getCardStep(), behavior: 'smooth' });
-      });
+      const scrollNext = () => {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        if (track.scrollLeft >= maxScroll - 16) {
+          track.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          track.scrollBy({ left: getCardStep(), behavior: 'smooth' });
+        }
+      };
 
-      nextBtn.addEventListener('click', () => {
-        track.scrollBy({ left: getCardStep(), behavior: 'smooth' });
-      });
+      const scrollPrev = () => {
+        if (track.scrollLeft <= 16) {
+          track.scrollTo({ left: track.scrollWidth, behavior: 'smooth' });
+        } else {
+          track.scrollBy({ left: -getCardStep(), behavior: 'smooth' });
+        }
+      };
+
+      nextBtn.addEventListener('click', scrollNext);
+      prevBtn.addEventListener('click', scrollPrev);
 
       // Dot click navigation
       if (dotsContainer) {
@@ -397,24 +424,47 @@ const bindDestinasiCards = () => {
         });
       }
 
+      // Auto Slide timer
+      let autoSlideTimer = null;
+      const startAutoSlide = () => {
+        if (testimoniList.length > 1) {
+          stopAutoSlide();
+          autoSlideTimer = setInterval(() => {
+            scrollNext();
+          }, 5000);
+        }
+      };
+
+      const stopAutoSlide = () => {
+        if (autoSlideTimer) {
+          clearInterval(autoSlideTimer);
+          autoSlideTimer = null;
+        }
+      };
+
+      track.addEventListener('mouseenter', stopAutoSlide);
+      track.addEventListener('mouseleave', startAutoSlide);
+      track.addEventListener('touchstart', stopAutoSlide, { passive: true });
+      track.addEventListener('touchend', startAutoSlide, { passive: true });
+
       // Sync active state on scroll
       const updateSliderUI = () => {
-        const scrollLeft = track.scrollLeft;
         const maxScroll = track.scrollWidth - track.clientWidth;
+        const hasOverflow = maxScroll > 10;
 
-        prevBtn.disabled = scrollLeft <= 8;
-        prevBtn.classList.toggle('opacity-30', scrollLeft <= 8);
-        prevBtn.classList.toggle('pointer-events-none', scrollLeft <= 8);
-
-        nextBtn.disabled = scrollLeft >= maxScroll - 8;
-        nextBtn.classList.toggle('opacity-30', scrollLeft >= maxScroll - 8);
-        nextBtn.classList.toggle('pointer-events-none', scrollLeft >= maxScroll - 8);
+        if (!hasOverflow) {
+          prevBtn.classList.add('opacity-40', 'cursor-not-allowed');
+          nextBtn.classList.add('opacity-40', 'cursor-not-allowed');
+        } else {
+          prevBtn.classList.remove('opacity-40', 'cursor-not-allowed', 'pointer-events-none');
+          nextBtn.classList.remove('opacity-40', 'cursor-not-allowed', 'pointer-events-none');
+        }
 
         if (dotsContainer) {
-          const step = getCardStep();
+          const step = getCardStep() || 1;
           const activeIndex = Math.min(
             testimoniList.length - 1,
-            Math.max(0, Math.round(scrollLeft / step))
+            Math.max(0, Math.round(track.scrollLeft / step))
           );
 
           dotsContainer.querySelectorAll('.testimonial-dot').forEach((dot, idx) => {
@@ -427,7 +477,13 @@ const bindDestinasiCards = () => {
       };
 
       track.addEventListener('scroll', updateSliderUI, { passive: true });
-      updateSliderUI();
+      window.addEventListener('resize', updateSliderUI, { passive: true });
+
+      // Execute initial measurement safely across render frames
+      requestAnimationFrame(updateSliderUI);
+      setTimeout(updateSliderUI, 100);
+      setTimeout(updateSliderUI, 500);
+      startAutoSlide();
     }
   }, 0);
 
