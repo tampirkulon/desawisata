@@ -38,8 +38,8 @@ export const renderAdminReservasi = async () => {
   container.className = 'dashboard-wrapper donezo-bg';
 
   const renderPage = () => {
-    const filteredReservasi = activeFilter === 'all' 
-      ? reservasiList 
+    const filteredReservasi = activeFilter === 'all'
+      ? reservasiList
       : reservasiList.filter(r => r.status === activeFilter);
 
     container.innerHTML = `
@@ -67,16 +67,16 @@ export const renderAdminReservasi = async () => {
 
           <div class="donezo-card p-6">
             ${renderDataTable({
-              columns: [
-                { label: 'Pemesan' },
-              { label: 'Tanggal Kunjungan' },
-              { label: 'Jumlah Orang' },
-              { label: 'Paket / Jenis' },
-              { label: 'Status' }
-            ],
-            data: filteredReservasi,
-            searchPlaceholder: 'Cari nama pemesan / email...'
-          })}
+      columns: [
+        { label: 'Pemesan' },
+        { label: 'Tanggal Kunjungan' },
+        { label: 'Jumlah Orang' },
+        { label: 'Paket / Jenis' },
+        { label: 'Status' }
+      ],
+      data: filteredReservasi,
+      searchPlaceholder: 'Cari nama pemesan / email...'
+    })}
           </div>
         </div>
       </main>
@@ -85,23 +85,34 @@ export const renderAdminReservasi = async () => {
     bindEvents(filteredReservasi);
   };
 
+  const handleFilterClick = (e) => {
+    activeFilter = e.currentTarget.dataset.status;
+    renderPage();
+  };
+
+  const handleDetailClick = (e) => {
+    const id = e.currentTarget.dataset.id;
+    const item = reservasiList.find(r => String(r.id) === String(id));
+
+    if (item) {
+      openDetailModal(item);
+    }
+  };
+
   const bindEvents = (dataToRender) => {
     initAdminSidebarEvents();
     initTableSearch(container);
 
     container.querySelectorAll('.filter-rsv-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        activeFilter = e.currentTarget.dataset.status;
-        renderPage();
-      });
-    });
+  btn.addEventListener('click', handleFilterClick);
+});
 
     const tbody = container.querySelector('#table-body-element');
     if (tbody && dataToRender.length > 0) {
       tbody.innerHTML = dataToRender.map(item => {
         const pkt = paketList.find(p => p.id === item.paket_id);
         const badgeClass = item.status === 'baru' ? 'badge-primary' : item.status === 'dikonfirmasi' ? 'badge-warning' : item.status === 'selesai' ? 'badge-success' : 'badge-danger';
-        
+
         return `
           <tr>
             <td>
@@ -121,12 +132,7 @@ export const renderAdminReservasi = async () => {
     }
 
     container.querySelectorAll('.action-detail-rsv').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-   
-    const id = e.currentTarget.dataset.id;
-    const item = reservasiList.find(r => String(r.id) === String(id));
-    if (item) openDetailModal(item);
-  });
+  btn.addEventListener('click', handleDetailClick);
 });
   };
 
@@ -139,7 +145,7 @@ export const renderAdminReservasi = async () => {
           <h4 style="margin-bottom: 8px; font-size: 1.1rem;">Detail Pemesan</h4>
           <p><strong>Nama:</strong> ${item.nama}</p>
           <p><strong>Email:</strong> ${item.email}</p>
-          <p><strong>Telepon / WA:</strong> <a href="https://wa.me/${item.telepon?.replace(/[^0-9]/g,'')}" target="_blank" style="color: var(--primary); font-weight: 600;">${item.telepon} (Chat WA)</a></p>
+          <p><strong>Telepon / WA:</strong> <a href="https://wa.me/${item.telepon?.replace(/[^0-9]/g, '')}" target="_blank" style="color: var(--primary); font-weight: 600;">${item.telepon} (Chat WA)</a></p>
         </div>
 
         <div style="background: var(--neutral-50); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--neutral-200);">

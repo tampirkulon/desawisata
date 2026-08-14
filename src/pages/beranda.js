@@ -339,6 +339,21 @@ export const renderBeranda = async () => {
     ${renderFooter(profil)}
   `;
 
+  const handleDestinasiClick = (e) => {
+  const id = e.currentTarget.dataset.id;
+  const item = destinasi.find(d => String(d.id) === String(id));
+
+  if (item) {
+    openDestinasiModal(item);
+  }
+};
+
+const bindDestinasiCards = () => {
+  container.querySelectorAll('.beranda-destinasi-card').forEach(card => {
+    card.addEventListener('click', handleDestinasiClick);
+  });
+};
+
   setTimeout(() => {
     initNavbarEvents();
 
@@ -347,14 +362,7 @@ export const renderBeranda = async () => {
       openTestimoniModal();
     });
 
-    // Destination card clicks
-    container.querySelectorAll('.beranda-destinasi-card').forEach(card => {
-      card.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset.id;
-        const item = destinasi.find(d => String(d.id) === String(id));
-        if (item) openDestinasiModal(item);
-      });
-    });
+    bindDestinasiCards();
 
     // Testimonial Slider Carousel Logic
     const track = container.querySelector('#testimonial-slider-track');
