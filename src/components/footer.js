@@ -1,21 +1,16 @@
 import { IconInstagram, IconYouTube, IconWhatsApp } from './icons.js';
 import { getProfilDesaSync } from '../utils/profile-store.js';
+import { t, getLanguage, getLocalizedField } from '../utils/i18n.js';
 
-// All available quick links
-const ALL_QUICK_LINKS = [
-  { key: 'beranda', hash: '#/', label: 'Beranda' },
-  { key: 'destinasi', hash: '#/destinasi', label: 'Destinasi Wisata' },
-  { key: 'paket', hash: '#/paket', label: 'Paket Tour' },
-  { key: 'profil', hash: '#/profil', label: 'Profil Desa' },
-  { key: 'galeri', hash: '#/galeri', label: 'Galeri Foto' },
-  { key: 'blog', hash: '#/blog', label: 'Blog Artikel' },
+// All available quick links with dynamic localization
+const getQuickLinks = () => [
+  { key: 'beranda', hash: '#/', label: t('nav.beranda') },
+  { key: 'destinasi', hash: '#/destinasi', label: t('nav.destinasi') },
+  { key: 'paket', hash: '#/paket', label: t('nav.paket') },
+  { key: 'profil', hash: '#/profil', label: t('nav.profil') },
+  { key: 'galeri', hash: '#/galeri', label: t('nav.galeri') },
+  { key: 'blog', hash: '#/blog', label: t('nav.blog') },
 ];
-
-
-
-
-
-
 
 /**
  * Normalizes URL for social media links to prevent broken href targets.
@@ -34,39 +29,46 @@ const _resolveSocialUrl = (value, baseUrl, prefixToRemove) => {
  */
 const _getFooterData = (profilData) => {
   const profil = profilData && Object.keys(profilData).length > 0 ? profilData : getProfilDesaSync();
+  const allLinks = getQuickLinks();
 
   const whatsapp = profil.whatsapp || profil.telepon || '';
   const waClean = whatsapp.replace(/\D/g, '').replace(/^0/, '62');
 
   const activeKeys = Array.isArray(profil.footer_quick_links) && profil.footer_quick_links.length > 0
     ? profil.footer_quick_links
-    : ALL_QUICK_LINKS.map((l) => l.key);
+    : allLinks.map((l) => l.key);
+
+  const localizedDesc = getLocalizedField(profil, 'footer_deskripsi') || t('footer.deskripsi');
+
+  const currentYear = String(new Date().getFullYear());
+  const copyrightPattern = getLocalizedField(profil, 'footer_copyright') || t('footer.copyright');
+  const copyrightText = copyrightPattern
+    .replace('{year}', currentYear)
+    .replace('{nama_desa}', profil.nama_desa || 'Desa Wisata Tampirkulon');
 
   return {
     profil,
     namaDesa: profil.nama_desa || 'Desa Wisata Tampirkulon',
-    alamat: profil.alamat || 'Jl. Raya Tampirkulon No. 123, Candimulyo, Magelang, Jawa Tengah',
+    alamat: profil.alamat || 'Jl. Raya Candimulyo No. 12, Tampirkulon, Candimulyo, Magelang',
     telepon: profil.telepon || '+62 812-3456-7890',
     whatsapp,
-    email: profil.email || '',
-    footerDeskripsi: profil.footer_deskripsi || profil.deskripsi_singkat || 'Desa Wisata Tampirkulon menyajikan keindahan alam, budaya lokal, dan keramahan khas pedesaan.',
-    jamOperasional: profil.jam_operasional || '',
+    email: profil.email || 'info@tampirkulon.desawisata.id',
+    footerDeskripsi: localizedDesc,
+    jamOperasional: profil.jam_operasional || t('footer.operasional_text'),
     showSocial: profil.footer_show_social !== undefined ? Boolean(profil.footer_show_social) : (profil.show_footer_social !== false),
-    copyrightText: (profil.footer_copyright || '© {year} {nama_desa}. Hak Cipta Dilindungi.')
-      .replace('{year}', String(new Date().getFullYear()))
-      .replace('{nama_desa}', profil.nama_desa || 'Desa Wisata Tampirkulon'),
+    copyrightText,
     instagramLink: _resolveSocialUrl(profil.instagram?.trim(), 'https://instagram.com/', /^@/),
     youtubeLink: _resolveSocialUrl(profil.youtube?.trim(), 'https://youtube.com/'),
     waLink: waClean ? `https://wa.me/${waClean}` : '',
     telLink: profil.telepon ? `tel:${profil.telepon.replace(/\D/g, '')}` : '',
     emailLink: profil.email?.trim() ? `mailto:${profil.email.trim()}` : '',
-    displayedLinks: ALL_QUICK_LINKS.filter((link) => activeKeys.includes(link.key)),
+    displayedLinks: allLinks.filter((link) => activeKeys.includes(link.key)),
   };
 };
 
 export const renderFooter = (profilData = null) => {
-  const currentYear = new Date().getFullYear();
   const d = _getFooterData(profilData);
+  const isEn = getLanguage() === 'en';
 
   const instagramHtml = d.instagramLink
     ? `<a href="${d.instagramLink}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-tertiary-fixed flex items-center justify-center transition-all hover:scale-105" title="Instagram">
@@ -111,7 +113,7 @@ export const renderFooter = (profilData = null) => {
 
           <!-- Column 2: Navigation Links -->
           <div class="flex flex-col gap-4">
-            <h4 class="font-title-lg text-lg text-tertiary-fixed font-semibold">Tautan Cepat</h4>
+            <h4 class="font-title-lg text-lg text-tertiary-fixed font-semibold">${t('footer.quick_links')}</h4>
             <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
               ${d.displayedLinks.map((link) => `
                 <li>
@@ -126,7 +128,7 @@ export const renderFooter = (profilData = null) => {
 
           <!-- Column 3: Contact (Dynamically Connected to Profile Settings) -->
           <div class="flex flex-col gap-4">
-            <h4 class="font-title-lg text-lg text-tertiary-fixed font-semibold">Kontak Kami</h4>
+            <h4 class="font-title-lg text-lg text-tertiary-fixed font-semibold">${t('footer.kontak_kami')}</h4>
             <ul class="flex flex-col gap-3 list-none p-0 m-0">
               ${d.alamat ? `
                 <li class="flex items-start gap-3 text-on-primary-container font-body-sm text-sm">
@@ -162,7 +164,7 @@ export const renderFooter = (profilData = null) => {
                 <li class="flex items-start gap-3 text-on-primary-container font-body-sm text-sm pt-2 border-t border-white/10 mt-1">
                   <span class="material-symbols-outlined text-tertiary-fixed text-lg mt-0.5 shrink-0">schedule</span>
                   <div class="flex flex-col">
-                    <span class="text-[10px] uppercase font-bold text-tertiary-fixed tracking-wider">Jam Operasional</span>
+                    <span class="text-[10px] uppercase font-bold text-tertiary-fixed tracking-wider">${t('footer.jam_operasional')}</span>
                     <span class="text-xs text-on-primary-container/90">${d.jamOperasional}</span>
                   </div>
                 </li>
@@ -173,7 +175,7 @@ export const renderFooter = (profilData = null) => {
 
         <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-on-primary-container/80">
           <p class="m-0">${d.copyrightText}</p>
-          <a href="#/admin/login" class="text-tertiary-fixed/80 hover:text-tertiary-fixed transition-colors">Portal Pengelola Desa</a>
+          <a href="#/admin/login" class="text-tertiary-fixed/80 hover:text-tertiary-fixed transition-colors">${isEn ? 'Village Admin Portal' : 'Portal Pengelola Desa'}</a>
         </div>
       </div>
     </footer>

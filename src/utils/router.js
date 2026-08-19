@@ -10,6 +10,7 @@ class Router {
     if (typeof window !== 'undefined') {
       window.addEventListener('hashchange', () => this.handleRoute());
       window.addEventListener('DOMContentLoaded', () => this.handleRoute());
+      window.addEventListener('app:language-change', () => this.handleRoute());
     }
   }
 
