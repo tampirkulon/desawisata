@@ -2,16 +2,16 @@ import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { getProfilDesa, formatGoogleMapsEmbed } from '../utils/profile-store.js';
 import { IconInstagram, IconYouTube, IconWhatsApp } from '../components/icons.js';
+import { t, getLanguage, getLocalizedField } from '../utils/i18n.js';
 
 export const renderProfil = async () => {
   const profil = await getProfilDesa();
+  const isEn = getLanguage() === 'en';
 
   const container = document.createElement('div');
   container.className = 'w-full min-h-screen flex flex-col bg-background text-on-background';
 
-  
-
-  const defaultHeroBg = '/images/hero-tampirkulon.webp';
+  const defaultHeroBg = profil.banner_url || '/images/hero-tampirkulon.webp';
   const formatInstagramUrl = (handleOrUrl) => {
     if (!handleOrUrl) return '';
     if (handleOrUrl.startsWith('http')) return handleOrUrl;
@@ -24,13 +24,21 @@ export const renderProfil = async () => {
     return `https://youtube.com/${handleOrUrl}`;
   };
 
-  const sejarahParagraphs = (profil.sejarah || 'Desa Tampirkulon memiliki sejarah panjang yang terjalin erat dengan perkembangan peradaban agraris di lereng pegunungan.').split('\n').filter(p => p.trim());
-  const misiItems = (profil.misi || 'Melestarikan nilai-nilai budaya lokal.\nMenjaga keseimbangan ekosistem dan kebersihan lingkungan.\nMeningkatkan kesejahteraan ekonomi masyarakat.').split('\n').filter(m => m.trim());
+  const rawSejarah = getLocalizedField(profil, 'sejarah') || t('profil.hero_subtitle');
+  const rawVisi = getLocalizedField(profil, 'visi') || '';
+  const rawMisi = getLocalizedField(profil, 'misi') || '';
+
+  const sejarahParagraphs = rawSejarah.split('\n').filter(p => p.trim());
+  const misiItems = rawMisi.split('\n').filter(m => m.trim());
   const cleanWhatsapp = profil.whatsapp ? profil.whatsapp.replace(/\D/g, '') : '';
   const namaDesa = profil.nama_desa || 'Desa Wisata Tampirkulon';
 
   const instagramUrl = formatInstagramUrl(profil.instagram);
   const youtubeUrl = formatYoutubeUrl(profil.youtube);
+
+  const waGreeting = isEn
+    ? `Hello ${encodeURIComponent(namaDesa)}, I would like to ask about travel information.`
+    : `Halo Pengelola ${encodeURIComponent(namaDesa)}, saya ingin bertanya mengenai kunjungan wisata.`;
 
   container.innerHTML = `
     ${renderNavbar()}
@@ -38,8 +46,11 @@ export const renderProfil = async () => {
     <!-- Header Page Section (Static as Original) -->
     <section class="w-full bg-[#123524] relative flex items-center justify-center overflow-hidden text-center text-white px-6 pt-20" style="min-height: 391px; background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('${defaultHeroBg}'); background-size: cover; background-position: center;">
       <div class="max-w-container-max mx-auto text-center relative z-10 py-8">
-        <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">Profil Desa Wisata Tampirkulon</h1>
-        <p class="text-[#EFE3C2] max-w-2xl mx-auto font-body-md text-base md:text-lg text-white/90">Mengenal lebih dekat warisan budaya, keindahan alam, dan visi pembangunan berkelanjutan di jantung Jawa Tengah.</p>
+        <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-[#EFE3C2] text-xs font-bold uppercase tracking-wider mb-3 shadow-xs">
+          ${t('profil.hero_badge')}
+        </span>
+        <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-white mb-4">${t('profil.hero_title')}</h1>
+        <p class="text-[#EFE3C2] max-w-2xl mx-auto font-body-md text-base md:text-lg text-white/90">${t('profil.hero_subtitle')}</p>
       </div>
     </section>
 
@@ -54,8 +65,8 @@ export const renderProfil = async () => {
                 <span class="material-symbols-outlined text-2xl">auto_stories</span>
               </div>
               <div>
-                <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-[#123524] m-0">Sejarah & Latar Belakang</h2>
-                <span class="text-xs text-on-surface-variant">Asal usul dan perkembangan desa wisata</span>
+                <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-[#123524] m-0">${t('profil.sejarah_title')}</h2>
+                <span class="text-xs text-on-surface-variant">${t('profil.sejarah_badge')}</span>
               </div>
             </div>
             <div class="font-body-md text-on-surface-variant leading-relaxed flex flex-col gap-4 text-base">
@@ -70,29 +81,29 @@ export const renderProfil = async () => {
                   <span class="material-symbols-outlined text-2xl">flag</span>
                 </div>
                 <div>
-                  <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-[#123524] m-0">Visi & Misi</h2>
-                  <span class="text-xs text-on-surface-variant">Arah pembangunan dan pelestarian desa wisata</span>
+                  <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-[#123524] m-0">${t('profil.visi_title')} & ${t('profil.misi_title')}</h2>
+                  <span class="text-xs text-on-surface-variant">${t('profil.hero_title')}</span>
                 </div>
               </div>
 
               <div class="mb-8 bg-surface p-6 rounded-xl border border-outline-variant/30">
                 <h3 class="font-display-lg text-lg font-bold text-[#123524] mb-2 flex items-center gap-2">
                   <span class="material-symbols-outlined text-[#3E7B27] text-xl">visibility</span>
-                  Visi Desa Wisata
+                  ${t('profil.visi_title')}
                 </h3>
-                <p class="text-on-surface-variant italic text-base leading-relaxed m-0">"${profil.visi || 'Menjadi Desa Wisata Mandiri Berbasis Kearifan Lokal dan Kelestarian Alam Bertaraf Internasional.'}"</p>
+                <p class="text-on-surface-variant italic text-base leading-relaxed m-0">"${rawVisi || 'Mewujudkan Desa Wisata Tampirkulon sebagai destinasi berdaya saing tinggi, berkelanjutan, dan berorientasi pada pelestarian alam serta kearifan lokal.'}"</p>
               </div>
               
               <div class="bg-surface p-6 rounded-xl border border-outline-variant/30">
                 <h3 class="font-display-lg text-lg font-bold text-[#123524] mb-4 flex items-center gap-2">
                   <span class="material-symbols-outlined text-[#3E7B27] text-xl">task_alt</span>
-                  Misi Desa Wisata
+                  ${t('profil.misi_title')}
                 </h3>
                 <ul class="list-none flex flex-col gap-3.5 p-0 m-0">
                   ${misiItems.map(item => `
                     <li class="flex items-start gap-3 text-sm text-on-surface-variant">
                       <span class="material-symbols-outlined text-[#3E7B27] text-xl mt-0.5 shrink-0">check_circle</span>
-                      <span class="leading-relaxed">${item.replace(/\D/g, '')}</span>
+                      <span class="leading-relaxed">${item.replace(/^\d+\.\s*/, '')}</span>
                     </li>
                   `).join('')}
                 </ul>
@@ -106,7 +117,7 @@ export const renderProfil = async () => {
           <div class="bg-surface rounded-2xl p-8 border border-outline-variant/40 shadow-level-1 relative overflow-hidden">
             <h3 class="font-display-lg text-2xl font-bold text-[#123524] mb-6 flex items-center gap-2">
               <span class="material-symbols-outlined text-[#3E7B27]">info</span>
-              Informasi Desa
+              ${t('profil.geo_title')}
             </h3>
             
             <!-- Google Maps directly at the top of the card -->
@@ -124,7 +135,7 @@ export const renderProfil = async () => {
                   <span class="material-symbols-outlined text-xl">aspect_ratio</span>
                 </div>
                 <div>
-                  <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold m-0 mb-0.5">Luas Wilayah</p>
+                  <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold m-0 mb-0.5">${t('profil.geo_luas')}</p>
                   <p class="font-display-lg text-base font-bold text-[#123524] m-0">${profil.luas_wilayah || '3.45 km²'}</p>
                 </div>
               </li>
@@ -134,7 +145,7 @@ export const renderProfil = async () => {
                   <span class="material-symbols-outlined text-xl">diversity_3</span>
                 </div>
                 <div>
-                  <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold m-0 mb-0.5">Populasi Penduduk</p>
+                  <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold m-0 mb-0.5">${t('profil.geo_populasi')}</p>
                   <p class="font-display-lg text-base font-bold text-[#123524] m-0">${profil.populasi || '2.850+ Jiwa'}</p>
                 </div>
               </li>
@@ -144,8 +155,8 @@ export const renderProfil = async () => {
                   <span class="material-symbols-outlined text-xl">schedule</span>
                 </div>
                 <div>
-                  <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold m-0 mb-0.5">Jam Operasional</p>
-                  <p class="font-body-md text-sm font-semibold text-[#123524] m-0">${profil.jam_operasional || 'Senin - Minggu: 08:00 - 17:00 WIB'}</p>
+                  <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold m-0 mb-0.5">${t('footer.jam_operasional')}</p>
+                  <p class="font-body-md text-sm font-semibold text-[#123524] m-0">${profil.jam_operasional || t('footer.operasional_text')}</p>
                 </div>
               </li>
 
@@ -154,18 +165,18 @@ export const renderProfil = async () => {
                   <span class="material-symbols-outlined text-xl">home_pin</span>
                 </div>
                 <div>
-                  <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold m-0 mb-1">Alamat Lengkap</p>
+                  <p class="font-label-caps text-xs text-on-surface-variant uppercase font-bold m-0 mb-1">${t('kontak.address_label')}</p>
                   <p class="font-body-sm text-sm text-[#123524] leading-relaxed m-0">${profil.alamat || 'Jl. Raya Candimulyo No. 12, Tampirkulon, Magelang, Jawa Tengah 56191'}</p>
                 </div>
               </li>
             </ul>
 
-            <!-- Direct Contact & Solid Color Buttons (Full Bold Solid) -->
+            <!-- Direct Contact & Solid Color Buttons -->
             <div class="mt-6 pt-6 border-t border-outline-variant/30 flex flex-col gap-3">
               ${cleanWhatsapp ? `
-                <a href="https://wa.me/${cleanWhatsapp}?text=Halo%20Pengelola%20${encodeURIComponent(namaDesa)},%20saya%20ingin%20bertanya%20mengenai%20kunjungan%20wisata." target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2.5">
+                <a href="https://wa.me/${cleanWhatsapp}?text=${waGreeting}" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2.5">
                   ${IconWhatsApp('w-4 h-4 fill-white shrink-0')}
-                  <span>Chat WhatsApp Pengelola (${profil.whatsapp})</span>
+                  <span>${isEn ? `WhatsApp Admin (${profil.whatsapp})` : `Chat WhatsApp Pengelola (${profil.whatsapp})`}</span>
                 </a>
               ` : ''}
 
