@@ -1,6 +1,7 @@
-// Navbar Component with Stitch Modern Transparent Header Styling & Bilingual Switcher
+// Navbar Component with Stitch Modern Transparent Header Styling & Circular Flag Bilingual Switcher
 
 import { t, getLanguage, setLanguage } from '../utils/i18n.js';
+import { IconFlagID, IconFlagEN } from './icons.js';
 
 export const renderNavbar = (isSolid = false) => {
   const currentHash = window.location.hash || '#/';
@@ -20,24 +21,26 @@ export const renderNavbar = (isSolid = false) => {
     : 'transparent-nav';
 
   const renderLangSwitcher = (idPrefix = 'desktop') => `
-    <div class="lang-switcher-pill flex items-center bg-black/20 backdrop-blur-md p-1 rounded-full border border-white/25 shadow-xs" role="group" aria-label="${t('nav.lang_switch')}">
+    <div class="lang-switcher-circular flex items-center gap-1.5 bg-black/25 backdrop-blur-md p-1 rounded-full border border-white/30 shadow-xs" role="group" aria-label="${t('nav.lang_switch')}">
       <button 
         type="button" 
         data-lang="id" 
         id="${idPrefix}-lang-id" 
-        class="lang-btn-switch px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer ${activeLang === 'id' ? 'bg-primary text-white shadow-xs' : 'text-white/80 hover:text-white'}"
+        class="lang-btn-switch w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${activeLang === 'id' ? 'ring-2 ring-white bg-white/30 scale-105 shadow-sm opacity-100' : 'opacity-60 hover:opacity-100 hover:scale-105'}"
         title="Bahasa Indonesia"
+        aria-label="Bahasa Indonesia"
       >
-        ID
+        ${IconFlagID('w-6 h-6')}
       </button>
       <button 
         type="button" 
         data-lang="en" 
         id="${idPrefix}-lang-en" 
-        class="lang-btn-switch px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer ${activeLang === 'en' ? 'bg-primary text-white shadow-xs' : 'text-white/80 hover:text-white'}"
+        class="lang-btn-switch w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${activeLang === 'en' ? 'ring-2 ring-white bg-white/30 scale-105 shadow-sm opacity-100' : 'opacity-60 hover:opacity-100 hover:scale-105'}"
         title="English"
+        aria-label="English"
       >
-        EN
+        ${IconFlagEN('w-6 h-6')}
       </button>
     </div>
   `;
@@ -60,7 +63,7 @@ export const renderNavbar = (isSolid = false) => {
             `).join('')}
           </ul>
           
-          <!-- Desktop Language Switcher -->
+          <!-- Desktop Circular Flag Switcher -->
           ${renderLangSwitcher('desktop')}
 
           <a href="#/kontak" class="bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold text-xs hover:bg-primary-container transition-all shadow-level-1 hover:shadow-level-2 shrink-0">${t('nav.kontak')}</a>
@@ -80,29 +83,33 @@ export const renderNavbar = (isSolid = false) => {
     <div class="mobile-drawer" id="mobile-drawer">
       <div class="flex justify-between items-center pb-4 border-b border-outline-variant">
         <span class="font-display-lg font-bold text-xl text-primary">Tampirkulon</span>
-        <button id="drawer-close" class="text-2xl text-on-surface-variant bg-none border-none cursor-pointer">✕</button>
+        <button id="drawer-close" class="text-2xl text-on-surface-variant bg-none border-none cursor-pointer" aria-label="${t('common.close')}">✕</button>
       </div>
       
-      <!-- Drawer Language Switcher Banner -->
+      <!-- Drawer Circular Flag Switcher Banner -->
       <div class="flex items-center justify-between mt-4 p-3 bg-surface-container-low rounded-xl border border-outline-variant/30">
         <span class="text-xs font-semibold text-on-surface-variant flex items-center gap-1.5">
           <span class="material-symbols-outlined text-base text-primary">language</span>
           <span>${t('nav.lang_switch')}</span>
         </span>
-        <div class="flex items-center bg-surface-container-high p-1 rounded-full border border-outline-variant/40" role="group">
+        <div class="flex items-center gap-2 bg-surface-container-high p-1 rounded-full border border-outline-variant/40" role="group">
           <button 
             type="button" 
             data-lang="id" 
-            class="lang-btn-switch px-3 py-1 rounded-full text-xs font-bold transition-all ${activeLang === 'id' ? 'bg-primary text-white shadow-xs' : 'text-on-surface-variant hover:text-on-surface'}"
+            class="lang-btn-switch w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer ${activeLang === 'id' ? 'ring-2 ring-primary bg-primary/15 scale-105 shadow-xs opacity-100' : 'opacity-60 hover:opacity-100 hover:scale-105'}"
+            title="Bahasa Indonesia"
+            aria-label="Bahasa Indonesia"
           >
-            ID
+            ${IconFlagID('w-7 h-7')}
           </button>
           <button 
             type="button" 
             data-lang="en" 
-            class="lang-btn-switch px-3 py-1 rounded-full text-xs font-bold transition-all ${activeLang === 'en' ? 'bg-primary text-white shadow-xs' : 'text-on-surface-variant hover:text-on-surface'}"
+            class="lang-btn-switch w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer ${activeLang === 'en' ? 'ring-2 ring-primary bg-primary/15 scale-105 shadow-xs opacity-100' : 'opacity-60 hover:opacity-100 hover:scale-105'}"
+            title="English"
+            aria-label="English"
           >
-            EN
+            ${IconFlagEN('w-7 h-7')}
           </button>
         </div>
       </div>

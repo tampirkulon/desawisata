@@ -23,3 +23,38 @@ export const IconGoogleMaps = (className = 'w-4 h-4') => `
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
   </svg>
 `;
+
+// Circular Flag Icons for Bilingual Language Switcher
+export const IconFlagID = (className = 'w-5 h-5') => `
+  <svg class="${className} rounded-full shrink-0 shadow-xs" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-label="Bahasa Indonesia">
+    <defs>
+      <clipPath id="circle-flag-id">
+        <circle cx="16" cy="16" r="16"/>
+      </clipPath>
+    </defs>
+    <g clip-path="url(#circle-flag-id)">
+      <rect width="32" height="16" fill="#E11D48"/>
+      <rect y="16" width="32" height="16" fill="#FFFFFF"/>
+    </g>
+    <circle cx="16" cy="16" r="15.5" fill="none" stroke="currentColor" stroke-opacity="0.18" stroke-width="1"/>
+  </svg>
+`;
+
+export const IconFlagEN = (className = 'w-5 h-5') => `
+  <svg class="${className} rounded-full shrink-0 shadow-xs" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-label="English">
+    <defs>
+      <clipPath id="circle-flag-en">
+        <circle cx="16" cy="16" r="16"/>
+      </clipPath>
+    </defs>
+    <g clip-path="url(#circle-flag-en)">
+      <rect width="32" height="32" fill="#012169"/>
+      <path d="M-4 -4L36 36M36 -4L-4 36" stroke="#FFFFFF" stroke-width="6"/>
+      <path d="M-4 -4L36 36M36 -4L-4 36" stroke="#C8102E" stroke-width="2.5"/>
+      <path d="M16 -4V36M-4 16H36" stroke="#FFFFFF" stroke-width="8"/>
+      <path d="M16 -4V36M-4 16H36" stroke="#C8102E" stroke-width="4.8"/>
+    </g>
+    <circle cx="16" cy="16" r="15.5" fill="none" stroke="currentColor" stroke-opacity="0.18" stroke-width="1"/>
+  </svg>
+`;
+
