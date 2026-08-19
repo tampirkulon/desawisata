@@ -22,7 +22,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node scripts/test-audit.js",
+    "test": "node scripts/test-i18n.js && node scripts/test-audit.js",
     "db:check": "node scripts/db-query.js",
     "db:seed": "node scripts/seed-db.js"
   },

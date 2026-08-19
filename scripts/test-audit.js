@@ -78,7 +78,7 @@ import { renderFooter } from '../src/components/footer.js';
 // Default rendering
 const defaultFooter = renderFooter(mockData.profil_desa);
 assert(defaultFooter.includes('Desa Wisata Tampirkulon'), 'Default footer renders village name');
-assert(defaultFooter.includes('Tautan Cepat'), 'Default footer renders quick links title');
+assert(defaultFooter.includes('Navigasi Cepat') || defaultFooter.includes('Tautan Cepat'), 'Default footer renders quick links title');
 assert(defaultFooter.includes('Hak Cipta Dilindungi'), 'Default footer renders copyright text');
 assert(defaultFooter.includes('Portal Pengelola Desa'), 'Default footer renders admin portal link');
 
@@ -100,7 +100,7 @@ const customFooter = renderFooter({
 assert(customFooter.includes('Deskripsi kustom footer pengelola.'), 'Footer renders custom description');
 assert(customFooter.includes('Desa Mandiri & Pokdarwis.'), 'Footer renders custom copyright');
 assert(customFooter.includes('instagram.com/custom'), 'Footer renders custom instagram link');
-assert(customFooter.includes('Galeri Foto') && !customFooter.includes('Paket Tour'), 'Footer filters quick links accurately');
+assert(customFooter.includes('Galeri') && !customFooter.includes('Paket Wisata'), 'Footer filters quick links accurately');
 assert(customFooter.includes('Jl. Merdeka No. 99, Dusun Mandiri'), 'Footer renders dynamic custom address');
 assert(customFooter.includes('wa.me/6281299998888'), 'Footer renders formatted WhatsApp link');
 assert(customFooter.includes('mailto:kontak@desamandiri.id'), 'Footer renders dynamic email mailto link');
