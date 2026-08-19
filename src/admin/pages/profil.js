@@ -25,7 +25,7 @@ export const renderAdminProfil = async () => {
           <!-- Page Title -->
           <div class="mb-8">
             <h1 class="font-display-lg text-2xl md:text-3xl font-extrabold text-[#123524] m-0">Pengaturan Profil Desa</h1>
-            <p class="text-xs md:text-sm font-medium text-slate-500 m-0 mt-1.5">Kelola seluruh informasi identitas, narasi, media visual, dan kontak desa wisata dalam satu halaman.</p>
+            <p class="text-xs md:text-sm font-medium text-slate-500 m-0 mt-1.5">Kelola seluruh informasi identitas, narasi dwibahasa (ID/EN), media visual, dan kontak desa wisata.</p>
           </div>
 
           <!-- Main Unified Profile Form -->
@@ -49,9 +49,14 @@ export const renderAdminProfil = async () => {
                   <input type="text" id="prof-nama" class="form-control" value="${profil.nama_desa || ''}" required placeholder="Contoh: Desa Wisata Tampirkulon" />
                 </div>
                 <div class="form-group">
-                  <label class="form-label font-semibold text-[#123524] text-xs">Slogan / Tagline Resmi</label>
+                  <label class="form-label font-semibold text-[#123524] text-xs">Slogan / Tagline (ID)</label>
                   <input type="text" id="prof-tagline" class="form-control" value="${profil.tagline || ''}" placeholder="Contoh: Keindahan Alam & Pesona Budaya..." />
                 </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label font-semibold text-[#123524] text-xs">Slogan / Tagline (EN - Opsional)</label>
+                <input type="text" id="prof-tagline-en" class="form-control" value="${profil.tagline_en || ''}" placeholder="E.g. Natural Splendor & Cultural Charm..." />
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -78,26 +83,46 @@ export const renderAdminProfil = async () => {
                 </div>
                 <div>
                   <h3 class="text-base font-bold text-[#123524] m-0">2. Narasi Sejarah, Visi & Misi</h3>
-                  <p class="text-xs text-slate-500 m-0">Cerita latar belakang dan cita-cita pengembangan desa wisata.</p>
+                  <p class="text-xs text-slate-500 m-0">Cerita latar belakang dan cita-cita pengembangan desa wisata (Mendukung ID & EN).</p>
                 </div>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label font-semibold text-[#123524] text-xs">Sejarah & Latar Belakang Desa (Teks Lengkap)</label>
-                <textarea id="prof-sejarah" class="form-control leading-relaxed text-sm" rows="5" placeholder="Tuliskan sejarah desa, awal mula terbentuknya desa wisata, serta keunikan budayanya...">${profil.sejarah || ''}</textarea>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="form-group">
-                  <label class="form-label font-semibold text-[#123524] text-xs">Visi Desa Wisata</label>
-                  <textarea id="prof-visi" class="form-control leading-relaxed text-sm" rows="4" placeholder="Tuliskan visi masa depan desa wisata...">${profil.visi || ''}</textarea>
+                  <label class="form-label font-semibold text-[#123524] text-xs">Sejarah & Latar Belakang Desa (ID)</label>
+                  <textarea id="prof-sejarah" class="form-control leading-relaxed text-sm" rows="5" placeholder="Tuliskan sejarah desa dalam bahasa Indonesia...">${profil.sejarah || ''}</textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label font-semibold text-[#123524] text-xs">Village History & Background (EN)</label>
+                  <textarea id="prof-sejarah-en" class="form-control leading-relaxed text-sm" rows="5" placeholder="Write village history in English...">${profil.sejarah_en || ''}</textarea>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                  <label class="form-label font-semibold text-[#123524] text-xs">Visi Desa Wisata (ID)</label>
+                  <textarea id="prof-visi" class="form-control leading-relaxed text-sm" rows="3" placeholder="Tuliskan visi desa...">${profil.visi || ''}</textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label font-semibold text-[#123524] text-xs">Village Vision (EN)</label>
+                  <textarea id="prof-visi-en" class="form-control leading-relaxed text-sm" rows="3" placeholder="Write village vision in English...">${profil.visi_en || ''}</textarea>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                  <label class="form-label font-semibold text-[#123524] text-xs flex items-center justify-between">
+                    <span>Misi Desa Wisata (ID)</span>
+                    <span class="text-[11px] font-normal text-slate-400">(1 poin per baris)</span>
+                  </label>
+                  <textarea id="prof-misi" class="form-control leading-relaxed text-sm" rows="4" placeholder="1. Mengembangkan potensi agrowisata lokal&#10;2. Menjaga kelestarian alam">${profil.misi || ''}</textarea>
                 </div>
                 <div class="form-group">
                   <label class="form-label font-semibold text-[#123524] text-xs flex items-center justify-between">
-                    <span>Misi Desa Wisata</span>
-                    <span class="text-[11px] font-normal text-slate-400">(Tulis 1 poin per baris)</span>
+                    <span>Development Missions (EN)</span>
+                    <span class="text-[11px] font-normal text-slate-400">(1 point per line)</span>
                   </label>
-                  <textarea id="prof-misi" class="form-control leading-relaxed text-sm" rows="4" placeholder="1. Mengembangkan potensi agrowisata lokal&#10;2. Menjaga kelestarian alam dan lingkungan&#10;3. Memberdayakan ekonomi warga desa">${profil.misi || ''}</textarea>
+                  <textarea id="prof-misi-en" class="form-control leading-relaxed text-sm" rows="4" placeholder="1. Developing local agrotourism&#10;2. Preserving natural heritage">${profil.misi_en || ''}</textarea>
                 </div>
               </div>
             </div>
@@ -133,7 +158,7 @@ export const renderAdminProfil = async () => {
                 </div>
                 <div class="form-group">
                   <label class="form-label font-semibold text-[#123524] text-xs">Email Resmi</label>
-                  <input type="email" id="prof-email" class="form-control" value="${profil.email || ''}" placeholder="info@tampirkulon.desa.id" />
+                  <input type="email" id="prof-email" class="form-control" value="${profil.email || ''}" placeholder="info@tampirkulon.desawisata.id" />
                 </div>
               </div>
 
@@ -179,17 +204,20 @@ export const renderAdminProfil = async () => {
                 </div>
                 <div>
                   <h3 class="text-base font-bold text-[#123524] m-0">4. Pengaturan Footer Website</h3>
-                  <p class="text-xs text-slate-500 m-0">Kustomisasi narasi singkat, teks copyright, ikon sosial media, dan pilihan menu tautan cepat pada footer.</p>
+                  <p class="text-xs text-slate-500 m-0">Kustomisasi narasi singkat (ID & EN), teks copyright, ikon sosial media, dan pilihan menu tautan cepat pada footer.</p>
                 </div>
               </div>
 
-              <!-- Narasi Singkat Footer -->
-              <div class="form-group">
-                <label class="form-label font-semibold text-[#123524] text-xs flex items-center justify-between">
-                  <span>Deskripsi / Narasi Singkat Footer</span>
-                  <span class="text-[11px] font-normal text-slate-400">Tampil pada kolom 1 footer website</span>
-                </label>
-                <textarea id="prof-footer-deskripsi" class="form-control leading-relaxed text-sm" rows="3" placeholder="Tuliskan deskripsi ringkas desa untuk footer...">${profil.footer_deskripsi || ''}</textarea>
+              <!-- Narasi Singkat Footer ID & EN -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                  <label class="form-label font-semibold text-[#123524] text-xs">Deskripsi / Narasi Singkat Footer (ID)</label>
+                  <textarea id="prof-footer-deskripsi" class="form-control leading-relaxed text-sm" rows="3" placeholder="Tuliskan deskripsi ringkas desa untuk footer...">${profil.footer_deskripsi || ''}</textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label font-semibold text-[#123524] text-xs">Footer Short Description (EN)</label>
+                  <textarea id="prof-footer-deskripsi-en" class="form-control leading-relaxed text-sm" rows="3" placeholder="Write short footer description in English...">${profil.footer_deskripsi_en || ''}</textarea>
+                </div>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -238,7 +266,7 @@ export const renderAdminProfil = async () => {
               </div>
             </div>
 
-            <!-- STICKY BOTTOM ACTION BAR (Clean & Tanpa Tombol Cepat) -->
+            <!-- STICKY BOTTOM ACTION BAR -->
             <div class="fixed bottom-0 left-0 md:left-64 right-0 bg-white/95 backdrop-blur-md border-t border-[#cdd8c9] px-6 py-4 z-40 flex items-center justify-between shadow-lg">
               <div class="flex items-center gap-2 text-xs text-slate-600">
                 <span class="w-2 h-2 rounded-full bg-[#3E7B27]"></span>
@@ -261,7 +289,6 @@ export const renderAdminProfil = async () => {
   const bindEvents = () => {
     initAdminSidebarEvents();
 
-    // Live Maps preview helper using formatGoogleMapsEmbed
     const mapsTextarea = container.querySelector('#prof-maps');
     const mapsPreviewBox = container.querySelector('#maps-live-preview');
     if (mapsTextarea && mapsPreviewBox) {
@@ -275,49 +302,47 @@ export const renderAdminProfil = async () => {
       });
     }
 
-    // Auto-clean WhatsApp input helper
-    // Auto-clean WhatsApp input helper
-  const waInput = container.querySelector('#prof-whatsapp');
+    const waInput = container.querySelector('#prof-whatsapp');
+    if (waInput) {
+      waInput.addEventListener('blur', (e) => {
+        let val = e.target.value.trim().replace(/\D/g, '');
+        if (val.startsWith('08')) {
+          val = '628' + val.substring(2);
+          e.target.value = val;
+        }
+      });
+    }
 
-  if (waInput) {
-    waInput.addEventListener('blur', (e) => {
-      let val = e.target.value.trim().replace(/\D/g, '');
-
-      if (val.startsWith('08')) {
-        val = '628' + val.substring(2);
-        e.target.value = val;
-      }
-    });
-  }
-
-  // Form submission
-  const form = container.querySelector('#profil-desa-form');
+    const form = container.querySelector('#profil-desa-form');
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const saveBtn = container.querySelector('#save-profil-btn');
-  saveBtn.disabled = true;
-  saveBtn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span> Menyimpan...';
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span> Menyimpan...';
 
-  let rawWa = document.getElementById('prof-whatsapp')?.value.trim() || '';
-  let cleanedWa = rawWa.replace(/\D/g, '');
+        let rawWa = document.getElementById('prof-whatsapp')?.value.trim() || '';
+        let cleanedWa = rawWa.replace(/\D/g, '');
+        if (cleanedWa.startsWith('08')) {
+          cleanedWa = '628' + cleanedWa.substring(2);
+        }
 
-  if (cleanedWa.startsWith('08')) {
-    cleanedWa = '628' + cleanedWa.substring(2);
-  }
-  const quickLinkElements = container.querySelectorAll('input[name="footer_quick_link"]:checked, input[name="quick_links"]:checked');
-  const selectedQuickLinks = Array.from(quickLinkElements).map(el => el.value);
-  const payload = {
-    nama_desa: document.getElementById('prof-nama')?.value.trim() || profil.nama_desa,
-    tagline: document.getElementById('prof-tagline')?.value.trim() || profil.tagline,
-    logo_url: document.getElementById('prof-logo')?.value || profil.logo_url || '',
-    banner_url: document.getElementById('prof-banner')?.value || profil.banner_url || '',
+        const quickLinkElements = container.querySelectorAll('input[name="footer_quick_link"]:checked, input[name="quick_links"]:checked');
+        const selectedQuickLinks = Array.from(quickLinkElements).map(el => el.value);
+
+        const payload = {
+          nama_desa: document.getElementById('prof-nama')?.value.trim() || profil.nama_desa,
+          tagline: document.getElementById('prof-tagline')?.value.trim() || profil.tagline,
+          tagline_en: document.getElementById('prof-tagline-en')?.value.trim() || profil.tagline_en || '',
           luas_wilayah: document.getElementById('prof-luas')?.value.trim() || profil.luas_wilayah,
           populasi: document.getElementById('prof-populasi')?.value.trim() || profil.populasi,
           sejarah: document.getElementById('prof-sejarah')?.value.trim() || profil.sejarah,
+          sejarah_en: document.getElementById('prof-sejarah-en')?.value.trim() || profil.sejarah_en || '',
           visi: document.getElementById('prof-visi')?.value.trim() || profil.visi,
+          visi_en: document.getElementById('prof-visi-en')?.value.trim() || profil.visi_en || '',
           misi: document.getElementById('prof-misi')?.value.trim() || profil.misi,
+          misi_en: document.getElementById('prof-misi-en')?.value.trim() || profil.misi_en || '',
           alamat: document.getElementById('prof-alamat')?.value.trim() || profil.alamat,
           telepon: document.getElementById('prof-telepon')?.value.trim() || profil.telepon,
           whatsapp: cleanedWa || rawWa || profil.whatsapp,
@@ -327,6 +352,7 @@ export const renderAdminProfil = async () => {
           youtube: document.getElementById('prof-yt')?.value.trim() || profil.youtube,
           google_maps_embed: document.getElementById('prof-maps')?.value.trim() || profil.google_maps_embed,
           footer_deskripsi: document.getElementById('prof-footer-deskripsi')?.value.trim() || profil.footer_deskripsi || '',
+          footer_deskripsi_en: document.getElementById('prof-footer-deskripsi-en')?.value.trim() || profil.footer_deskripsi_en || '',
           footer_copyright: document.getElementById('prof-footer-copyright')?.value.trim() || profil.footer_copyright || '',
           footer_show_social: document.getElementById('prof-footer-social')?.checked ?? true,
           footer_quick_links: selectedQuickLinks.length > 0 ? selectedQuickLinks : ['beranda', 'destinasi', 'paket', 'profil', 'galeri', 'blog'],

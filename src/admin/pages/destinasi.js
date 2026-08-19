@@ -45,26 +45,25 @@ export const renderAdminDestinasi = async () => {
           <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
             <div>
               <h1 class="font-display-lg text-2xl font-bold text-slate-800 m-0">Destinasi Wisata</h1>
-              <p class="text-xs font-medium text-slate-400 m-0 mt-1">Kelola daya tarik & objek wisata Desa Wisata Tampirkulon.</p>
+              <p class="text-xs font-medium text-slate-400 m-0 mt-1">Kelola daya tarik & objek wisata Desa Wisata Tampirkulon (Mendukung ID & EN).</p>
             </div>
-            <button class="px-5 py-2.5 rounded-full bg-[#316342] text-white font-bold text-xs hover:bg-[#254d33] transition-colors shadow-md flex items-center gap-2" id="add-destinasi-btn">
+            <button class="px-5 py-2.5 rounded-full bg-[#316342] text-white font-bold text-xs hover:bg-[#254d33] transition-colors shadow-md flex items-center gap-2 cursor-pointer" id="add-destinasi-btn">
               <span class="material-symbols-outlined text-sm">add</span>
               Tambah Destinasi Baru
             </button>
           </div>
 
           <div class="donezo-card p-6">
-
-          ${renderDataTable({
-            columns: [
-              { label: 'Destinasi' },
-              { label: 'Kategori' },
-              { label: 'Tiket' },
-              { label: 'Status' }
-            ],
-            data: destinasiList,
-            searchPlaceholder: 'Cari destinasi...'
-          })}
+            ${renderDataTable({
+              columns: [
+                { label: 'Destinasi' },
+                { label: 'Kategori' },
+                { label: 'Tiket' },
+                { label: 'Status' }
+              ],
+              data: destinasiList,
+              searchPlaceholder: 'Cari destinasi...'
+            })}
           </div>
         </div>
       </main>
@@ -81,13 +80,17 @@ export const renderAdminDestinasi = async () => {
     if (tbody && destinasiList.length > 0) {
       tbody.innerHTML = destinasiList.map(item => {
         const kat = kategoriList.find(k => k.id === item.kategori_id);
+        const hasEn = !!item.nama_en;
         return `
           <tr>
             <td>
               <div style="display: flex; align-items: center; gap: 12px;">
                 <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=100&q=80'}" style="width: 44px; height: 44px; border-radius: var(--radius-sm); object-fit: cover;" />
                 <div>
-                  <strong>${item.nama}</strong>
+                  <div style="display: flex; items-center; gap: 6px;">
+                    <strong>${item.nama}</strong>
+                    ${hasEn ? '<span style="font-size: 10px; background: #e0e7ff; color: #3730a3; padding: 1px 6px; border-radius: 4px; font-weight: bold;">EN</span>' : ''}
+                  </div>
                   <div style="font-size: 0.8rem; color: var(--neutral-600);">${item.lokasi || '-'}</div>
                 </div>
               </div>
@@ -168,11 +171,47 @@ export const renderAdminDestinasi = async () => {
     const isEdit = !!destinasi;
     const bodyHtml = `
       <form id="destinasi-form">
-        <div class="form-group">
-          <label class="form-label">Nama Destinasi Wisata *</label>
-          <input type="text" id="dest-nama" class="form-control" value="${destinasi?.nama || ''}" required />
+        <!-- Language Switch Tabs -->
+        <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
+          <button type="button" id="tab-btn-id" class="btn btn-sm btn-primary" style="padding: 6px 14px; border-radius: 9999px;">🇮🇩 Bahasa Indonesia</button>
+          <button type="button" id="tab-btn-en" class="btn btn-sm btn-outline" style="padding: 6px 14px; border-radius: 9999px;">🇬🇧 English (Opsional)</button>
         </div>
 
+        <!-- Section ID -->
+        <div id="section-dest-id">
+          <div class="form-group">
+            <label class="form-label">Nama Destinasi Wisata (ID) *</label>
+            <input type="text" id="dest-nama" class="form-control" value="${destinasi?.nama || ''}" required placeholder="Contoh: Kebun Durian Candimulyo" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lokasi / Dusun (ID)</label>
+            <input type="text" id="dest-lokasi" class="form-control" placeholder="Dusun Tampir 1, Tampirkulon" value="${destinasi?.lokasi || ''}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Deskripsi Lengkap (ID)</label>
+            <textarea id="dest-deskripsi" class="form-control" rows="3" placeholder="Deskripsi destinasi dalam bahasa Indonesia...">${destinasi?.deskripsi || ''}</textarea>
+          </div>
+        </div>
+
+        <!-- Section EN -->
+        <div id="section-dest-en" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">Destination Name (EN)</label>
+            <input type="text" id="dest-nama-en" class="form-control" value="${destinasi?.nama_en || ''}" placeholder="E.g. Candimulyo Durian Orchard" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location / Hamlet (EN)</label>
+            <input type="text" id="dest-lokasi-en" class="form-control" placeholder="E.g. Tampir 1 Hamlet, Tampirkulon" value="${destinasi?.lokasi_en || ''}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Description (EN)</label>
+            <textarea id="dest-deskripsi-en" class="form-control" rows="3" placeholder="Destination description in English...">${destinasi?.deskripsi_en || ''}</textarea>
+          </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 16px 0;" />
+
+        <!-- Common Fields -->
         <div class="form-group">
           <label class="form-label">Kategori Wisata *</label>
           <select id="dest-kategori" class="form-control" required>
@@ -195,16 +234,6 @@ export const renderAdminDestinasi = async () => {
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Lokasi / Dusun</label>
-          <input type="text" id="dest-lokasi" class="form-control" placeholder="Dusun Tampir 1, Tampirkulon" value="${destinasi?.lokasi || ''}" />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Deskripsi Lengkap</label>
-          <textarea id="dest-deskripsi" class="form-control" rows="4">${destinasi?.deskripsi || ''}</textarea>
-        </div>
-
         <div style="display: flex; gap: 24px; margin-top: 16px;">
           <label style="display: flex; align-items: center; gap: 8px; font-weight: 500; cursor: pointer;">
             <input type="checkbox" id="dest-unggulan" ${destinasi?.is_unggulan ? 'checked' : ''} />
@@ -222,19 +251,43 @@ export const renderAdminDestinasi = async () => {
       title: isEdit ? 'Edit Destinasi Wisata' : 'Tambah Destinasi Baru',
       bodyHtml,
       saveText: isEdit ? 'Perbarui Destinasi' : 'Simpan Destinasi',
-      onOpen: () => initImageUploaderEvents('dest-gambar', 'destinasi'),
+      onOpen: () => {
+        initImageUploaderEvents('dest-gambar', 'destinasi');
+        const tabId = document.getElementById('tab-btn-id');
+        const tabEn = document.getElementById('tab-btn-en');
+        const secId = document.getElementById('section-dest-id');
+        const secEn = document.getElementById('section-dest-en');
+
+        if (tabId && tabEn && secId && secEn) {
+          tabId.addEventListener('click', () => {
+            secId.style.display = 'block';
+            secEn.style.display = 'none';
+            tabId.className = 'btn btn-sm btn-primary';
+            tabEn.className = 'btn btn-sm btn-outline';
+          });
+          tabEn.addEventListener('click', () => {
+            secId.style.display = 'none';
+            secEn.style.display = 'block';
+            tabEn.className = 'btn btn-sm btn-primary';
+            tabId.className = 'btn btn-sm btn-outline';
+          });
+        }
+      },
       onSave: async () => {
         const rawKategoriId = document.getElementById('dest-kategori').value;
         const isValidUuid = (str) => typeof str === 'string' && /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(str);
 
         const payload = {
           nama: document.getElementById('dest-nama').value.trim(),
+          nama_en: document.getElementById('dest-nama-en')?.value.trim() || '',
+          lokasi: document.getElementById('dest-lokasi').value.trim(),
+          lokasi_en: document.getElementById('dest-lokasi-en')?.value.trim() || '',
+          deskripsi: document.getElementById('dest-deskripsi').value.trim(),
+          deskripsi_en: document.getElementById('dest-deskripsi-en')?.value.trim() || '',
           kategori_id: isValidUuid(rawKategoriId) ? rawKategoriId : null,
           gambar_url: document.getElementById('dest-gambar').value,
           harga_tiket: document.getElementById('dest-harga').value.trim(),
           jam_buka: document.getElementById('dest-jambuka').value.trim(),
-          lokasi: document.getElementById('dest-lokasi').value.trim(),
-          deskripsi: document.getElementById('dest-deskripsi').value.trim(),
           is_unggulan: document.getElementById('dest-unggulan').checked,
           is_published: document.getElementById('dest-published').checked,
         };

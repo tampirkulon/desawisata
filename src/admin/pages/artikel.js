@@ -41,9 +41,9 @@ export const renderAdminArtikel = async () => {
           <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
             <div>
               <h1 class="font-display-lg text-2xl font-bold text-slate-800 m-0">Artikel & Berita</h1>
-              <p class="text-xs font-medium text-slate-400 m-0 mt-1">Kelola berita, kabar desa, dan promosi wisata desa.</p>
+              <p class="text-xs font-medium text-slate-400 m-0 mt-1">Kelola berita, kabar desa, dan promosi wisata desa (Mendukung ID & EN).</p>
             </div>
-            <button class="px-5 py-2.5 rounded-full bg-[#316342] text-white font-bold text-xs hover:bg-[#254d33] transition-colors shadow-md flex items-center gap-2" id="add-art-btn">
+            <button class="px-5 py-2.5 rounded-full bg-[#316342] text-white font-bold text-xs hover:bg-[#254d33] transition-colors shadow-md flex items-center gap-2 cursor-pointer" id="add-art-btn">
               <span class="material-symbols-outlined text-sm">add</span>
               Tulis Artikel Baru
             </button>
@@ -74,25 +74,31 @@ export const renderAdminArtikel = async () => {
 
     const tbody = container.querySelector('#table-body-element');
     if (tbody && artikelList.length > 0) {
-      tbody.innerHTML = artikelList.map(item => `
-        <tr>
-          <td>
-            <strong>${item.judul}</strong>
-            <div style="font-size: 0.8rem; color: var(--neutral-600);">${item.ringkasan ? item.ringkasan.substring(0, 60) + '...' : ''}</div>
-          </td>
-          <td><span class="badge badge-primary">${item.kategori || 'Umum'}</span></td>
-          <td>${item.published_at ? new Date(item.published_at).toLocaleDateString('id-ID') : '-'}</td>
-          <td>
-            <span class="badge ${item.status === 'published' ? 'badge-success' : 'badge-warning'}">
-              ${item.status}
-            </span>
-          </td>
-          <td style="text-align: right;">
-            <button class="btn btn-sm btn-secondary action-edit" data-id="${item.id}">Edit</button>
-            <button class="btn btn-sm btn-outline action-delete" data-id="${item.id}" style="color: var(--status-error); border-color: var(--status-error);">Hapus</button>
-          </td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = artikelList.map(item => {
+        const hasEn = !!item.judul_en;
+        return `
+          <tr>
+            <td>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <strong>${item.judul}</strong>
+                ${hasEn ? '<span style="font-size: 10px; background: #e0e7ff; color: #3730a3; padding: 1px 6px; border-radius: 4px; font-weight: bold;">EN</span>' : ''}
+              </div>
+              <div style="font-size: 0.8rem; color: var(--neutral-600);">${item.ringkasan ? item.ringkasan.substring(0, 60) + '...' : ''}</div>
+            </td>
+            <td><span class="badge badge-primary">${item.kategori || 'Umum'}</span></td>
+            <td>${item.published_at ? new Date(item.published_at).toLocaleDateString('id-ID') : '-'}</td>
+            <td>
+              <span class="badge ${item.status === 'published' ? 'badge-success' : 'badge-warning'}">
+                ${item.status}
+              </span>
+            </td>
+            <td style="text-align: right;">
+              <button class="btn btn-sm btn-secondary action-edit" data-id="${item.id}">Edit</button>
+              <button class="btn btn-sm btn-outline action-delete" data-id="${item.id}" style="color: var(--status-error); border-color: var(--status-error);">Hapus</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
 
     container.querySelector('#add-art-btn')?.addEventListener('click', () => openFormModal());
@@ -136,11 +142,52 @@ export const renderAdminArtikel = async () => {
 
     const bodyHtml = `
       <form id="artikel-form">
-        <div class="form-group">
-          <label class="form-label">Judul Artikel *</label>
-          <input type="text" id="art-judul" class="form-control" value="${artikel?.judul || ''}" required />
+        <!-- Language Switch Tabs -->
+        <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
+          <button type="button" id="tab-art-id" class="btn btn-sm btn-primary" style="padding: 6px 14px; border-radius: 9999px;">🇮🇩 Bahasa Indonesia</button>
+          <button type="button" id="tab-art-en" class="btn btn-sm btn-outline" style="padding: 6px 14px; border-radius: 9999px;">🇬🇧 English (Opsional)</button>
         </div>
 
+        <!-- Section ID -->
+        <div id="section-art-id">
+          <div class="form-group">
+            <label class="form-label">Judul Artikel (ID) *</label>
+            <input type="text" id="art-judul" class="form-control" value="${artikel?.judul || ''}" required placeholder="Contoh: Festival Durian Candimulyo..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ringkasan / Excerpt (ID) (Max 200 Karakter)</label>
+            <textarea id="art-ringkasan" class="form-control" rows="2" placeholder="Ringkasan artikel dalam bahasa Indonesia...">${artikel?.ringkasan || ''}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Konten Artikel (ID) (Markdown Format)</label>
+            <div style="margin-bottom: 6px; display: flex; gap: 8px;">
+              <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('art-konten').value += '## Subjudul\\n'">+ Subjudul</button>
+              <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('art-konten').value += '**teks tebal**'"><b>B</b></button>
+              <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('art-konten').value += '*teks miring*'"><i>I</i></button>
+            </div>
+            <textarea id="art-konten" class="form-control" rows="6" placeholder="Tulis konten artikel di sini...">${artikel?.konten || ''}</textarea>
+          </div>
+        </div>
+
+        <!-- Section EN -->
+        <div id="section-art-en" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">Article Title (EN)</label>
+            <input type="text" id="art-judul-en" class="form-control" value="${artikel?.judul_en || ''}" placeholder="E.g. Candimulyo Durian Festival..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Summary / Excerpt (EN)</label>
+            <textarea id="art-ringkasan-en" class="form-control" rows="2" placeholder="Article summary in English...">${artikel?.ringkasan_en || ''}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Article Content (EN) (Markdown Format)</label>
+            <textarea id="art-konten-en" class="form-control" rows="6" placeholder="Write article content in English...">${artikel?.konten_en || ''}</textarea>
+          </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 16px 0;" />
+
+        <!-- Common Fields -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
           <div class="form-group">
             <label class="form-label">Kategori Artikel</label>
@@ -156,21 +203,6 @@ export const renderAdminArtikel = async () => {
         </div>
 
         ${renderImageUploader('art-gambar', artikel?.gambar_url || '')}
-
-        <div class="form-group">
-          <label class="form-label">Ringkasan / Excerpt (Max 200 Karakter)</label>
-          <textarea id="art-ringkasan" class="form-control" rows="2">${artikel?.ringkasan || ''}</textarea>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Konten Artikel (Markdown Format)</label>
-          <div style="margin-bottom: 6px; display: flex; gap: 8px;">
-            <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('art-konten').value += '## Subjudul\\n'">+ Subjudul</button>
-            <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('art-konten').value += '**teks tebal**'"><b>B</b></button>
-            <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('art-konten').value += '*teks miring*'"><i>I</i></button>
-          </div>
-          <textarea id="art-konten" class="form-control" rows="8" placeholder="Tulis konten artikel di sini...">${artikel?.konten || ''}</textarea>
-        </div>
       </form>
     `;
 
@@ -178,15 +210,40 @@ export const renderAdminArtikel = async () => {
       title: isEdit ? 'Edit Artikel' : 'Tulis Artikel Baru',
       bodyHtml,
       saveText: isEdit ? 'Perbarui Artikel' : 'Simpan Artikel',
+      onOpen: () => {
+        initImageUploaderEvents('art-gambar', 'artikel');
+        const tabId = document.getElementById('tab-art-id');
+        const tabEn = document.getElementById('tab-art-en');
+        const secId = document.getElementById('section-art-id');
+        const secEn = document.getElementById('section-art-en');
+
+        if (tabId && tabEn && secId && secEn) {
+          tabId.addEventListener('click', () => {
+            secId.style.display = 'block';
+            secEn.style.display = 'none';
+            tabId.className = 'btn btn-sm btn-primary';
+            tabEn.className = 'btn btn-sm btn-outline';
+          });
+          tabEn.addEventListener('click', () => {
+            secId.style.display = 'none';
+            secEn.style.display = 'block';
+            tabEn.className = 'btn btn-sm btn-primary';
+            tabId.className = 'btn btn-sm btn-outline';
+          });
+        }
+      },
       onSave: async () => {
         const statusVal = document.getElementById('art-status').value;
         const payload = {
           judul: document.getElementById('art-judul').value.trim(),
+          judul_en: document.getElementById('art-judul-en')?.value.trim() || '',
+          ringkasan: document.getElementById('art-ringkasan').value.trim(),
+          ringkasan_en: document.getElementById('art-ringkasan-en')?.value.trim() || '',
+          konten: document.getElementById('art-konten').value.trim(),
+          konten_en: document.getElementById('art-konten-en')?.value.trim() || '',
           kategori: document.getElementById('art-kategori').value.trim(),
           status: statusVal,
           gambar_url: document.getElementById('art-gambar').value,
-          ringkasan: document.getElementById('art-ringkasan').value.trim(),
-          konten: document.getElementById('art-konten').value.trim(),
           published_at: statusVal === 'published' ? (artikel?.published_at || new Date().toISOString()) : null
         };
 
@@ -222,8 +279,6 @@ export const renderAdminArtikel = async () => {
         return true;
       }
     });
-
-    setTimeout(() => initImageUploaderEvents('art-gambar', 'artikel'), 100);
   };
 
   renderPage();

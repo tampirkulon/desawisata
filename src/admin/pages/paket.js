@@ -45,9 +45,9 @@ export const renderAdminPaket = async () => {
           <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
             <div>
               <h1 class="font-display-lg text-2xl font-bold text-slate-800 m-0">Paket Wisata</h1>
-              <p class="text-xs font-medium text-slate-400 m-0 mt-1">Kelola tawaran paket tur, edukasi, dan jelajah desa.</p>
+              <p class="text-xs font-medium text-slate-400 m-0 mt-1">Kelola tawaran paket tur, edukasi, dan jelajah desa (Mendukung ID & EN).</p>
             </div>
-            <button class="px-5 py-2.5 rounded-full bg-[#316342] text-white font-bold text-xs hover:bg-[#254d33] transition-colors shadow-md flex items-center gap-2" id="add-paket-btn">
+            <button class="px-5 py-2.5 rounded-full bg-[#316342] text-white font-bold text-xs hover:bg-[#254d33] transition-colors shadow-md flex items-center gap-2 cursor-pointer" id="add-paket-btn">
               <span class="material-symbols-outlined text-sm">add</span>
               Tambah Paket Baru
             </button>
@@ -78,25 +78,31 @@ export const renderAdminPaket = async () => {
 
     const tbody = container.querySelector('#table-body-element');
     if (tbody && paketList.length > 0) {
-      tbody.innerHTML = paketList.map(item => `
-        <tr>
-          <td>
-            <strong>${item.nama}</strong>
-            <div style="font-size: 0.8rem; color: var(--neutral-600);">${(item.fasilitas || []).length} Fasilitas termasuk</div>
-          </td>
-          <td style="font-weight: 700; color: var(--primary-500);">${formatRupiah(item.harga)}</td>
-          <td>${item.durasi || '-'}</td>
-          <td>
-            <span class="badge ${item.is_published ? 'badge-success' : 'badge-danger'}">
-              ${item.is_published ? 'Published' : 'Draft'}
-            </span>
-          </td>
-          <td style="text-align: right;">
-            <button class="btn btn-sm btn-secondary action-edit" data-id="${item.id}">Edit</button>
-            <button class="btn btn-sm btn-outline action-delete" data-id="${item.id}" style="color: var(--status-error); border-color: var(--status-error);">Hapus</button>
-          </td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = paketList.map(item => {
+        const hasEn = !!item.nama_en;
+        return `
+          <tr>
+            <td>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <strong>${item.nama}</strong>
+                ${hasEn ? '<span style="font-size: 10px; background: #e0e7ff; color: #3730a3; padding: 1px 6px; border-radius: 4px; font-weight: bold;">EN</span>' : ''}
+              </div>
+              <div style="font-size: 0.8rem; color: var(--neutral-600);">${(item.fasilitas || []).length} Fasilitas termasuk</div>
+            </td>
+            <td style="font-weight: 700; color: var(--primary-500);">${formatRupiah(item.harga)}</td>
+            <td>${item.durasi || '-'}</td>
+            <td>
+              <span class="badge ${item.is_published ? 'badge-success' : 'badge-danger'}">
+                ${item.is_published ? 'Published' : 'Draft'}
+              </span>
+            </td>
+            <td style="text-align: right;">
+              <button class="btn btn-sm btn-secondary action-edit" data-id="${item.id}">Edit</button>
+              <button class="btn btn-sm btn-outline action-delete" data-id="${item.id}" style="color: var(--status-error); border-color: var(--status-error);">Hapus</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
 
     container.querySelector('#add-paket-btn')?.addEventListener('click', () => openFormModal());
@@ -138,14 +144,51 @@ export const renderAdminPaket = async () => {
   const openFormModal = (paket = null) => {
     const isEdit = !!paket;
     const fasilitasStr = (paket?.fasilitas || []).join('\n');
+    const fasilitasEnStr = (paket?.fasilitas_en || []).join('\n');
 
     const bodyHtml = `
       <form id="paket-form">
-        <div class="form-group">
-          <label class="form-label">Nama Paket Wisata *</label>
-          <input type="text" id="pkt-nama" class="form-control" value="${paket?.nama || ''}" required />
+        <!-- Language Switch Tabs -->
+        <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
+          <button type="button" id="tab-pkt-id" class="btn btn-sm btn-primary" style="padding: 6px 14px; border-radius: 9999px;">🇮🇩 Bahasa Indonesia</button>
+          <button type="button" id="tab-pkt-en" class="btn btn-sm btn-outline" style="padding: 6px 14px; border-radius: 9999px;">🇬🇧 English (Opsional)</button>
         </div>
 
+        <!-- Section ID -->
+        <div id="section-pkt-id">
+          <div class="form-group">
+            <label class="form-label">Nama Paket Wisata (ID) *</label>
+            <input type="text" id="pkt-nama" class="form-control" value="${paket?.nama || ''}" required placeholder="Contoh: Paket Jelajah Durian & Kuliner" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Deskripsi Ringkas (ID)</label>
+            <textarea id="pkt-deskripsi" class="form-control" rows="3" placeholder="Deskripsi paket dalam bahasa Indonesia...">${paket?.deskripsi || ''}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fasilitas Termasuk (ID) - (1 per baris)</label>
+            <textarea id="pkt-fasilitas" class="form-control" rows="4" placeholder="Tiket Masuk Kebun&#10;1 Buah Durian Pilihan&#10;Makan Siang Tradisional">${fasilitasStr}</textarea>
+          </div>
+        </div>
+
+        <!-- Section EN -->
+        <div id="section-pkt-en" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">Tour Package Name (EN)</label>
+            <input type="text" id="pkt-nama-en" class="form-control" value="${paket?.nama_en || ''}" placeholder="E.g. Durian Discovery & Village Culinary Package" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Short Description (EN)</label>
+            <textarea id="pkt-deskripsi-en" class="form-control" rows="3" placeholder="Package description in English...">${paket?.deskripsi_en || ''}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Included Facilities (EN) - (1 per line)</label>
+            <textarea id="pkt-fasilitas-en" class="form-control" rows="4" placeholder="Orchard Admission Ticket&#10;1 Selected Fresh Durian&#10;Traditional Village Lunch">${fasilitasEnStr}</textarea>
+          </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 16px 0;" />
+
+        <!-- Common Fields -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
           <div class="form-group">
             <label class="form-label">Harga (Rupiah) *</label>
@@ -170,16 +213,6 @@ export const renderAdminPaket = async () => {
 
         ${renderImageUploader('pkt-gambar', paket?.gambar_url || '')}
 
-        <div class="form-group">
-          <label class="form-label">Fasilitas Termasuk (1 per baris)</label>
-          <textarea id="pkt-fasilitas" class="form-control" rows="4" placeholder="1 Buah Durian Pilihan&#10;Makan Siang Tradisional&#10;Pemandu Lokal">${fasilitasStr}</textarea>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Deskripsi Ringkas</label>
-          <textarea id="pkt-deskripsi" class="form-control" rows="3">${paket?.deskripsi || ''}</textarea>
-        </div>
-
         <div style="margin-top: 16px;">
           <label style="display: flex; align-items: center; gap: 8px; font-weight: 500; cursor: pointer;">
             <input type="checkbox" id="pkt-published" ${paket?.is_published !== false ? 'checked' : ''} />
@@ -193,16 +226,43 @@ export const renderAdminPaket = async () => {
       title: isEdit ? 'Edit Paket Wisata' : 'Tambah Paket Wisata Baru',
       bodyHtml,
       saveText: isEdit ? 'Perbarui' : 'Simpan',
+      onOpen: () => {
+        initImageUploaderEvents('pkt-gambar', 'paket');
+        const tabId = document.getElementById('tab-pkt-id');
+        const tabEn = document.getElementById('tab-pkt-en');
+        const secId = document.getElementById('section-pkt-id');
+        const secEn = document.getElementById('section-pkt-en');
+
+        if (tabId && tabEn && secId && secEn) {
+          tabId.addEventListener('click', () => {
+            secId.style.display = 'block';
+            secEn.style.display = 'none';
+            tabId.className = 'btn btn-sm btn-primary';
+            tabEn.className = 'btn btn-sm btn-outline';
+          });
+          tabEn.addEventListener('click', () => {
+            secId.style.display = 'none';
+            secEn.style.display = 'block';
+            tabEn.className = 'btn btn-sm btn-primary';
+            tabId.className = 'btn btn-sm btn-outline';
+          });
+        }
+      },
       onSave: async () => {
+        const rawFasilitasEn = document.getElementById('pkt-fasilitas-en')?.value.split('\n').map(s => s.trim()).filter(Boolean) || [];
+
         const payload = {
           nama: document.getElementById('pkt-nama').value.trim(),
+          nama_en: document.getElementById('pkt-nama-en')?.value.trim() || '',
+          deskripsi: document.getElementById('pkt-deskripsi').value.trim(),
+          deskripsi_en: document.getElementById('pkt-deskripsi-en')?.value.trim() || '',
+          fasilitas: document.getElementById('pkt-fasilitas').value.split('\n').map(s => s.trim()).filter(Boolean),
+          fasilitas_en: rawFasilitasEn,
           harga: Number.parseInt(document.getElementById('pkt-harga').value) || 0,
           durasi: document.getElementById('pkt-durasi').value.trim(),
           kapasitas_min: Number.parseInt(document.getElementById('pkt-min').value) || 1,
           kapasitas_max: Number.parseInt(document.getElementById('pkt-max').value) || 30,
           gambar_url: document.getElementById('pkt-gambar').value,
-          fasilitas: document.getElementById('pkt-fasilitas').value.split('\n').map(s => s.trim()).filter(Boolean),
-          deskripsi: document.getElementById('pkt-deskripsi').value.trim(),
           is_published: document.getElementById('pkt-published').checked
         };
 
@@ -238,8 +298,6 @@ export const renderAdminPaket = async () => {
         return true;
       }
     });
-
-    setTimeout(() => initImageUploaderEvents('pkt-gambar', 'paket'), 100);
   };
 
   renderPage();
