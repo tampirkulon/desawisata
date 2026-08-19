@@ -5,10 +5,12 @@ import { renderPagination, initPaginationEvents } from '../components/pagination
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
 import { getProfilDesa } from '../utils/profile-store.js';
+import { t, getLanguage, getLocalizedField } from '../utils/i18n.js';
 
 export const renderGaleri = async () => {
   let galeriList = mockData.galeri;
   let profil = await getProfilDesa();
+  const isEn = getLanguage() === 'en';
 
   if (isSupabaseConfigured()) {
     try {
@@ -41,17 +43,23 @@ export const renderGaleri = async () => {
       <main class="max-w-container-max mx-auto px-4 md:px-16 pb-20 w-full flex-grow">
         <!-- Header Section -->
         <section id="galeri-main-header" class="text-center py-12">
-          <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-primary mb-3">Galeri Kenangan Tampirkulon</h1>
-          <p class="font-body-md text-base text-on-surface-variant max-w-2xl mx-auto">Jelajahi keindahan alam, kekayaan budaya, dan momen tak terlupakan di desa wisata kami.</p>
+          <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-3 shadow-xs">
+            ${t('galeri.hero_badge')}
+          </span>
+          <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-primary mb-3">${t('galeri.hero_title')}</h1>
+          <p class="font-body-md text-base text-on-surface-variant max-w-2xl mx-auto">${t('galeri.hero_subtitle')}</p>
         </section>
 
         <!-- Filter Bar -->
         <section class="flex flex-wrap justify-center gap-3 mb-12">
-          ${categories.map(cat => `
-            <button class="galeri-filter-btn px-6 py-2 rounded-full font-label-caps text-xs font-semibold transition-colors cursor-pointer ${activeFilter === cat ? 'bg-primary text-on-primary shadow-sm' : 'bg-transparent text-primary border border-primary hover:bg-primary/10'}" data-cat="${cat}">
-              ${cat === 'all' ? 'Semua' : cat}
-            </button>
-          `).join('')}
+          ${categories.map(cat => {
+            const label = cat === 'all' ? t('galeri.filter_all') : cat;
+            return `
+              <button class="galeri-filter-btn px-6 py-2 rounded-full font-label-caps text-xs font-semibold transition-colors cursor-pointer ${activeFilter === cat ? 'bg-primary text-on-primary shadow-sm' : 'bg-transparent text-primary border border-primary hover:bg-primary/10'}" data-cat="${cat}">
+                ${label}
+              </button>
+            `;
+          }).join('')}
         </section>
 
         <!-- Grid Gallery -->
@@ -59,21 +67,22 @@ export const renderGaleri = async () => {
           ${paginatedGaleri.length === 0 ? `
             <div class="col-span-full text-center py-16 text-on-surface-variant">
               <span class="material-symbols-outlined text-5xl mb-2 text-outline">photo_library</span>
-              <p class="font-body-md text-base">Tidak ada foto dalam kategori ini.</p>
+              <p class="font-body-md text-base">${isEn ? 'No media found in this category.' : 'Tidak ada foto dalam kategori ini.'}</p>
             </div>
           ` : paginatedGaleri.map((item, pageIdx) => {
             const globalIdx = startIndex + pageIdx;
+            const localizedJudul = getLocalizedField(item, 'judul');
             let colSpan = 'md:col-span-1';
             if (pageIdx === 0) colSpan = 'md:col-span-2 md:row-span-2';
             else if (pageIdx === 1 || pageIdx === 4 || pageIdx === 5) colSpan = 'md:col-span-2';
 
             return `
               <div class="${colSpan} relative group rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 gallery-item cursor-pointer" data-global-idx="${globalIdx}">
-                <img src="${item.url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80'}" alt="${item.judul || 'Foto Galeri'}" class="w-full h-full min-h-[240px] max-h-[420px] object-cover transform transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                <img src="${item.url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80'}" alt="${localizedJudul || 'Gallery item'}" class="w-full h-full min-h-[240px] max-h-[420px] object-cover transform transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                 <div class="overlay absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6 transition-all duration-300 opacity-0 group-hover:opacity-100">
                   <div>
-                    <h3 class="text-white font-display-lg text-lg md:text-xl font-bold">${item.judul || 'Dokumentasi Tampirkulon'}</h3>
-                    <span class="text-xs text-tertiary-fixed font-semibold">${item.kategori || 'Galeri'}</span>
+                    <h3 class="text-white font-display-lg text-lg md:text-xl font-bold">${localizedJudul || (isEn ? 'Tampirkulon Gallery' : 'Dokumentasi Tampirkulon')}</h3>
+                    <span class="text-xs text-tertiary-fixed font-semibold">${item.kategori || t('nav.galeri')}</span>
                   </div>
                 </div>
               </div>
@@ -86,7 +95,7 @@ export const renderGaleri = async () => {
           totalItems: filteredGaleri.length,
           itemsPerPage,
           currentPage,
-          labelItem: 'Foto'
+          labelItem: isEn ? 'Photos' : 'Foto'
         })}
       </main>
 

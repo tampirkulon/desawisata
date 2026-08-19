@@ -5,10 +5,12 @@ import { renderPagination, initPaginationEvents } from '../components/pagination
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
 import { getProfilDesa } from '../utils/profile-store.js';
+import { t, getLanguage, getLocalizedField } from '../utils/i18n.js';
 
 export const renderBlog = async () => {
   let artikelList = mockData.artikel;
   let profil = await getProfilDesa();
+  const isEn = getLanguage() === 'en';
 
   if (isSupabaseConfigured()) {
     try {
@@ -35,38 +37,48 @@ export const renderBlog = async () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedArticles = recentArticles.slice(startIndex, startIndex + itemsPerPage);
 
+    const featuredJudul = getLocalizedField(featuredArticle, 'judul');
+    const featuredRingkasan = getLocalizedField(featuredArticle, 'ringkasan') || (getLocalizedField(featuredArticle, 'konten') ? getLocalizedField(featuredArticle, 'konten').substring(0, 180) + '...' : '');
+    const featuredKategori = getLocalizedField(featuredArticle, 'kategori') || (isEn ? 'Culture' : 'Budaya');
+    const featuredDate = featuredArticle.created_at || featuredArticle.published_at
+      ? new Date(featuredArticle.created_at || featuredArticle.published_at).toLocaleDateString(isEn ? 'en-US' : 'id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
+      : (isEn ? 'October 15, 2026' : '15 Oktober 2026');
+
     return `
       ${renderNavbar(true)}
 
       <main class="flex-grow max-w-container-max mx-auto px-4 md:px-16 w-full mb-16">
         <!-- Header Title Section -->
         <section class="py-12 text-center max-w-3xl mx-auto">
+          <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-3 shadow-xs">
+            ${t('blog.hero_badge')}
+          </span>
           <h1 class="font-display-lg text-3xl md:text-5xl font-bold text-primary mb-4">
-            Kisah dari Tampirkulon
+            ${t('blog.hero_title')}
           </h1>
           <p class="font-body-md text-base text-on-surface-variant leading-relaxed">
-            Temukan cerita, tradisi, dan keindahan alam desa kami melalui catatan perjalanan dan berita terbaru.
+            ${t('blog.hero_subtitle')}
           </p>
         </section>
 
         <!-- Featured Article Hero Banner (Page 1 Only) -->
-        ${(featuredArticle.judul && currentPage === 1) ? `
+        ${(featuredJudul && currentPage === 1) ? `
           <section class="mb-16">
             <div class="bg-surface-container-lowest rounded-2xl shadow-level-1 overflow-hidden flex flex-col lg:flex-row group transition-all duration-300 hover:shadow-level-2 border border-outline-variant/30 cursor-pointer read-article-btn" data-id="${featuredArticle.id}">
               <div class="w-full lg:w-1/2 h-64 lg:h-auto overflow-hidden">
-                <img src="${featuredArticle.gambar_url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80'}" alt="${featuredArticle.judul}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" />
+                <img src="${featuredArticle.gambar_url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80'}" alt="${featuredJudul}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" />
               </div>
               <div class="w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center bg-surface">
                 <div class="flex items-center gap-3 mb-4">
-                  <span class="bg-primary-fixed text-primary px-3 py-1 rounded-full font-label-caps text-xs font-bold uppercase">${featuredArticle.kategori || 'Budaya'}</span>
-                  <span class="text-on-surface-variant text-xs font-body-sm">${featuredArticle.created_at ? new Date(featuredArticle.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '15 Oktober 2024'}</span>
+                  <span class="bg-primary-fixed text-primary px-3 py-1 rounded-full font-label-caps text-xs font-bold uppercase">${featuredKategori}</span>
+                  <span class="text-on-surface-variant text-xs font-body-sm">${featuredDate}</span>
                 </div>
-                <h2 class="font-display-lg text-2xl lg:text-3xl font-bold text-primary mb-4 leading-tight">${featuredArticle.judul}</h2>
+                <h2 class="font-display-lg text-2xl lg:text-3xl font-bold text-primary mb-4 leading-tight">${featuredJudul}</h2>
                 <p class="font-body-md text-sm text-on-surface-variant mb-6 line-clamp-3 leading-relaxed">
-                  ${featuredArticle.ringkasan || (featuredArticle.konten ? featuredArticle.konten.substring(0, 180) + '...' : '')}
+                  ${featuredRingkasan}
                 </p>
                 <button class="text-primary font-bold text-sm flex items-center gap-2 hover:text-primary-container transition-colors w-fit bg-transparent border-0 cursor-pointer p-0">
-                  Baca Selengkapnya
+                  <span>${t('blog.btn_read_more')}</span>
                   <span class="material-symbols-outlined text-sm">arrow_forward</span>
                 </button>
               </div>
@@ -77,32 +89,41 @@ export const renderBlog = async () => {
         <!-- Recent Blog Grid Section -->
         <section id="recent-articles">
           <div class="flex justify-between items-end mb-8">
-            <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-primary">Artikel Terbaru</h2>
+            <h2 class="font-display-lg text-2xl md:text-3xl font-bold text-primary">${isEn ? 'Recent Articles' : 'Artikel Terbaru'}</h2>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             ${paginatedArticles.length === 0 ? `
               <div class="col-span-full text-center py-16 text-on-surface-variant">
                 <span class="material-symbols-outlined text-5xl mb-2 text-outline">article</span>
-                <p class="font-body-md text-base">Tidak ada artikel tambahan untuk ditampilkan.</p>
+                <p class="font-body-md text-base">${t('blog.no_article')}</p>
               </div>
-            ` : paginatedArticles.map(article => `
+            ` : paginatedArticles.map(article => {
+              const localizedJudul = getLocalizedField(article, 'judul');
+              const localizedRingkasan = getLocalizedField(article, 'ringkasan') || (getLocalizedField(article, 'konten') ? getLocalizedField(article, 'konten').substring(0, 110) + '...' : '');
+              const localizedKategori = getLocalizedField(article, 'kategori') || (isEn ? 'News' : 'Berita');
+              const artDate = article.created_at || article.published_at
+                ? new Date(article.created_at || article.published_at).toLocaleDateString(isEn ? 'en-US' : 'id-ID', { year: 'numeric', month: 'short', day: 'numeric' })
+                : (isEn ? 'Oct 12, 2026' : '12 Okt 2026');
+
+              return `
               <article class="bg-surface-container-lowest rounded-xl shadow-level-1 overflow-hidden hover:shadow-level-2 transition-all duration-300 group flex flex-col h-full border border-outline-variant/30 cursor-pointer read-article-btn" data-id="${article.id}">
                 <div class="h-48 overflow-hidden">
-                  <img src="${article.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${article.judul}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
+                  <img src="${article.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${localizedJudul}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
                 </div>
                 <div class="p-6 flex flex-col flex-grow bg-surface">
                   <div class="flex items-center gap-3 mb-3">
-                    <span class="bg-primary-fixed text-primary px-2.5 py-0.5 rounded-full font-label-caps text-[10px] font-bold uppercase">${article.kategori || 'Berita'}</span>
-                    <span class="text-on-surface-variant text-xs">${article.created_at ? new Date(article.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '12 Okt 2024'}</span>
+                    <span class="bg-primary-fixed text-primary px-2.5 py-0.5 rounded-full font-label-caps text-[10px] font-bold uppercase">${localizedKategori}</span>
+                    <span class="text-on-surface-variant text-xs">${artDate}</span>
                   </div>
-                  <h3 class="font-display-lg text-lg font-bold text-primary mb-2 line-clamp-2">${article.judul}</h3>
+                  <h3 class="font-display-lg text-lg font-bold text-primary mb-2 line-clamp-2">${localizedJudul}</h3>
                   <p class="font-body-sm text-sm text-on-surface-variant line-clamp-3 mb-4 flex-grow leading-relaxed">
-                    ${article.ringkasan || (article.konten ? article.konten.substring(0, 110) + '...' : '')}
+                    ${localizedRingkasan}
                   </p>
                 </div>
               </article>
-            `).join('')}
+            `;
+            }).join('')}
           </div>
 
           <!-- Pagination Section -->
@@ -110,7 +131,7 @@ export const renderBlog = async () => {
             totalItems: totalRecent,
             itemsPerPage,
             currentPage,
-            labelItem: 'Artikel'
+            labelItem: isEn ? 'Articles' : 'Artikel'
           })}
         </section>
       </main>

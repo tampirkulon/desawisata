@@ -1,4 +1,5 @@
 // Lightbox Component for Gallery Fullscreen Preview
+import { t, getLocalizedField } from '../utils/i18n.js';
 
 let currentIndex = 0;
 let itemsList = [];
@@ -36,26 +37,27 @@ const updateLightboxContent = () => {
   if (!overlay || itemsList.length === 0) return;
 
   const item = itemsList[currentIndex];
+  const localizedJudul = getLocalizedField(item, 'judul');
 
   overlay.innerHTML = `
-    <button id="lightbox-close" style="position: absolute; top: 20px; right: 20px; font-size: 2rem; color: #fff; background: none; border: none; cursor: pointer;">✕</button>
+    <button id="lightbox-close" aria-label="${t('galeri.lightbox_close')}" style="position: absolute; top: 20px; right: 20px; font-size: 2rem; color: #fff; background: none; border: none; cursor: pointer;">✕</button>
 
     <div style="position: relative; max-width: 90vw; max-height: 80vh; display: flex; align-items: center; justify-content: center;">
       ${item.tipe === 'video' ? `
         <video src="${item.url}" controls autoplay style="max-width: 100%; max-height: 75vh; border-radius: 8px;"></video>
       ` : `
-        <img src="${item.url}" alt="${item.judul || 'Foto'}" style="max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+        <img src="${item.url}" alt="${localizedJudul || 'Foto'}" style="max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
       `}
     </div>
 
     <div style="margin-top: 16px; text-align: center;">
-      <h4 style="color: #fff; font-size: 1.2rem;">${item.judul || 'Foto Galeri'}</h4>
+      <h4 style="color: #fff; font-size: 1.2rem;">${localizedJudul || 'Foto Galeri'}</h4>
       <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">${item.kategori || ''} (${currentIndex + 1} / ${itemsList.length})</p>
     </div>
 
     ${itemsList.length > 1 ? `
-      <button id="lightbox-prev" style="position: absolute; left: 20px; font-size: 2.5rem; color: #fff; background: none; border: none; cursor: pointer; padding: 10px;">❮</button>
-      <button id="lightbox-next" style="position: absolute; right: 20px; font-size: 2.5rem; color: #fff; background: none; border: none; cursor: pointer; padding: 10px;">❯</button>
+      <button id="lightbox-prev" aria-label="${t('galeri.lightbox_prev')}" style="position: absolute; left: 20px; font-size: 2.5rem; color: #fff; background: none; border: none; cursor: pointer; padding: 10px;">❮</button>
+      <button id="lightbox-next" aria-label="${t('galeri.lightbox_next')}" style="position: absolute; right: 20px; font-size: 2.5rem; color: #fff; background: none; border: none; cursor: pointer; padding: 10px;">❯</button>
     ` : ''}
   `;
 
