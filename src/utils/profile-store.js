@@ -87,6 +87,7 @@ export const getProfilDesaSync = () => {
     if (extra.banner_url) base.banner_url = extra.banner_url;
     if (extra.logo_url) base.logo_url = extra.logo_url;
     if (extra.footer_deskripsi) base.footer_deskripsi = extra.footer_deskripsi;
+    if (extra.footer_deskripsi_en) base.footer_deskripsi_en = extra.footer_deskripsi_en;
     if (extra.footer_copyright) base.footer_copyright = extra.footer_copyright;
     if (extra.footer_show_social !== undefined) base.footer_show_social = extra.footer_show_social;
     if (extra.footer_quick_links) base.footer_quick_links = extra.footer_quick_links;

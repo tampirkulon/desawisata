@@ -70,4 +70,19 @@ assert.strictEqual(getLocalizedField(mockItem, 'nama'), 'Kebun Durian');
 assert.strictEqual(getLocalizedField(mockItem, 'deskripsi'), 'Deskripsi lokal');
 assert.deepStrictEqual(getLocalizedField(mockItem, 'fasilitas'), ['Pemandu', 'Makan Siang']);
 
+// 4. Seed Data Bilingual Support Test
+import { mockData } from '../src/data/seed.js';
+
+assert.ok(mockData.profil_desa.tagline_en, 'profil_desa should have tagline_en');
+assert.ok(mockData.profil_desa.sejarah_en, 'profil_desa should have sejarah_en');
+assert.ok(mockData.profil_desa.visi_en, 'profil_desa should have visi_en');
+assert.ok(mockData.profil_desa.misi_en, 'profil_desa should have misi_en');
+assert.ok(mockData.destinasi[0].nama_en, 'destinasi should have nama_en');
+assert.ok(mockData.destinasi[0].deskripsi_en, 'destinasi should have deskripsi_en');
+assert.ok(mockData.paket_wisata[0].nama_en, 'paket_wisata should have nama_en');
+assert.ok(Array.isArray(mockData.paket_wisata[0].fasilitas_en), 'paket_wisata should have fasilitas_en array');
+assert.ok(mockData.artikel[0].judul_en, 'artikel should have judul_en');
+
+console.log('✅ Seed data bilingual fields verified.');
+
 console.log('\n🎉 All i18n unit tests passed successfully!\n');
