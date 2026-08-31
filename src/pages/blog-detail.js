@@ -170,8 +170,8 @@ export const renderBlogDetail = async (params) => {
         });
         const quoteBody = bodyLines.join(' ').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         blocks.push(`
-          <div class="my-8 p-6 md:p-8 rounded-2xl bg-[#fdfbf7] dark:bg-[#1a221d] border-l-4 border-primary shadow-xs relative not-prose border border-[#e8dfd1]/80 dark:border-outline-variant/30">
-            <div class="text-base md:text-lg italic font-serif text-[#334155] dark:text-on-surface leading-relaxed mb-3">
+          <div class="my-8 p-6 md:p-8 rounded-2xl bg-[#fcf8ec] border-l-4 border-primary shadow-xs relative not-prose border border-[#e8dfd1]">
+            <div class="text-base md:text-lg italic font-serif text-[#2d3748] leading-relaxed mb-3">
               ${quoteBody.startsWith('"') ? quoteBody : `"${quoteBody}"`}
             </div>
             ${author ? `<div class="text-xs md:text-sm font-bold text-primary tracking-wide font-sans">— ${author}</div>` : ''}
