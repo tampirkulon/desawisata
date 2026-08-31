@@ -83,8 +83,12 @@ export const renderBlogDetail = async (params) => {
   const renderMarkdownContent = (rawText) => {
     if (!rawText) return '';
 
-    // Step 1: Pre-process Gallery Blocks (::gallery ... ::)
-    let processedText = rawText.replace(/::(?:gallery|grid)\s*([\s\S]*?)\s*::/g, (_match, galleryContent) => {
+    // Step 1: Normalize line endings
+    let text = rawText.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+
+    // Step 2: Extract & replace Gallery blocks (::gallery ... ::)
+    const galleryPlaceholders = [];
+    text = text.replace(/::(?:gallery|grid)\s*([\s\S]*?)\s*::/g, (_match, galleryContent) => {
       const imgMatches = [...galleryContent.matchAll(/!\[(.*?)\]\((.*?)\)/g)];
       if (imgMatches.length > 0) {
         const figuresHtml = imgMatches.map(m => {
@@ -97,104 +101,181 @@ export const renderBlogDetail = async (params) => {
             </figure>
           `;
         }).join('');
-        return `\n\n__GALLERY_BLOCK__<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-8 not-prose">${figuresHtml}</div>__GALLERY_BLOCK__\n\n`;
+        const id = `__GALLERY_PH_${galleryPlaceholders.length}__`;
+        galleryPlaceholders.push(`<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-8 not-prose">${figuresHtml}</div>`);
+        return `\n\n${id}\n\n`;
       }
       return '';
     });
 
-    const paragraphs = processedText.split('\n\n');
+    const lines = text.split('\n');
+    const blocks = [];
+    let currentParagraph = [];
+    let currentList = [];
+    let currentQuote = [];
     let hasDropCapApplied = false;
 
-    return paragraphs
-      .map(paragraph => {
-        const clean = paragraph.trim();
-        if (!clean) return '';
+    const flushParagraph = () => {
+      if (currentParagraph.length > 0) {
+        const fullText = currentParagraph.join(' ').trim();
+        if (fullText) {
+          const formatted = fullText
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-primary underline hover:text-primary-container" target="_blank" rel="noopener noreferrer">$1</a>');
 
-        // Preserved gallery block
-        if (clean.includes('__GALLERY_BLOCK__')) {
-          return clean.replaceAll('__GALLERY_BLOCK__', '');
+          if (!hasDropCapApplied && formatted.length > 25 && !formatted.startsWith('<figure') && !formatted.startsWith('<div')) {
+            hasDropCapApplied = true;
+            const firstLetter = formatted.charAt(0);
+            const rest = formatted.slice(1);
+            blocks.push(`
+              <p class="leading-relaxed mb-6 text-on-surface text-base md:text-lg clear-both">
+                <span class="float-left text-4xl md:text-5xl font-bold font-display text-primary leading-none mr-3 mt-1 select-none">${firstLetter}</span>${rest}
+              </p>
+            `);
+          } else {
+            blocks.push(`<p class="leading-relaxed mb-6 text-on-surface text-base md:text-lg">${formatted}</p>`);
+          }
         }
+        currentParagraph = [];
+      }
+    };
 
-        // Subheading Level 3 (### )
-        if (clean.startsWith('### ')) {
-          return `<h3 class="font-display-lg text-xl md:text-2xl font-bold text-primary mt-8 mb-3 tracking-tight">${clean.replace(/^###\s+/, '')}</h3>`;
-        }
+    const flushList = () => {
+      if (currentList.length > 0) {
+        const listItems = currentList
+          .map(li => {
+            const formatted = li
+              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+              .replace(/\*(.*?)\*/g, '<em>$1</em>')
+              .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-primary underline hover:text-primary-container" target="_blank" rel="noopener noreferrer">$1</a>');
+            return `<li>${formatted}</li>`;
+          })
+          .join('');
+        blocks.push(`<ul class="list-disc pl-6 space-y-2.5 my-6 leading-relaxed text-on-surface text-base md:text-lg not-prose">${listItems}</ul>`);
+        currentList = [];
+      }
+    };
 
-        // Subheading Level 2 (## )
-        if (clean.startsWith('## ')) {
-          return `<h2 class="font-display-lg text-2xl md:text-3xl font-bold text-primary mt-10 mb-4 tracking-tight">${clean.replace(/^##\s+/, '')}</h2>`;
-        }
-
-        // Single Image with Caption (![Caption](url))
-        const singleImgMatch = clean.match(/^!\[(.*?)\]\((.*?)\)$/);
-        if (singleImgMatch) {
-          const caption = singleImgMatch[1].trim();
-          const imgUrl = singleImgMatch[2].trim();
-          return `
-            <figure class="my-8 rounded-2xl overflow-hidden shadow-level-1 border border-outline-variant/30 bg-surface-container-lowest not-prose">
-              <img src="${imgUrl}" alt="${caption}" class="w-full h-auto max-h-[520px] object-cover" loading="lazy" />
-              ${caption ? `<figcaption class="text-center text-xs md:text-sm italic text-on-surface-variant py-3 px-4 bg-surface-container-lowest/90 border-t border-outline-variant/10">${caption}</figcaption>` : ''}
-            </figure>
-          `;
-        }
-
-        // Pull Quote Box / Kutipan Tokoh (> "Kutipan..." \n > — Author)
-        if (clean.startsWith('> ')) {
-          const quoteLines = clean.split('\n').map(l => l.replace(/^>\s*/, '').trim());
-          let author = '';
-          const bodyLines = [];
-
-          quoteLines.forEach(l => {
-            if (l.startsWith('—') || l.startsWith('--') || l.startsWith('- ')) {
-              author = l.replace(/^[-—]+\s*/, '');
-            } else {
-              bodyLines.push(l);
-            }
-          });
-
-          const quoteBody = bodyLines.join(' ').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-          return `
-            <div class="my-8 p-6 md:p-8 rounded-2xl bg-[#fdfbf7] dark:bg-[#1a221d] border-l-4 border-primary shadow-xs relative not-prose border border-[#e8dfd1]/80 dark:border-outline-variant/30">
-              <div class="text-base md:text-lg italic font-serif text-[#334155] dark:text-on-surface leading-relaxed mb-3">
-                ${quoteBody.startsWith('"') ? quoteBody : `"${quoteBody}"`}
-              </div>
-              ${author ? `<div class="text-xs md:text-sm font-bold text-primary tracking-wide font-sans">— ${author}</div>` : ''}
+    const flushQuote = () => {
+      if (currentQuote.length > 0) {
+        let author = '';
+        const bodyLines = [];
+        currentQuote.forEach(l => {
+          if (l.startsWith('—') || l.startsWith('--') || l.startsWith('- ')) {
+            author = l.replace(/^[-—]+\s*/, '');
+          } else {
+            bodyLines.push(l);
+          }
+        });
+        const quoteBody = bodyLines.join(' ').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        blocks.push(`
+          <div class="my-8 p-6 md:p-8 rounded-2xl bg-[#fdfbf7] dark:bg-[#1a221d] border-l-4 border-primary shadow-xs relative not-prose border border-[#e8dfd1]/80 dark:border-outline-variant/30">
+            <div class="text-base md:text-lg italic font-serif text-[#334155] dark:text-on-surface leading-relaxed mb-3">
+              ${quoteBody.startsWith('"') ? quoteBody : `"${quoteBody}"`}
             </div>
-          `;
+            ${author ? `<div class="text-xs md:text-sm font-bold text-primary tracking-wide font-sans">— ${author}</div>` : ''}
+          </div>
+        `);
+        currentQuote = [];
+      }
+    };
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const trimmed = line.trim();
+
+      // Check gallery placeholder
+      if (trimmed.startsWith('__GALLERY_PH_') && trimmed.endsWith('__')) {
+        flushParagraph();
+        flushList();
+        flushQuote();
+        const index = parseInt(trimmed.replace('__GALLERY_PH_', '').replace('__', ''), 10);
+        if (galleryPlaceholders[index]) {
+          blocks.push(galleryPlaceholders[index]);
         }
+        continue;
+      }
 
-        // Bullet Lists (- Item)
-        if (clean.startsWith('- ')) {
-          const listItems = clean
-            .split('\n')
-            .map(li => `<li>${li.replace(/^- /, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')}</li>`)
-            .join('');
-          return `<ul class="list-disc pl-6 space-y-2.5 my-6 leading-relaxed text-on-surface text-base md:text-lg">${listItems}</ul>`;
-        }
+      // Blank line: flushes current active container
+      if (!trimmed) {
+        flushParagraph();
+        flushList();
+        flushQuote();
+        continue;
+      }
 
-        // Regular Paragraph with Drop Cap on the first paragraph
-        const formattedText = clean
-          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-          .replace(/\*(.*?)\*/g, '<em>$1</em>')
-          .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-primary underline hover:text-primary-container">$1</a>');
+      // Headings
+      if (trimmed.startsWith('### ')) {
+        flushParagraph();
+        flushList();
+        flushQuote();
+        blocks.push(`<h3 class="font-display-lg text-xl md:text-2xl font-bold text-primary mt-8 mb-3 tracking-tight">${trimmed.replace(/^###\s+/, '')}</h3>`);
+        continue;
+      }
 
-        if (!hasDropCapApplied && formattedText.length > 30) {
-          hasDropCapApplied = true;
-          // Extract first letter (excluding any HTML tags)
-          const firstLetter = formattedText.charAt(0);
-          const restOfText = formattedText.slice(1);
+      if (trimmed.startsWith('## ')) {
+        flushParagraph();
+        flushList();
+        flushQuote();
+        blocks.push(`<h2 class="font-display-lg text-2xl md:text-3xl font-bold text-primary mt-10 mb-4 tracking-tight">${trimmed.replace(/^##\s+/, '')}</h2>`);
+        continue;
+      }
 
-          return `
-            <p class="leading-relaxed mb-6 text-on-surface text-base md:text-lg clear-both">
-              <span class="float-left text-4xl md:text-5xl font-bold font-display text-primary leading-none mr-3 mt-1 select-none">${firstLetter}</span>${restOfText}
-            </p>
-          `;
-        }
+      if (trimmed.startsWith('# ')) {
+        flushParagraph();
+        flushList();
+        flushQuote();
+        blocks.push(`<h2 class="font-display-lg text-2xl md:text-3xl font-bold text-primary mt-10 mb-4 tracking-tight">${trimmed.replace(/^#\s+/, '')}</h2>`);
+        continue;
+      }
 
-        return `<p class="leading-relaxed mb-6 text-on-surface text-base md:text-lg">${formattedText}</p>`;
-      })
-      .join('');
+      // Single Image with Caption (![Caption](url))
+      const singleImgMatch = trimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
+      if (singleImgMatch) {
+        flushParagraph();
+        flushList();
+        flushQuote();
+        const caption = singleImgMatch[1].trim();
+        const imgUrl = singleImgMatch[2].trim();
+        blocks.push(`
+          <figure class="my-8 rounded-2xl overflow-hidden shadow-level-1 border border-outline-variant/30 bg-surface-container-lowest not-prose">
+            <img src="${imgUrl}" alt="${caption}" class="w-full h-auto max-h-[520px] object-cover" loading="lazy" />
+            ${caption ? `<figcaption class="text-center text-xs md:text-sm italic text-on-surface-variant py-3 px-4 bg-surface-container-lowest/90 border-t border-outline-variant/10">${caption}</figcaption>` : ''}
+          </figure>
+        `);
+        continue;
+      }
+
+      // Quote lines (> ...)
+      if (trimmed.startsWith('>')) {
+        flushParagraph();
+        flushList();
+        currentQuote.push(trimmed.replace(/^>\s*/, ''));
+        continue;
+      } else if (currentQuote.length > 0) {
+        flushQuote();
+      }
+
+      // Bullet lists (- ... or * ...)
+      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+        flushParagraph();
+        currentList.push(trimmed.replace(/^[-*]\s+/, ''));
+        continue;
+      } else if (currentList.length > 0) {
+        flushList();
+      }
+
+      // Regular text lines accumulate in paragraph
+      currentParagraph.push(trimmed);
+    }
+
+    // Flush any remaining active blocks
+    flushParagraph();
+    flushList();
+    flushQuote();
+
+    return blocks.join('');
   };
 
   container.innerHTML = `
