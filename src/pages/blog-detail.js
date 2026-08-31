@@ -79,31 +79,120 @@ export const renderBlogDetail = async (params) => {
   // Related articles (excluding current one)
   const relatedArticles = artikelList.filter(a => String(a.id) !== String(article.id)).slice(0, 3);
 
-  // Markdown Content Renderer
+  // Markdown Editorial Content Renderer
   const renderMarkdownContent = (rawText) => {
     if (!rawText) return '';
-    return rawText
-      .split('\n\n')
+
+    // Step 1: Pre-process Gallery Blocks (::gallery ... ::)
+    let processedText = rawText.replace(/::(?:gallery|grid)\s*([\s\S]*?)\s*::/g, (_match, galleryContent) => {
+      const imgMatches = [...galleryContent.matchAll(/!\[(.*?)\]\((.*?)\)/g)];
+      if (imgMatches.length > 0) {
+        const figuresHtml = imgMatches.map(m => {
+          const cap = m[1].trim();
+          const url = m[2].trim();
+          return `
+            <figure class="rounded-2xl overflow-hidden shadow-level-1 border border-outline-variant/30 bg-surface-container-lowest flex flex-col my-0">
+              <img src="${url}" alt="${cap}" class="w-full h-48 md:h-60 object-cover" loading="lazy" />
+              ${cap ? `<figcaption class="text-center text-xs italic text-on-surface-variant py-2.5 px-3 bg-surface-container-lowest">${cap}</figcaption>` : ''}
+            </figure>
+          `;
+        }).join('');
+        return `\n\n__GALLERY_BLOCK__<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-8 not-prose">${figuresHtml}</div>__GALLERY_BLOCK__\n\n`;
+      }
+      return '';
+    });
+
+    const paragraphs = processedText.split('\n\n');
+    let hasDropCapApplied = false;
+
+    return paragraphs
       .map(paragraph => {
         const clean = paragraph.trim();
         if (!clean) return '';
+
+        // Preserved gallery block
+        if (clean.includes('__GALLERY_BLOCK__')) {
+          return clean.replaceAll('__GALLERY_BLOCK__', '');
+        }
+
+        // Subheading Level 3 (### )
         if (clean.startsWith('### ')) {
-          return `<h3 class="text-xl font-bold text-primary mt-6 mb-3">${clean.replace(/^###\s+/, '')}</h3>`;
+          return `<h3 class="font-display-lg text-xl md:text-2xl font-bold text-primary mt-8 mb-3 tracking-tight">${clean.replace(/^###\s+/, '')}</h3>`;
         }
+
+        // Subheading Level 2 (## )
         if (clean.startsWith('## ')) {
-          return `<h2 class="text-2xl font-bold text-primary mt-8 mb-4">${clean.replace(/^##\s+/, '')}</h2>`;
+          return `<h2 class="font-display-lg text-2xl md:text-3xl font-bold text-primary mt-10 mb-4 tracking-tight">${clean.replace(/^##\s+/, '')}</h2>`;
         }
+
+        // Single Image with Caption (![Caption](url))
+        const singleImgMatch = clean.match(/^!\[(.*?)\]\((.*?)\)$/);
+        if (singleImgMatch) {
+          const caption = singleImgMatch[1].trim();
+          const imgUrl = singleImgMatch[2].trim();
+          return `
+            <figure class="my-8 rounded-2xl overflow-hidden shadow-level-1 border border-outline-variant/30 bg-surface-container-lowest not-prose">
+              <img src="${imgUrl}" alt="${caption}" class="w-full h-auto max-h-[520px] object-cover" loading="lazy" />
+              ${caption ? `<figcaption class="text-center text-xs md:text-sm italic text-on-surface-variant py-3 px-4 bg-surface-container-lowest/90 border-t border-outline-variant/10">${caption}</figcaption>` : ''}
+            </figure>
+          `;
+        }
+
+        // Pull Quote Box / Kutipan Tokoh (> "Kutipan..." \n > — Author)
         if (clean.startsWith('> ')) {
-          return `<blockquote class="border-l-4 border-primary pl-4 py-2 my-4 italic text-on-surface-variant bg-surface-container-lowest rounded-r-lg">${clean.replace(/^>\s+/, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</blockquote>`;
+          const quoteLines = clean.split('\n').map(l => l.replace(/^>\s*/, '').trim());
+          let author = '';
+          const bodyLines = [];
+
+          quoteLines.forEach(l => {
+            if (l.startsWith('—') || l.startsWith('--') || l.startsWith('- ')) {
+              author = l.replace(/^[-—]+\s*/, '');
+            } else {
+              bodyLines.push(l);
+            }
+          });
+
+          const quoteBody = bodyLines.join(' ').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+          return `
+            <div class="my-8 p-6 md:p-8 rounded-2xl bg-[#fdfbf7] dark:bg-[#1a221d] border-l-4 border-primary shadow-xs relative not-prose border border-[#e8dfd1]/80 dark:border-outline-variant/30">
+              <div class="text-base md:text-lg italic font-serif text-[#334155] dark:text-on-surface leading-relaxed mb-3">
+                ${quoteBody.startsWith('"') ? quoteBody : `"${quoteBody}"`}
+              </div>
+              ${author ? `<div class="text-xs md:text-sm font-bold text-primary tracking-wide font-sans">— ${author}</div>` : ''}
+            </div>
+          `;
         }
+
+        // Bullet Lists (- Item)
         if (clean.startsWith('- ')) {
           const listItems = clean
             .split('\n')
-            .map(li => `<li>${li.replace(/^- /, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</li>`)
+            .map(li => `<li>${li.replace(/^- /, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')}</li>`)
             .join('');
-          return `<ul class="list-disc pl-6 space-y-2 mb-4 leading-relaxed">${listItems}</ul>`;
+          return `<ul class="list-disc pl-6 space-y-2.5 my-6 leading-relaxed text-on-surface text-base md:text-lg">${listItems}</ul>`;
         }
-        return `<p class="leading-relaxed mb-4 text-on-surface text-base md:text-lg">${clean.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')}</p>`;
+
+        // Regular Paragraph with Drop Cap on the first paragraph
+        const formattedText = clean
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+          .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-primary underline hover:text-primary-container">$1</a>');
+
+        if (!hasDropCapApplied && formattedText.length > 30) {
+          hasDropCapApplied = true;
+          // Extract first letter (excluding any HTML tags)
+          const firstLetter = formattedText.charAt(0);
+          const restOfText = formattedText.slice(1);
+
+          return `
+            <p class="leading-relaxed mb-6 text-on-surface text-base md:text-lg clear-both">
+              <span class="float-left text-4xl md:text-5xl font-bold font-display text-primary leading-none mr-3 mt-1 select-none">${firstLetter}</span>${restOfText}
+            </p>
+          `;
+        }
+
+        return `<p class="leading-relaxed mb-6 text-on-surface text-base md:text-lg">${formattedText}</p>`;
       })
       .join('');
   };
@@ -139,7 +228,7 @@ export const renderBlogDetail = async (params) => {
         </a>
       </nav>
 
-      <!-- Article Header & Hero Banner -->
+      <!-- Article Main Card -->
       <article class="max-w-4xl mx-auto bg-surface-container-lowest rounded-3xl shadow-level-1 border border-outline-variant/30 overflow-hidden mb-16">
         <!-- Header Metadata & Title -->
         <header class="p-6 md:p-12 pb-6 md:pb-8 bg-surface">
@@ -168,32 +257,48 @@ export const renderBlogDetail = async (params) => {
           ` : ''}
         </header>
 
-        <!-- Featured Image -->
+        <!-- Featured Banner Image (If Available) -->
         ${article.gambar_url ? `
           <div class="w-full max-h-[480px] overflow-hidden relative">
             <img src="${article.gambar_url}" alt="${localizedJudul}" class="w-full h-full object-cover" />
           </div>
         ` : ''}
 
-        <!-- Article Body Content -->
-        <div class="p-6 md:p-12 prose max-w-none text-on-surface font-body-md text-base md:text-lg leading-relaxed">
+        <!-- Editorial Article Body Content -->
+        <div class="p-6 md:p-12 max-w-none text-on-surface font-body-md leading-relaxed">
           ${renderMarkdownContent(localizedKonten)}
         </div>
 
-        <!-- Social Share Bar & Actions -->
-        <footer class="p-6 md:p-12 pt-6 border-t border-outline-variant/30 bg-surface flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">${t('blog.share_article')}:</span>
+        <!-- Editorial Footer: Tags Pills & Share / Bookmark Action Bar -->
+        <footer class="p-6 md:p-12 pt-6 border-t border-outline-variant/30 bg-surface flex flex-col sm:flex-row items-center justify-between gap-6 flex-wrap">
+          <!-- Tags / Topics Badges -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="px-3 py-1 rounded-full bg-[#1b3826] text-[#86efac] text-xs font-bold font-label-caps uppercase tracking-wider">
+              ${t('blog.tags_nature')}
+            </span>
+            <span class="px-3 py-1 rounded-full bg-[#1b3826] text-[#86efac] text-xs font-bold font-label-caps uppercase tracking-wider">
+              ${t('blog.tags_hiddengem')}
+            </span>
+            <span class="px-3 py-1 rounded-full bg-[#1b3826] text-[#86efac] text-xs font-bold font-label-caps uppercase tracking-wider">
+              ${localizedKategori}
+            </span>
           </div>
+
+          <!-- Actions: Share WhatsApp, Copy Link, Bookmark -->
           <div class="flex items-center gap-3">
-            <button id="copy-article-link-btn" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-bold transition-colors cursor-pointer border border-outline-variant/40 shadow-xs">
-              <span class="material-symbols-outlined text-sm">link</span>
-              ${t('blog.copy_link')}
-            </button>
-            <a id="share-wa-btn" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#25D366] text-white hover:bg-[#1ebc59] text-xs font-bold transition-colors shadow-xs">
-              <span class="material-symbols-outlined text-sm">chat</span>
-              ${t('blog.share_whatsapp')}
+            <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">${t('blog.share_article')}:</span>
+            
+            <a id="share-wa-btn" href="#" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full bg-[#25D366] text-white hover:bg-[#1ebc59] flex items-center justify-center transition-transform hover:scale-105 shadow-xs" title="${t('blog.share_whatsapp')}" aria-label="${t('blog.share_whatsapp')}">
+              <span class="material-symbols-outlined text-lg">chat</span>
             </a>
+
+            <button id="copy-article-link-btn" class="w-9 h-9 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-transform hover:scale-105 cursor-pointer border border-outline-variant/40 shadow-xs" title="${t('blog.copy_link')}" aria-label="${t('blog.copy_link')}">
+              <span class="material-symbols-outlined text-lg">link</span>
+            </button>
+
+            <button id="bookmark-article-btn" class="w-9 h-9 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-transform hover:scale-105 cursor-pointer border border-outline-variant/40 shadow-xs" title="${t('blog.bookmark_article')}" aria-label="${t('blog.bookmark_article')}">
+              <span class="material-symbols-outlined text-lg" id="bookmark-icon">bookmark_border</span>
+            </button>
           </div>
         </footer>
       </article>
@@ -269,6 +374,39 @@ export const renderBlogDetail = async (params) => {
           showToast(t('blog.copied_toast'), 'success');
         } catch (err) {
           showToast(t('blog.copied_toast'), 'success');
+        }
+      });
+    }
+
+    // Bookmark Toggle Logic
+    const bookmarkBtn = container.querySelector('#bookmark-article-btn');
+    const bookmarkIcon = container.querySelector('#bookmark-icon');
+    if (bookmarkBtn && bookmarkIcon) {
+      const storageKey = 'bookmarked_articles';
+      const getBookmarks = () => JSON.parse(localStorage.getItem(storageKey) || '[]');
+      let bookmarks = getBookmarks();
+      const isSaved = bookmarks.includes(String(article.id));
+
+      if (isSaved) {
+        bookmarkIcon.innerText = 'bookmark';
+        bookmarkIcon.classList.add('text-primary');
+      }
+
+      bookmarkBtn.addEventListener('click', () => {
+        bookmarks = getBookmarks();
+        const index = bookmarks.indexOf(String(article.id));
+        if (index === -1) {
+          bookmarks.push(String(article.id));
+          localStorage.setItem(storageKey, JSON.stringify(bookmarks));
+          bookmarkIcon.innerText = 'bookmark';
+          bookmarkIcon.classList.add('text-primary');
+          showToast(t('blog.bookmarked_toast'), 'success');
+        } else {
+          bookmarks.splice(index, 1);
+          localStorage.setItem(storageKey, JSON.stringify(bookmarks));
+          bookmarkIcon.innerText = 'bookmark_border';
+          bookmarkIcon.classList.remove('text-primary');
+          showToast(t('blog.unbookmarked_toast'), 'info');
         }
       });
     }

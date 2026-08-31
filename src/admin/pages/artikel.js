@@ -159,13 +159,19 @@ export const renderAdminArtikel = async () => {
             <textarea id="art-ringkasan" class="form-control" rows="2" placeholder="Ringkasan artikel dalam bahasa Indonesia...">${artikel?.ringkasan || ''}</textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">Konten Artikel (ID) (Markdown Format)</label>
-            <div style="margin-bottom: 6px; display: flex; gap: 8px;">
-              <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('art-konten').value += '## Subjudul\\n'">+ Subjudul</button>
-              <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('art-konten').value += '**teks tebal**'"><b>B</b></button>
-              <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('art-konten').value += '*teks miring*'"><i>I</i></button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" style="margin: 0;">Konten Artikel (ID) (Mendukung Format Editorial)</label>
             </div>
-            <textarea id="art-konten" class="form-control" rows="6" placeholder="Tulis konten artikel di sini...">${artikel?.konten || ''}</textarea>
+            <div style="margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 6px; background: #f8fafc; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('art-konten').value += '\\n\\n## Subjudul Artikel\\n\\n'">+ 🏷️ Subjudul</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('art-konten').value += '\\n\\n![Keterangan foto pemandangan di sini](https://images.unsplash.com/photo-1511497584788-87676104235f?w=1000)\\n\\n'">+ 📷 Foto & Caption</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('art-konten').value += '\\n\\n::gallery\\n![Foto Kiri](https://images.unsplash.com/photo-1546484475-7f7bd55792da?w=600)\\n![Foto Kanan](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600)\\n::\\n\\n'">+ 🖼️ 2 Foto Sejajar</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('art-konten').value += '\\n\\n> \\\"Tuliskan kutipan berkesan di sini...\\\"\\n> — Nama Tokoh, Sesepuh Desa\\n\\n'">+ 💬 Kutipan Tokoh</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('art-konten').value += '\\n\\n## Tips Berkunjung\\n- Datanglah di pagi hari untuk suasana terbaik.\\n- Gunakan alas kaki yang nyaman dan anti-slip.\\n- Bawa kantong sampah sendiri.\\n\\n'">+ 📌 Poin Tips</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px; font-weight: bold;" onclick="document.getElementById('art-konten').value += '**teks tebal**'">B</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px; font-style: italic;" onclick="document.getElementById('art-konten').value += '*teks miring*'">I</button>
+            </div>
+            <textarea id="art-konten" class="form-control" rows="8" placeholder="Tulis konten artikel di sini...">${artikel?.konten || ''}</textarea>
           </div>
         </div>
 
@@ -180,8 +186,19 @@ export const renderAdminArtikel = async () => {
             <textarea id="art-ringkasan-en" class="form-control" rows="2" placeholder="Article summary in English...">${artikel?.ringkasan_en || ''}</textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">Article Content (EN) (Markdown Format)</label>
-            <textarea id="art-konten-en" class="form-control" rows="6" placeholder="Write article content in English...">${artikel?.konten_en || ''}</textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" style="margin: 0;">Article Content (EN) (Markdown Editorial Format)</label>
+            </div>
+            <div style="margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 6px; background: #f8fafc; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('art-konten-en').value += '\\n\\n## Section Subtitle\\n\\n'">+ 🏷️ Subtitle</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('art-konten-en').value += '\\n\\n![Scenic photo caption here](https://images.unsplash.com/photo-1511497584788-87676104235f?w=1000)\\n\\n'">+ 📷 Photo & Caption</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('art-konten-en').value += '\\n\\n::gallery\\n![Left Photo](https://images.unsplash.com/photo-1546484475-7f7bd55792da?w=600)\\n![Right Photo](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600)\\n::\\n\\n'">+ 🖼️ 2 Side Photos</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('art-konten-en').value += '\\n\\n> \\\"Memorable quote here...\\\"\\n> — Figure Name, Community Leader\\n\\n'">+ 💬 Quote</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('art-konten-en').value += '\\n\\n## Visiting Tips\\n- Visit early in the morning.\\n- Wear comfortable footwear.\\n- Carry your own trash bag.\\n\\n'">+ 📌 Tips</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px; font-weight: bold;" onclick="document.getElementById('art-konten-en').value += '**bold text**'">B</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="font-size: 11px; padding: 4px 8px; font-style: italic;" onclick="document.getElementById('art-konten-en').value += '*italic text*'">I</button>
+            </div>
+            <textarea id="art-konten-en" class="form-control" rows="8" placeholder="Write article content in English...">${artikel?.konten_en || ''}</textarea>
           </div>
         </div>
 

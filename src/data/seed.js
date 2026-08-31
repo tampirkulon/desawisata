@@ -119,14 +119,62 @@ export const mockData = {
   artikel: [
     {
       id: 'art-1',
-      judul: 'Festival Durian Candimulyo 2026 Segera Digelar di Tampirkulon',
-      judul_en: 'Candimulyo Durian Festival 2026 Ready to Welcome Visitors in Tampirkulon',
-      konten: 'Desa Tampirkulon bersiap menjadi tuan rumah pesta panen durian tahunan. Pengunjung dapat menikmati aneka ragam jenis durian lokal favorit serta kesenian rakyat yang meriah.',
-      konten_en: 'Tampirkulon Village is getting ready to host the annual durian harvest celebration. Visitors can savor various local durian varieties along with vibrant traditional cultural festivities.',
-      ringkasan: 'Sambut kelezatan panen durian tahunan di Desa Tampirkulon Candimulyo dengan aneka promo dan festival rakyat.',
-      ringkasan_en: 'Celebrate the annual durian harvest festival in Tampirkulon Candimulyo with tasting events and cultural shows.',
-      gambar_url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1000&q=80&fm=webp',
-      kategori: 'Berita Desa',
+      judul: 'Menyusuri Keindahan Alam & Pesona Wisata Tampirkulon',
+      judul_en: 'Exploring the Natural Beauty and Tourism Charms of Tampirkulon',
+      konten: `Tersembunyi di balik perbukitan hijau dan persawahan terasering yang membentang luas di Candimulyo, terdapat sebuah permata alam yang menawarkan ketenangan dan keasrian sejati. Desa Wisata Tampirkulon mengajak setiap pengunjung untuk merasakan harmoni kehidupan desa yang ramah dan alami.
+
+## Menyusuri Jalur Setapak Menuju Ketenangan
+
+Perjalanan menyusuri pedesaan ini bukanlah sekadar berwisata biasa, melainkan sebuah petualangan kecil menyusuri jalan setapak berbatu yang diapit oleh rimbunnya pepohonan bambu dan kebun buah milik warga. Udara pagi yang masih menyisakan embun berpadu dengan aroma tanah basah menciptakan kesegaran alami.
+
+![Jalur setapak hijau yang rimbun dan asri di pelosok desa](https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=1000&q=80)
+
+## Pesona Alam yang Menyejukkan Jiwa
+
+Begitu tiba di kawasan persawahan dan aliran sungai jernih, rasa lelah seketika terbayar lunas. Suara gemericik air berpadu dengan hembusan angin sepoi-sepoi yang membelah pepohonan rindang.
+
+> "Bukan hanya keindahan pemandangan yang membuatnya istimewa, melainkan simfoni suara alam yang berpadu dengan ketenangan hutan dan kehangatan warga desa. Ini adalah tempat di mana kita bisa benar-benar mendengarkan alam."
+> — Mbah Karyo, Sesepuh Desa Tampirkulon
+
+::gallery
+![Lanskap persawahan hijau membentang](https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80)
+![Kebun durian subur Candimulyo](https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80)
+::
+
+## Tips Berkunjung
+- Datanglah di pagi hari sekitar pukul 06.30 - 09.00 WIB untuk mendapatkan cahaya matahari terbaik dan suasana paling tenang.
+- Gunakan alas kaki yang nyaman dan anti-slip untuk berjalan di pematang sawah dan bebatuan.
+- Bawa kantong sampah sendiri; mari bersama menjaga kelestarian dan kebersihan alam Tampirkulon.
+- Sempatkan mencicipi kuliner khas dan durian Candimulyo langsung dari pohonnya.`,
+      konten_en: `Tucked away behind lush green hills and sprawling terraced rice paddies in Candimulyo lies a natural gem offering true peace and unspoiled serenity. Tampirkulon Tourism Village invites every traveler to experience authentic village harmony.
+
+## Strolling Along the Path to Serenity
+
+Walking through this village is far from ordinary sightseeing—it is a gentle adventure along stony trails lined with bamboo groves and fruitful local orchards. Crisp morning air blended with wet earth scent delivers pure natural rejuvenation.
+
+![Lush and serene pathway winding through the countryside](https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=1000&q=80)
+
+## Enchanting Scenery That Calms the Soul
+
+Arriving by the clear river streams and terraced fields instantly dissolves all fatigue. Gentle water ripples blend with rustling leaves to soothe every thought.
+
+> "It is not merely the scenic panorama that makes this special, but the peaceful harmony of nature and warm local hospitality. This is where you truly listen to nature."
+> — Mbah Karyo, Tampirkulon Village Elder
+
+::gallery
+![Vast emerald green rice terraces](https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80)
+![Thriving durian orchards in Candimulyo](https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80)
+::
+
+## Visiting Tips
+- Visit between 6:30 AM and 9:00 AM for soft morning light and peaceful quietness.
+- Wear comfortable, non-slip shoes for walking along trails and terrain.
+- Bring a reusable trash bag; help us preserve the pristine environment of Tampirkulon.
+- Do not miss tasting local authentic treats and tree-ripened Candimulyo durians.`,
+      ringkasan: 'Jelajahi keasrian alam persawahan terasering, rimbunnya kebun buah, dan ketenangan suasana pedesaan di Desa Wisata Tampirkulon Candimulyo.',
+      ringkasan_en: 'Discover the natural serenity of terraced rice fields, lush fruit orchards, and authentic countryside peace in Tampirkulon Candimulyo.',
+      gambar_url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80&fm=webp',
+      kategori: 'Wisata Alam',
       status: 'published',
       published_at: '2026-07-20T10:00:00Z'
     }

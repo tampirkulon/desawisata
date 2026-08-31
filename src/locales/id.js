@@ -151,7 +151,13 @@ export default {
     related_articles: 'Artikel Terkait Lainnya',
     not_found_title: 'Artikel Tidak Ditemukan',
     not_found_desc: 'Artikel yang Anda cari mungkin telah dipindahkan atau belum dipublikasikan.',
-    breadcrumb_blog: 'Blog & Kabar Desa'
+    breadcrumb_blog: 'Blog & Kabar Desa',
+    bookmark_article: 'Simpan Artikel',
+    bookmarked_toast: 'Artikel berhasil disimpan ke daftar bacaan!',
+    unbookmarked_toast: 'Artikel dihapus dari daftar bacaan.',
+    tags_nature: 'Alam',
+    tags_culture: 'Budaya',
+    tags_hiddengem: 'Wisata Pilihan'
   },
   kontak: {
     hero_badge: 'Hubungi Kami',

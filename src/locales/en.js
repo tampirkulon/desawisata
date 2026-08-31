@@ -151,7 +151,13 @@ export default {
     related_articles: 'Related Articles',
     not_found_title: 'Article Not Found',
     not_found_desc: 'The article you are looking for might have been moved or is not yet published.',
-    breadcrumb_blog: 'Blog & Village News'
+    breadcrumb_blog: 'Blog & Village News',
+    bookmark_article: 'Save Article',
+    bookmarked_toast: 'Article saved to reading list!',
+    unbookmarked_toast: 'Article removed from reading list.',
+    tags_nature: 'Nature',
+    tags_culture: 'Culture',
+    tags_hiddengem: 'Hidden Gem'
   },
   kontak: {
     hero_badge: 'Get In Touch',
