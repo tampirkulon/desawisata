@@ -7,6 +7,7 @@ import { renderDestinasi } from './pages/destinasi.js';
 import { renderPaket } from './pages/paket.js';
 import { renderGaleri } from './pages/galeri.js';
 import { renderBlog } from './pages/blog.js';
+import { renderBlogDetail } from './pages/blog-detail.js';
 import { renderKontak } from './pages/kontak.js';
 
 // Admin Dashboard Pages
@@ -30,6 +31,8 @@ router.addRoute('#/destinasi', (params) => renderDestinasi(params));
 router.addRoute('#/paket', (params) => renderPaket(params));
 router.addRoute('#/galeri', (params) => renderGaleri(params));
 router.addRoute('#/blog', (params) => renderBlog(params));
+router.addRoute('#/blog-detail', (params) => renderBlogDetail(params));
+router.addRoute('#/artikel', (params) => renderBlogDetail(params));
 router.addRoute('#/kontak', (params) => renderKontak(params));
 
 // Register Admin Routes

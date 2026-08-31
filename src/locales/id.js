@@ -142,7 +142,16 @@ export default {
     read_time: '{min} menit baca',
     btn_read_more: 'Baca Selengkapnya',
     no_article: 'Tidak ada artikel yang sesuai dengan pencarian Anda.',
-    published_on: 'Dipublikasikan pada'
+    published_on: 'Dipublikasikan pada',
+    back_to_blog: 'Kembali ke Blog',
+    share_article: 'Bagikan Artikel',
+    copy_link: 'Salin Tautan',
+    copied_toast: 'Tautan artikel berhasil disalin ke clipboard!',
+    share_whatsapp: 'Bagikan ke WhatsApp',
+    related_articles: 'Artikel Terkait Lainnya',
+    not_found_title: 'Artikel Tidak Ditemukan',
+    not_found_desc: 'Artikel yang Anda cari mungkin telah dipindahkan atau belum dipublikasikan.',
+    breadcrumb_blog: 'Blog & Kabar Desa'
   },
   kontak: {
     hero_badge: 'Hubungi Kami',

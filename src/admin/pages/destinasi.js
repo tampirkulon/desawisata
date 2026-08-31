@@ -15,6 +15,8 @@ export const renderAdminDestinasi = async () => {
   let destinasiList = mockData.destinasi;
   let kategoriList = mockData.kategori_wisata;
 
+  console.log(destinasiList)
+
   const loadData = async () => {
     if (isSupabaseConfigured()) {
       try {
@@ -55,15 +57,15 @@ export const renderAdminDestinasi = async () => {
 
           <div class="donezo-card p-6">
             ${renderDataTable({
-              columns: [
-                { label: 'Destinasi' },
-                { label: 'Kategori' },
-                { label: 'Tiket' },
-                { label: 'Status' }
-              ],
-              data: destinasiList,
-              searchPlaceholder: 'Cari destinasi...'
-            })}
+      columns: [
+        { label: 'Destinasi' },
+        { label: 'Kategori' },
+        { label: 'Tiket' },
+        { label: 'Status' }
+      ],
+      data: destinasiList,
+      searchPlaceholder: 'Cari destinasi...'
+    })}
           </div>
         </div>
       </main>
@@ -88,7 +90,7 @@ export const renderAdminDestinasi = async () => {
                 <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=100&q=80'}" style="width: 44px; height: 44px; border-radius: var(--radius-sm); object-fit: cover;" />
                 <div>
                   <div style="display: flex; items-center; gap: 6px;">
-                    <strong>${item.nama}</strong>
+                    ${hasEn ? `<strong>${item.nama_en}</strong>` : `<strong>${item.nama}</strong>`}
                     ${hasEn ? '<span style="font-size: 10px; background: #e0e7ff; color: #3730a3; padding: 1px 6px; border-radius: 4px; font-weight: bold;">EN</span>' : ''}
                   </div>
                   <div style="font-size: 0.8rem; color: var(--neutral-600);">${item.lokasi || '-'}</div>
@@ -181,7 +183,7 @@ export const renderAdminDestinasi = async () => {
         <div id="section-dest-id">
           <div class="form-group">
             <label class="form-label">Nama Destinasi Wisata (ID) *</label>
-            <input type="text" id="dest-nama" class="form-control" value="${destinasi?.nama || ''}" required placeholder="Contoh: Kebun Durian Candimulyo" />
+            <input type="text" id="dest-nama" class="form-control" value="${destinasi?.nama || ''}"  placeholder="Contoh: Kebun Durian Candimulyo" />
           </div>
           <div class="form-group">
             <label class="form-label">Lokasi / Dusun (ID)</label>
@@ -292,7 +294,9 @@ export const renderAdminDestinasi = async () => {
           is_published: document.getElementById('dest-published').checked,
         };
 
-        if (!payload.nama) {
+        console.log(payload)
+
+        if (!payload.nama && !payload.nama_en) {
           showToast('Nama destinasi wajib diisi', 'error');
           return false;
         }

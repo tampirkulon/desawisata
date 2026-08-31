@@ -1,4 +1,3 @@
-import { openArticleModal } from '../components/article-modal.js';
 import { renderNavbar, initNavbarEvents } from '../components/navbar.js';
 import { renderFooter } from '../components/footer.js';
 import { renderPagination, initPaginationEvents } from '../components/pagination.js';
@@ -64,7 +63,7 @@ export const renderBlog = async () => {
         <!-- Featured Article Hero Banner (Page 1 Only) -->
         ${(featuredJudul && currentPage === 1) ? `
           <section class="mb-16">
-            <div class="bg-surface-container-lowest rounded-2xl shadow-level-1 overflow-hidden flex flex-col lg:flex-row group transition-all duration-300 hover:shadow-level-2 border border-outline-variant/30 cursor-pointer read-article-btn" data-id="${featuredArticle.id}">
+            <a href="#/blog-detail?id=${featuredArticle.id}" class="bg-surface-container-lowest rounded-3xl shadow-level-1 overflow-hidden flex flex-col lg:flex-row group transition-all duration-300 hover:shadow-level-2 border border-outline-variant/30 text-inherit no-underline block">
               <div class="w-full lg:w-1/2 h-64 lg:h-auto overflow-hidden">
                 <img src="${featuredArticle.gambar_url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80'}" alt="${featuredJudul}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" />
               </div>
@@ -73,16 +72,16 @@ export const renderBlog = async () => {
                   <span class="bg-primary-fixed text-primary px-3 py-1 rounded-full font-label-caps text-xs font-bold uppercase">${featuredKategori}</span>
                   <span class="text-on-surface-variant text-xs font-body-sm">${featuredDate}</span>
                 </div>
-                <h2 class="font-display-lg text-2xl lg:text-3xl font-bold text-primary mb-4 leading-tight">${featuredJudul}</h2>
+                <h2 class="font-display-lg text-2xl lg:text-3xl font-bold text-primary mb-4 leading-tight group-hover:text-primary-container transition-colors">${featuredJudul}</h2>
                 <p class="font-body-md text-sm text-on-surface-variant mb-6 line-clamp-3 leading-relaxed">
                   ${featuredRingkasan}
                 </p>
-                <button class="text-primary font-bold text-sm flex items-center gap-2 hover:text-primary-container transition-colors w-fit bg-transparent border-0 cursor-pointer p-0">
+                <div class="text-primary font-bold text-sm flex items-center gap-2 group-hover:translate-x-1 transition-transform w-fit">
                   <span>${t('blog.btn_read_more')}</span>
                   <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                </button>
+                </div>
               </div>
-            </div>
+            </a>
           </section>
         ` : ''}
 
@@ -107,7 +106,7 @@ export const renderBlog = async () => {
                 : (isEn ? 'Oct 12, 2026' : '12 Okt 2026');
 
               return `
-              <article class="bg-surface-container-lowest rounded-xl shadow-level-1 overflow-hidden hover:shadow-level-2 transition-all duration-300 group flex flex-col h-full border border-outline-variant/30 cursor-pointer read-article-btn" data-id="${article.id}">
+              <a href="#/blog-detail?id=${article.id}" class="bg-surface-container-lowest rounded-2xl shadow-level-1 overflow-hidden hover:shadow-level-2 transition-all duration-300 group flex flex-col h-full border border-outline-variant/30 text-inherit no-underline">
                 <div class="h-48 overflow-hidden">
                   <img src="${article.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${localizedJudul}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
                 </div>
@@ -116,12 +115,16 @@ export const renderBlog = async () => {
                     <span class="bg-primary-fixed text-primary px-2.5 py-0.5 rounded-full font-label-caps text-[10px] font-bold uppercase">${localizedKategori}</span>
                     <span class="text-on-surface-variant text-xs">${artDate}</span>
                   </div>
-                  <h3 class="font-display-lg text-lg font-bold text-primary mb-2 line-clamp-2">${localizedJudul}</h3>
+                  <h3 class="font-display-lg text-lg font-bold text-primary mb-2 line-clamp-2 group-hover:text-primary-container transition-colors">${localizedJudul}</h3>
                   <p class="font-body-sm text-sm text-on-surface-variant line-clamp-3 mb-4 flex-grow leading-relaxed">
                     ${localizedRingkasan}
                   </p>
+                  <div class="text-primary font-bold text-xs flex items-center gap-1.5 group-hover:translate-x-1 transition-transform mt-auto pt-2">
+                    <span>${t('blog.btn_read_more')}</span>
+                    <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </div>
                 </div>
-              </article>
+              </a>
             `;
             }).join('')}
           </div>
@@ -144,14 +147,6 @@ export const renderBlog = async () => {
 
   const bindEvents = () => {
     initNavbarEvents(true);
-
-    container.querySelectorAll('.read-article-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset.id;
-        const art = artikelList.find(a => String(a.id) === String(id));
-        if (art) openArticleModal(art);
-      });
-    });
 
     initPaginationEvents(container, {
       onPageChange: (newPage) => {

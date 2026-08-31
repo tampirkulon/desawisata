@@ -142,7 +142,16 @@ export default {
     read_time: '{min} min read',
     btn_read_more: 'Read Full Article',
     no_article: 'No articles found matching your criteria.',
-    published_on: 'Published on'
+    published_on: 'Published on',
+    back_to_blog: 'Back to Blog',
+    share_article: 'Share Article',
+    copy_link: 'Copy Link',
+    copied_toast: 'Article link copied to clipboard!',
+    share_whatsapp: 'Share on WhatsApp',
+    related_articles: 'Related Articles',
+    not_found_title: 'Article Not Found',
+    not_found_desc: 'The article you are looking for might have been moved or is not yet published.',
+    breadcrumb_blog: 'Blog & Village News'
   },
   kontak: {
     hero_badge: 'Get In Touch',

@@ -32,8 +32,8 @@ export const renderDestinasi = async (queryParams) => {
   container.className = 'w-full min-h-screen flex flex-col bg-surface text-on-surface';
 
   const renderContent = () => {
-    const filteredDestinasi = activeCategory === 'all' 
-      ? destinasiList 
+    const filteredDestinasi = activeCategory === 'all'
+      ? destinasiList
       : destinasiList.filter(d => d.kategori_id === activeCategory);
 
     return `
@@ -63,13 +63,13 @@ export const renderDestinasi = async (queryParams) => {
             ${t('destinasi.filter_all')}
           </button>
           ${kategoriList.map(cat => {
-            const catName = getLocalizedField(cat, 'nama');
-            return `
+      const catName = getLocalizedField(cat, 'nama');
+      return `
               <button class="filter-btn border px-6 py-2 rounded-full font-label-caps text-xs font-semibold transition-colors cursor-pointer ${activeCategory === cat.id ? 'bg-primary text-on-primary border-primary' : 'bg-surface text-primary border-primary hover:bg-primary-fixed'}" data-cat="${cat.id}">
                 ${catName}
               </button>
             `;
-          }).join('')}
+    }).join('')}
         </div>
       </section>
 
@@ -77,15 +77,15 @@ export const renderDestinasi = async (queryParams) => {
       <section class="max-w-container-max mx-auto px-4 md:px-16 mb-20 flex-grow">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           ${filteredDestinasi.map(item => {
-            const localizedNama = getLocalizedField(item, 'nama');
-            const localizedDesc = getLocalizedField(item, 'deskripsi');
-            const localizedLokasi = getLocalizedField(item, 'lokasi');
-            let displayTicket = item.harga_tiket || t('common.free');
-            if (displayTicket.toLowerCase() === 'gratis' && isEn) {
-              displayTicket = t('common.free');
-            }
+      const localizedNama = getLocalizedField(item, 'nama');
+      const localizedDesc = getLocalizedField(item, 'deskripsi');
+      const localizedLokasi = getLocalizedField(item, 'lokasi');
+      let displayTicket = item.harga_tiket || t('common.free');
+      if (displayTicket.toLowerCase() === 'gratis' && isEn) {
+        displayTicket = t('common.free');
+      }
 
-            return `
+      return `
             <div class="bg-surface-container-lowest rounded-xl shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden relative group cursor-pointer border border-outline-variant/30 destinasi-card-item" data-id="${item.id}">
               <div class="relative w-full aspect-[4/3] overflow-hidden">
                 <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${localizedNama}" loading="lazy" decoding="async" />
@@ -110,7 +110,7 @@ export const renderDestinasi = async (queryParams) => {
               </div>
             </div>
           `;
-          }).join('')}
+    }).join('')}
         </div>
 
         ${filteredDestinasi.length === 0 ? `

@@ -55,15 +55,15 @@ export const renderAdminPaket = async () => {
 
           <div class="donezo-card p-6">
             ${renderDataTable({
-              columns: [
-                { label: 'Nama Paket' },
-                { label: 'Harga / Orang' },
-                { label: 'Durasi' },
-                { label: 'Status' }
-              ],
-              data: paketList,
-              searchPlaceholder: 'Cari paket...'
-            })}
+      columns: [
+        { label: 'Nama Paket' },
+        { label: 'Harga / Orang' },
+        { label: 'Durasi' },
+        { label: 'Status' }
+      ],
+      data: paketList,
+      searchPlaceholder: 'Cari paket...'
+    })}
           </div>
         </div>
       </main>
@@ -266,7 +266,7 @@ export const renderAdminPaket = async () => {
           is_published: document.getElementById('pkt-published').checked
         };
 
-        if (!payload.nama || !payload.harga) {
+        if ((!payload.nama && !payload.nama_en) || !payload.harga) {
           showToast('Nama dan harga paket wajib diisi', 'error');
           return false;
         }
