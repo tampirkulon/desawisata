@@ -42,10 +42,10 @@ export const renderPaket = async () => {
       </div>
     </section>
 
-    <main class="flex-grow w-full max-w-container-max mx-auto px-5 md:px-lg py-16 flex flex-col items-center">
+    <main class="flex-grow w-full max-w-container-max mx-auto px-4 sm:px-6 md:px-8 py-16 flex flex-col items-center">
 
       <!-- Pricing Cards Container -->
-      <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-lg mb-xl">
+      <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
         ${paketList.map((paket, index) => {
           const localizedNama = getLocalizedField(paket, 'nama');
           const localizedDurasi = getLocalizedField(paket, 'durasi') || (isEn ? '1 Day' : '1 Hari');
