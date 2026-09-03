@@ -53,6 +53,7 @@ export const fetchDashboardStats = async (startDate, endDate, period = 'minggu')
     reservasiPending: 0,
     reservasiDikonfirmasi: 0,
     reservasiSelesai: 0,
+    totalWisatawan: 0,
     totalDestinasi: 0,
     totalPaket: 0,
     totalArtikel: 0,
@@ -66,6 +67,7 @@ export const fetchDashboardStats = async (startDate, endDate, period = 'minggu')
     pendingTestimonials: [],
     growth: {
       growthSelesai: 0,
+      growthWisatawan: 0,
       growthPending: 0,
       growthPendapatan: 0,
       periodComparisonLabel: 'vs periode sebelumnya',
@@ -90,6 +92,7 @@ export const fetchDashboardStats = async (startDate, endDate, period = 'minggu')
       reservasiPending: 0,
       reservasiDikonfirmasi: 0,
       reservasiSelesai: 0,
+      totalWisatawan: 0,
       estimasiPendapatan: 0,
     };
 
@@ -105,6 +108,7 @@ export const fetchDashboardStats = async (startDate, endDate, period = 'minggu')
   }
 
   stats.growth.growthSelesai = _calcPctGrowth(stats.reservasiSelesai, prevStats.reservasiSelesai);
+  stats.growth.growthWisatawan = _calcPctGrowth(stats.totalWisatawan, prevStats.totalWisatawan);
   stats.growth.growthPending = _calcPctGrowth(stats.reservasiPending, prevStats.reservasiPending);
   stats.growth.growthPendapatan = _calcPctGrowth(stats.estimasiPendapatan, prevStats.estimasiPendapatan);
   stats.growth.periodComparisonLabel = prevRange.comparisonLabel;
@@ -129,6 +133,7 @@ export const exportDashboardReport = (stats, periodLabel) => {
     `"Tanggal Cetak: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}"`,
     ``,
     `"METRIK UTAMA", "JUMLAH / NILAI"`,
+    `"Jumlah Wisatawan", "${stats.totalWisatawan || 0}"`,
     `"Kunjungan Selesai", "${stats.reservasiSelesai}"`,
     `"Reservasi Dalam Proses", "${stats.reservasiDikonfirmasi}"`,
     `"Reservasi Perlu Konfirmasi", "${stats.reservasiPending}"`,
@@ -212,8 +217,8 @@ export const printDashboardReport = (stats, periodLabel) => {
 
       <div class="metrics-grid">
         <div class="metric-card">
-          <div class="title">Kunjungan Selesai</div>
-          <div class="value">${stats.reservasiSelesai}</div>
+          <div class="title">Jumlah Wisatawan</div>
+          <div class="value">${(stats.totalWisatawan || 0).toLocaleString('id-ID')} Orang</div>
         </div>
         <div class="metric-card">
           <div class="title">Reservasi Diproses</div>
@@ -300,6 +305,9 @@ const _fetchFromMock = (stats, startDate, endDate) => {
   stats.reservasiPending = filtered.filter(r => r.status === 'baru' || r.status === 'pending').length;
   stats.reservasiDikonfirmasi = filtered.filter(r => r.status === 'dikonfirmasi').length;
   stats.reservasiSelesai = filtered.filter(r => r.status === 'selesai').length;
+  stats.totalWisatawan = filtered
+    .filter(r => r.status !== 'dibatalkan')
+    .reduce((sum, r) => sum + (r.jumlah_orang || r.jumlah_peserta || 1), 0);
 
   // Static counts (not date-filtered)
   stats.totalDestinasi = mockData.destinasi.length;
@@ -439,7 +447,7 @@ const _fetchFromSupabase = async (stats, startDate, endDate) => {
   popQuery = popQuery.lte('tanggal_kunjungan', endDate);
 
   let chartQuery = supabase.from('reservasi')
-    .select('tanggal_kunjungan, jumlah_orang');
+    .select('tanggal_kunjungan, jumlah_orang, status');
   if (startDate) chartQuery = chartQuery.gte('tanggal_kunjungan', startDate);
   chartQuery = chartQuery.lte('tanggal_kunjungan', endDate);
 
@@ -483,6 +491,11 @@ const _fetchFromSupabase = async (stats, startDate, endDate) => {
   stats.reservasiPending = resPending.count || 0;
   stats.reservasiDikonfirmasi = resDikonfirmasi.count || 0;
   stats.reservasiSelesai = resSelesai.count || 0;
+  if (chartRaw) {
+    stats.totalWisatawan = chartRaw
+      .filter(r => r.status !== 'dibatalkan')
+      .reduce((sum, r) => sum + (r.jumlah_orang || 1), 0);
+  }
 
   stats.totalDestinasi = cDest.count || 0;
   stats.totalPaket = cPaket.count || 0;
@@ -781,16 +794,27 @@ const _fetchPreviousFromSupabase = async (prevStats, startDate, endDate) => {
   if (startDate) revQuery = revQuery.gte('tanggal_kunjungan', startDate);
   revQuery = revQuery.lte('tanggal_kunjungan', endDate);
 
-  const [resPending, resSelesai, { data: revData }] = await Promise.all([
+  let wisQuery = supabase.from('reservasi')
+    .select('jumlah_orang, status');
+  if (startDate) wisQuery = wisQuery.gte('tanggal_kunjungan', startDate);
+  wisQuery = wisQuery.lte('tanggal_kunjungan', endDate);
+
+  const [resPending, resSelesai, { data: revData }, { data: wisData }] = await Promise.all([
     buildCountQuery('pending'),
     buildCountQuery('selesai'),
     revQuery,
+    wisQuery,
   ]);
 
   prevStats.reservasiPending = resPending.count || 0;
   prevStats.reservasiSelesai = resSelesai.count || 0;
   if (revData) {
     prevStats.estimasiPendapatan = revData.reduce((sum, r) => sum + ((r.jumlah_orang || 1) * (r.paket_wisata?.harga || 50000)), 0);
+  }
+  if (wisData) {
+    prevStats.totalWisatawan = wisData
+      .filter(r => r.status !== 'dibatalkan')
+      .reduce((sum, r) => sum + (r.jumlah_orang || 1), 0);
   }
 };
 
@@ -799,6 +823,9 @@ const _fetchPreviousFromMock = (prevStats, startDate, endDate) => {
   const filtered = _filterByDateRange(mockData.reservasi, 'tanggal_kunjungan', startDate, endDate);
   prevStats.reservasiPending = filtered.filter(r => r.status === 'baru' || r.status === 'pending').length;
   prevStats.reservasiSelesai = filtered.filter(r => r.status === 'selesai').length;
+  prevStats.totalWisatawan = filtered
+    .filter(r => r.status !== 'dibatalkan')
+    .reduce((sum, r) => sum + (r.jumlah_orang || r.jumlah_peserta || 1), 0);
   prevStats.estimasiPendapatan = filtered
     .filter(r => r.status === 'selesai' || r.status === 'dikonfirmasi')
     .reduce((sum, r) => sum + ((r.jumlah_orang || 1) * 50000), 0);

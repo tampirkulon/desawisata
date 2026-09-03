@@ -48,13 +48,14 @@ Website resmi adalah **kantor digital desa**. Setiap angka tiket masuk, jadwal b
 
 ### 1.2 Memahami Halaman Ringkasan (*Overview Dashboard*)
 
-> 📷 **[Tangkapan Layar: Dashboard Overview menampilkan kartu metrik statistik (Total Kunjungan, Reservasi Masuk, Destinasi Aktif, Artikel Rilis) dan tabel aktivitas terbaru]**
+> 📷 **[Tangkapan Layar: Dashboard Overview menampilkan 4 kartu pahlawan metrik (Reservasi Perlu Konfirmasi, Jumlah Wisatawan, Total Destinasi, Estimasi Pendapatan) dan grafik tren pengunjung]**
 
 Setelah masuk, Anda disambut oleh antarmuka ringkasan yang menyajikan indikator kinerja utama (*KPI*) portal desa:
-- **Kartu Statistik Kunjungan**: Menampilkan estimasi lalu lintas pengunjung website.
-- **Status Reservasi Masuk**: Jumlah pengajuan reservasi wisatawan yang memerlukan konfirmasi segera.
-- **Katalog Terpasang**: Jumlah destinasi wisata dan paket aktif yang sedang tayang ke publik.
-- **Aksi Cepat (*Quick Actions*)**: Tombol pintas untuk menambah destinasi baru, merilis artikel warta, atau memeriksa reservasi terbaru.
+- **Reservasi Perlu Konfirmasi**: Jumlah pengajuan reservasi wisatawan yang memerlukan respons dan konfirmasi segera.
+- **Jumlah Wisatawan**: Akumulasi jumlah wisatawan/peserta kunjungan pada periode yang dipilih (dilengkapi indikator persentase pertumbuhan dibanding periode sebelumnya).
+- **Total Destinasi**: Jumlah daya tarik objek wisata aktif yang terdaftar di portal desa.
+- **Estimasi Pendapatan**: Proyeksi perputaran nilai ekonomi dari pemesanan paket wisata yang terkonfirmasi atau selesai.
+- **Aksi Cepat (*Quick Actions*)**: Tombol pintas untuk menambah destinasi baru, merilis artikel warta, atau mengekspor laporan CSV/PDF.
 
 ---
 

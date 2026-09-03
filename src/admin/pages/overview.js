@@ -170,18 +170,18 @@ export const renderAdminOverview = async () => {
           </div>
         </div>
 
-        <!-- Card 2: Kunjungan Selesai -->
+        <!-- Card 2: Jumlah Wisatawan -->
         <div class="donezo-card p-6 flex flex-col justify-between">
           <div class="flex items-start justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 font-label">Kunjungan Selesai</span>
-            <a href="#/admin/reservasi" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
-              <span class="material-symbols-outlined text-base">north_east</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 font-label">Jumlah Wisatawan</span>
+            <a href="#/admin/reservasi" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors" title="Lihat detail reservasi & wisatawan">
+              <span class="material-symbols-outlined text-base">groups</span>
             </a>
           </div>
           <div class="mt-6">
-            <h2 class="text-4xl font-extrabold text-slate-800 m-0 tracking-tight">${nSelesai}</h2>
-            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full ${d.growth.growthSelesai >= 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-rose-50 text-rose-700 border-rose-100'} text-[11px] font-semibold mt-3 border">
-              <span>${d.growth.growthSelesai >= 0 ? '▲ +' : '▼ '}${d.growth.growthSelesai}% ${d.growth.periodComparisonLabel}</span>
+            <h2 class="text-4xl font-extrabold text-slate-800 m-0 tracking-tight">${(d.totalWisatawan || 0).toLocaleString('id-ID')}</h2>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full ${(d.growth.growthWisatawan || 0) >= 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-rose-50 text-rose-700 border-rose-100'} text-[11px] font-semibold mt-3 border">
+              <span>${(d.growth.growthWisatawan || 0) >= 0 ? '▲ +' : '▼ '}${d.growth.growthWisatawan || 0}% ${d.growth.periodComparisonLabel}</span>
             </div>
           </div>
         </div>
