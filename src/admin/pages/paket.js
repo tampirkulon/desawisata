@@ -72,6 +72,24 @@ export const renderAdminPaket = async () => {
     bindEvents();
   };
 
+  const parseFasilitas = (val) => {
+    if (Array.isArray(val)) return val;
+    if (typeof val === 'string') {
+      const trimmed = val.trim();
+      if (!trimmed || trimmed === '[]' || trimmed === '{}') return [];
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (e) {}
+      if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+        return trimmed.slice(1, -1).split(',').map(s => s.trim().replace(/^"|"$/g, '')).filter(Boolean);
+      }
+      if (trimmed.includes('\n')) return trimmed.split('\n').map(s => s.trim()).filter(Boolean);
+      return [trimmed];
+    }
+    return [];
+  };
+
   const bindEvents = () => {
     initAdminSidebarEvents();
     initTableSearch(container);
@@ -80,6 +98,7 @@ export const renderAdminPaket = async () => {
     if (tbody && paketList.length > 0) {
       tbody.innerHTML = paketList.map(item => {
         const hasEn = !!item.nama_en;
+        const fasList = parseFasilitas(item.fasilitas);
         return `
           <tr>
             <td>
@@ -87,12 +106,12 @@ export const renderAdminPaket = async () => {
                 <strong>${item.nama}</strong>
                 ${hasEn ? '<span style="font-size: 10px; background: #e0e7ff; color: #3730a3; padding: 1px 6px; border-radius: 4px; font-weight: bold;">EN</span>' : ''}
               </div>
-              <div style="font-size: 0.8rem; color: var(--neutral-600);">${(item.fasilitas || []).length} Fasilitas termasuk</div>
+              <div style="font-size: 0.8rem; color: var(--neutral-600);">${fasList.length} Fasilitas termasuk</div>
             </td>
             <td style="font-weight: 700; color: var(--primary-500);">${formatRupiah(item.harga)}</td>
             <td>${item.durasi || '-'}</td>
             <td>
-              <span class="badge ${item.is_published ? 'badge-success' : 'badge-danger'}">
+              <span class="badge ${item.is_published ? 'badge-success' : 'badge-danger'}" style="cursor: pointer;" data-action="toggle" data-id="${item.id}">
                 ${item.is_published ? 'Published' : 'Draft'}
               </span>
             </td>
@@ -107,17 +126,22 @@ export const renderAdminPaket = async () => {
 
     container.querySelector('#add-paket-btn')?.addEventListener('click', () => openFormModal());
 
-    container.querySelectorAll('.action-edit').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset.id;
+    // Delegated click listener to guarantee handling even after sorting/filtering
+    const tableElement = container.querySelector('#data-table-element') || container;
+    tableElement.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('.action-edit');
+      if (editBtn) {
+        e.preventDefault();
+        const id = editBtn.dataset.id;
         const item = paketList.find(p => String(p.id) === String(id));
         if (item) openFormModal(item);
-      });
-    });
+        return;
+      }
 
-    container.querySelectorAll('.action-delete').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset.id;
+      const deleteBtn = e.target.closest('.action-delete');
+      if (deleteBtn) {
+        e.preventDefault();
+        const id = deleteBtn.dataset.id;
         openConfirmModal({
           message: 'Apakah Anda yakin ingin menghapus paket wisata ini?',
           onConfirm: async () => {
@@ -137,14 +161,38 @@ export const renderAdminPaket = async () => {
             renderPage();
           }
         });
-      });
+        return;
+      }
+
+      const toggleBadge = e.target.closest('[data-action="toggle"]');
+      if (toggleBadge) {
+        e.preventDefault();
+        const id = toggleBadge.dataset.id;
+        const item = paketList.find(p => String(p.id) === String(id));
+        if (!item) return;
+
+        const newStatus = !item.is_published;
+        (async () => {
+          if (isSupabaseConfigured() && supabase) {
+            const { error } = await supabase.from('paket_wisata').update({ is_published: newStatus }).eq('id', id);
+            if (error) {
+              showToast('Gagal mengubah status: ' + error.message, 'error');
+              return;
+            }
+          }
+          item.is_published = newStatus;
+          showToast(newStatus ? 'Paket dipublikasikan!' : 'Paket dialihkan ke draft.', 'success');
+          await loadData();
+          renderPage();
+        })();
+      }
     });
   };
 
   const openFormModal = (paket = null) => {
     const isEdit = !!paket;
-    const fasilitasStr = (paket?.fasilitas || []).join('\n');
-    const fasilitasEnStr = (paket?.fasilitas_en || []).join('\n');
+    const fasilitasStr = parseFasilitas(paket?.fasilitas).join('\n');
+    const fasilitasEnStr = parseFasilitas(paket?.fasilitas_en).join('\n');
 
     const bodyHtml = `
       <form id="paket-form">
