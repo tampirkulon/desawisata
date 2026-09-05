@@ -86,6 +86,10 @@ export const getProfilDesaSync = () => {
     const extra = JSON.parse(localStorage.getItem(EXTRA_STORAGE_KEY) || '{}');
     if (extra.banner_url) base.banner_url = extra.banner_url;
     if (extra.logo_url) base.logo_url = extra.logo_url;
+    if (extra.tagline_en) base.tagline_en = extra.tagline_en;
+    if (extra.sejarah_en) base.sejarah_en = extra.sejarah_en;
+    if (extra.visi_en) base.visi_en = extra.visi_en;
+    if (extra.misi_en) base.misi_en = extra.misi_en;
     if (extra.footer_deskripsi) base.footer_deskripsi = extra.footer_deskripsi;
     if (extra.footer_deskripsi_en) base.footer_deskripsi_en = extra.footer_deskripsi_en;
     if (extra.footer_copyright) base.footer_copyright = extra.footer_copyright;
@@ -152,6 +156,15 @@ const _persistProfileLocally = (merged) => {
       JSON.stringify({
         banner_url: merged.banner_url || '',
         logo_url: merged.logo_url || '',
+        tagline_en: merged.tagline_en || '',
+        sejarah_en: merged.sejarah_en || '',
+        visi_en: merged.visi_en || '',
+        misi_en: merged.misi_en || '',
+        footer_deskripsi: merged.footer_deskripsi || '',
+        footer_deskripsi_en: merged.footer_deskripsi_en || '',
+        footer_copyright: merged.footer_copyright || '',
+        footer_show_social: merged.footer_show_social !== false,
+        footer_quick_links: merged.footer_quick_links || ['beranda', 'destinasi', 'paket', 'profil', 'galeri', 'blog'],
       })
     );
   } catch (e) {
@@ -163,58 +176,112 @@ const _persistProfileLocally = (merged) => {
   }
 };
 
-/** Handles Supabase fallback logic for schema cache or missing column errors. @private */
-const _syncFallbackToSupabase = async (payload, mergedId) => {
-  const sanitized = { ...payload };
-  delete sanitized.logo_url;
-  delete sanitized.banner_url;
+// Base columns known to exist in standard Supabase profil_desa table
+const SUPABASE_BASE_COLUMNS = [
+  'nama_desa',
+  'tagline',
+  'logo_url',
+  'banner_url',
+  'sejarah',
+  'visi',
+  'misi',
+  'alamat',
+  'telepon',
+  'email',
+  'whatsapp',
+  'google_maps_embed',
+  'jam_operasional',
+  'luas_wilayah',
+  'populasi',
+  'instagram',
+  'facebook',
+  'youtube'
+];
 
-  if (mergedId) {
-    await supabase.from('profil_desa').update(sanitized).eq('id', mergedId);
-  } else {
-    await supabase.from('profil_desa').upsert([sanitized]);
+const _sanitizeForSupabase = (payload) => {
+  const sanitized = {};
+  for (const col of SUPABASE_BASE_COLUMNS) {
+    if (payload[col] !== undefined) {
+      sanitized[col] = payload[col];
+    }
   }
+  return sanitized;
 };
 
-/** Syncs profile payload directly to Supabase. @private */
+/** Syncs profile payload directly to Supabase with automatic schema fallback. @private */
 const _syncToSupabase = async (payload, merged) => {
   if (!isSupabaseConfigured() || !supabase) return;
 
+  // Determine existing row in database
+  let targetRowId = null;
   try {
-    if (merged.id) {
+    const { data: rows } = await supabase
+      .from('profil_desa')
+      .select('id')
+      .order('updated_at', { ascending: false })
+      .limit(1);
+
+    if (rows && rows.length > 0 && rows[0].id) {
+      targetRowId = rows[0].id;
+    }
+  } catch (e) {
+    console.warn('Checking existing profil_desa rows failed:', e);
+  }
+
+  const cleanPayload = _sanitizeForSupabase(payload);
+
+  try {
+    // 1. Try with full payload first (in case migration added new columns)
+    if (targetRowId) {
       const { error } = await supabase
         .from('profil_desa')
         .update(payload)
-        .eq('id', merged.id);
-
+        .eq('id', targetRowId);
       if (error) throw error;
     } else {
       const { data, error } = await supabase
         .from('profil_desa')
-        .upsert([payload])
-        .select();
-
+        .insert([payload])
+        .select('id');
       if (error) throw error;
-
       if (data?.[0]?.id) {
-        merged.id = data[0].id;
-        mockData.profil_desa.id = data[0].id;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        targetRowId = data[0].id;
       }
     }
-  } catch (err) {
-    console.warn('Primary Supabase save failed, attempting sanitized fallback:', err);
+  } catch (primaryErr) {
+    console.warn('Primary Supabase save failed, attempting sanitized payload:', primaryErr);
 
-    const isSchemaError = err.message && (
-      err.message.includes('logo_url') ||
-      err.message.includes('banner_url') ||
-      err.message.includes('schema cache')
-    );
+    // 2. Fallback using sanitized base columns whitelist
+    try {
+      if (targetRowId) {
+        const { error } = await supabase
+          .from('profil_desa')
+          .update(cleanPayload)
+          .eq('id', targetRowId);
+        if (error) throw error;
+      } else {
+        const { data, error } = await supabase
+          .from('profil_desa')
+          .insert([cleanPayload])
+          .select('id');
+        if (error) throw error;
+        if (data?.[0]?.id) {
+          targetRowId = data[0].id;
+        }
+      }
+    } catch (fallbackErr) {
+      console.warn('Sanitized Supabase save also encountered an error:', fallbackErr);
+      throw fallbackErr;
+    }
+  }
 
-    if (isSchemaError) {
-      await _syncFallbackToSupabase(payload, merged.id);
-    } else {
-      throw err;
+  if (targetRowId) {
+    merged.id = targetRowId;
+    mockData.profil_desa.id = targetRowId;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    } catch (e) {
+      // ignore
     }
   }
 };

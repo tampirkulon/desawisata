@@ -101,6 +101,18 @@ export const openAdminSearchModal = () => {
       mockData.artikel.filter(a => a.judul.toLowerCase().includes(q)).forEach(a => results.push({ category: 'Artikel', title: a.judul, subtitle: a.kategori, link: '#/admin/artikel', icon: 'rss_feed' }));
     }
 
+    // Quick navigation shortcut for Pengaturan Profil Desa
+    const profileKeywords = ['profil', 'pengaturan', 'identitas', 'desa', 'kontak', 'setting', 'logo', 'banner', 'footer'];
+    if (profileKeywords.some(kw => kw.includes(q) || q.includes(kw))) {
+      results.unshift({
+        category: 'Pengaturan',
+        title: 'Pengaturan Profil Desa',
+        subtitle: 'Kelola identitas resmi, narasi dwibahasa, kontak, dan logo desa',
+        link: '#/admin/profil',
+        icon: 'settings'
+      });
+    }
+
     currentResults = results;
     selectedIndex = results.length > 0 ? 0 : -1;
     renderResults();

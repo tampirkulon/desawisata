@@ -19,13 +19,20 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
   const normalizedRoute = (activeRoute || '').replace('#/admin/', '').replace('dashboard', 'overview');
 
   return `
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div id="admin-sidebar-backdrop" class="hidden fixed inset-0 bg-slate-900/50 z-40 lg:hidden transition-opacity"></div>
+
     <aside class="admin-sidebar w-[260px] h-full flex-shrink-0 flex flex-col bg-white border-r border-slate-200/80 overflow-hidden">
       <!-- Header Brand (Fixed Top) -->
-      <div class="h-20 flex items-center px-6 border-b border-slate-100 flex-shrink-0">
+      <div class="h-20 flex items-center justify-between px-6 border-b border-slate-100 flex-shrink-0">
         <div>
           <h1 class="font-display-lg text-base font-bold text-slate-800 m-0 leading-tight">Tampirkulon</h1>
           <p class="text-[11px] font-medium text-slate-400 m-0">Admin Dashboard</p>
         </div>
+        <!-- Close button on mobile -->
+        <button id="admin-sidebar-close-btn" type="button" aria-label="Tutup Sidebar" class="lg:hidden w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
       </div>
 
       <!-- Navigation Menu (Scrollable Middle) -->
@@ -94,6 +101,40 @@ export const initAdminSidebarEvents = (container = document) => {
       auth.logout();
     });
   }
+
+  const closeSidebar = () => {
+    const sidebar = document.querySelector('.admin-sidebar');
+    if (sidebar) sidebar.classList.remove('mobile-open');
+    const backdrop = document.getElementById('admin-sidebar-backdrop');
+    if (backdrop) backdrop.classList.add('hidden');
+  };
+
+  // Close button inside sidebar header
+  const closeBtn = root.querySelector ? root.querySelector('#admin-sidebar-close-btn') : document.getElementById('admin-sidebar-close-btn');
+  if (closeBtn && !closeBtn.dataset.bound) {
+    closeBtn.dataset.bound = 'true';
+    closeBtn.addEventListener('click', closeSidebar);
+  }
+
+  // Backdrop overlay click to close
+  const backdrop = document.getElementById('admin-sidebar-backdrop');
+  if (backdrop && !backdrop.dataset.bound) {
+    backdrop.dataset.bound = 'true';
+    backdrop.addEventListener('click', closeSidebar);
+  }
+
+  // Auto close sidebar on nav link click in mobile view
+  const navLinks = root.querySelectorAll ? root.querySelectorAll('.donezo-sidebar-item') : [];
+  navLinks.forEach(link => {
+    if (!link.dataset.navBound) {
+      link.dataset.navBound = 'true';
+      link.addEventListener('click', () => {
+        if (typeof window !== 'undefined' && window.innerWidth <= 1024) {
+          closeSidebar();
+        }
+      });
+    }
+  });
 };
 
 // Global delegated event listener for sidebar logout button

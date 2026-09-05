@@ -266,13 +266,52 @@ export const renderAdminProfil = async () => {
               </div>
             </div>
 
+            <!-- SECTION 5: MEDIA VISUAL UTAMA (LOGO & HERO BANNER) -->
+            <div class="donezo-card p-6 md:p-8 space-y-6">
+              <div class="flex items-center gap-3 border-b border-[#e2e8e2] pb-4">
+                <div class="w-9 h-9 rounded-xl bg-[#EFE3C2] text-[#123524] flex items-center justify-center font-bold">
+                  <span class="material-symbols-outlined text-xl">image</span>
+                </div>
+                <div>
+                  <h3 class="text-base font-bold text-[#123524] m-0">5. Media Visual Utama</h3>
+                  <p class="text-xs text-slate-500 m-0">Logo resmi desa wisata dan foto spanduk utama (hero banner) pada halaman publik website.</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Logo Desa -->
+                <div class="form-group">
+                  <label class="form-label font-semibold text-[#123524] text-xs">URL Logo Resmi Desa Wisata</label>
+                  <input type="text" id="prof-logo" class="form-control" value="${profil.logo_url || ''}" placeholder="Contoh: /images/logo.png atau tautan URL..." />
+                  <div class="mt-3 flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0">
+                      <img id="logo-preview-img" src="${profil.logo_url || '/images/logo.webp'}" onerror="this.src='/images/logo.webp'; this.onerror=null;" alt="Pratinjau Logo" class="w-full h-full object-contain p-1" />
+                    </div>
+                    <span class="text-xs text-slate-400">Pratinjau logo resmi yang tampil di header dan identitas desa.</span>
+                  </div>
+                </div>
+
+                <!-- Hero Banner -->
+                <div class="form-group">
+                  <label class="form-label font-semibold text-[#123524] text-xs">URL Foto Spanduk Utama (Hero Banner)</label>
+                  <input type="text" id="prof-banner" class="form-control" value="${profil.banner_url || ''}" placeholder="Contoh: /images/hero-tampirkulon.webp atau tautan URL..." />
+                  <div class="mt-3">
+                    <div class="w-full h-24 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden">
+                      <img id="banner-preview-img" src="${profil.banner_url || '/images/hero-tampirkulon.webp'}" onerror="this.src='/images/hero-tampirkulon.webp'; this.onerror=null;" alt="Pratinjau Banner" class="w-full h-full object-cover" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- STICKY BOTTOM ACTION BAR -->
-            <div class="fixed bottom-0 left-0 md:left-64 right-0 bg-white/95 backdrop-blur-md border-t border-[#cdd8c9] px-6 py-4 z-40 flex items-center justify-between shadow-lg">
+            <div class="fixed bottom-0 left-0 lg:left-[260px] right-0 bg-white/95 backdrop-blur-md border-t border-[#cdd8c9] px-4 md:px-6 py-4 z-40 flex items-center justify-between shadow-lg">
               <div class="flex items-center gap-2 text-xs text-slate-600">
                 <span class="w-2 h-2 rounded-full bg-[#3E7B27]"></span>
-                <span>Perubahan tersimpan otomatis & tersinkronisasi ke profil publik.</span>
+                <span class="hidden sm:inline">Perubahan tersimpan otomatis & tersinkronisasi ke profil publik.</span>
+                <span class="sm:hidden">Sinkronisasi otomatis.</span>
               </div>
-              <button type="submit" id="save-profil-btn" class="px-7 py-2.5 rounded-full bg-[#3E7B27] hover:bg-[#123524] text-white font-bold text-sm transition-all shadow-md hover:shadow-lg flex items-center gap-2 cursor-pointer">
+              <button type="submit" id="save-profil-btn" class="px-6 md:px-7 py-2.5 rounded-full bg-[#3E7B27] hover:bg-[#123524] text-white font-bold text-xs md:text-sm transition-all shadow-md hover:shadow-lg flex items-center gap-2 cursor-pointer shrink-0">
                 <span class="material-symbols-outlined text-lg">save</span>
                 Simpan Seluruh Perubahan Profil
               </button>
@@ -302,6 +341,25 @@ export const renderAdminProfil = async () => {
       });
     }
 
+    // Logo & Banner live preview listeners
+    const logoInput = container.querySelector('#prof-logo');
+    const logoImg = container.querySelector('#logo-preview-img');
+    if (logoInput && logoImg) {
+      logoInput.addEventListener('input', (e) => {
+        const val = e.target.value.trim();
+        logoImg.src = val || '/images/logo.webp';
+      });
+    }
+
+    const bannerInput = container.querySelector('#prof-banner');
+    const bannerImg = container.querySelector('#banner-preview-img');
+    if (bannerInput && bannerImg) {
+      bannerInput.addEventListener('input', (e) => {
+        const val = e.target.value.trim();
+        bannerImg.src = val || '/images/hero-tampirkulon.webp';
+      });
+    }
+
     const waInput = container.querySelector('#prof-whatsapp');
     if (waInput) {
       waInput.addEventListener('blur', (e) => {
@@ -317,6 +375,13 @@ export const renderAdminProfil = async () => {
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // Check native HTML form validity first
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          showToast('Harap lengkapi semua bidang yang wajib diisi dengan benar.', 'warning');
+          return;
+        }
 
         const saveBtn = container.querySelector('#save-profil-btn');
         saveBtn.disabled = true;
@@ -343,6 +408,8 @@ export const renderAdminProfil = async () => {
           visi_en: document.getElementById('prof-visi-en')?.value.trim() || profil.visi_en || '',
           misi: document.getElementById('prof-misi')?.value.trim() || profil.misi,
           misi_en: document.getElementById('prof-misi-en')?.value.trim() || profil.misi_en || '',
+          logo_url: document.getElementById('prof-logo')?.value.trim() || profil.logo_url || '',
+          banner_url: document.getElementById('prof-banner')?.value.trim() || profil.banner_url || '',
           alamat: document.getElementById('prof-alamat')?.value.trim() || profil.alamat,
           telepon: document.getElementById('prof-telepon')?.value.trim() || profil.telepon,
           whatsapp: cleanedWa || rawWa || profil.whatsapp,
