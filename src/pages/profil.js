@@ -3,6 +3,7 @@ import { renderFooter } from '../components/footer.js';
 import { getProfilDesa, formatGoogleMapsEmbed } from '../utils/profile-store.js';
 import { IconInstagram, IconYouTube, IconWhatsApp } from '../components/icons.js';
 import { t, getLanguage, getLocalizedField } from '../utils/i18n.js';
+import { buildWhatsAppUrl } from '../utils/whatsapp.js';
 
 export const renderProfil = async () => {
   const profil = await getProfilDesa();
@@ -37,8 +38,9 @@ export const renderProfil = async () => {
   const youtubeUrl = formatYoutubeUrl(profil.youtube);
 
   const waGreeting = isEn
-    ? `Hello ${encodeURIComponent(namaDesa)}, I would like to ask about travel information.`
-    : `Halo Pengelola ${encodeURIComponent(namaDesa)}, saya ingin bertanya mengenai kunjungan wisata.`;
+    ? `Hello ${namaDesa}, I would like to ask about travel information.`
+    : `Halo Pengelola ${namaDesa}, saya ingin bertanya mengenai kunjungan wisata.`;
+  const waUrl = buildWhatsAppUrl(cleanWhatsapp, waGreeting);
 
   container.innerHTML = `
     ${renderNavbar()}
@@ -174,7 +176,7 @@ export const renderProfil = async () => {
             <!-- Direct Contact & Solid Color Buttons -->
             <div class="mt-6 pt-6 border-t border-outline-variant/30 flex flex-col gap-3">
               ${cleanWhatsapp ? `
-                <a href="https://wa.me/${cleanWhatsapp}?text=${waGreeting}" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2.5">
+                <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs transition-colors shadow-sm flex items-center justify-center gap-2.5">
                   ${IconWhatsApp('w-4 h-4 fill-white shrink-0')}
                   <span>${isEn ? `WhatsApp Admin (${profil.whatsapp})` : `Chat WhatsApp Pengelola (${profil.whatsapp})`}</span>
                 </a>

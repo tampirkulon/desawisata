@@ -5,6 +5,7 @@ import { showToast } from '../../components/toast.js';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 import { mockData } from '../../data/seed.js';
 import { getDateRange, fetchDashboardStats, exportDashboardReport, printDashboardReport } from '../services/dashboard-data.js';
+import { buildWhatsAppUrl } from '../../utils/whatsapp.js';
 
 
 
@@ -293,8 +294,8 @@ export const renderAdminOverview = async () => {
           statusText = 'Cancelled';
         }
 
-        const waMsg = encodeURIComponent(`Halo ${res.nama_pemesan}, kami dari pengelola Desa Wisata Tampirkulon mengonfirmasi reservasi Anda (${res.paket}) untuk tanggal ${res.tanggal}.`);
-        const waUrl = res.telepon ? `https://wa.me/${res.telepon.replace(/^0/, '62')}?text=${waMsg}` : '#';
+        const waMsg = `Halo ${res.nama_pemesan}, kami dari pengelola Desa Wisata Tampirkulon mengonfirmasi reservasi Anda (${res.paket}) untuk tanggal ${res.tanggal}.`;
+        const waUrl = res.telepon ? buildWhatsAppUrl(res.telepon, waMsg) : '#';
 
         return `
                       <tr class="border-b border-slate-50 hover:bg-slate-50/80 transition-colors">

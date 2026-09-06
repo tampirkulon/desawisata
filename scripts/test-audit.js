@@ -195,8 +195,40 @@ assert(csvOutput.includes('METRIK UTAMA'), 'exportDashboardReport outputs metric
 assert(csvOutput.includes('DAFTAR RESERVASI'), 'exportDashboardReport outputs reservations table header');
 assert(csvOutput.includes('"Email"'), 'exportDashboardReport includes Email column header');
 
+// ==============================================
+// 💬 Suite 8: WhatsApp URL Builder & Emoji Encoding
+// ==============================================
+console.log('\n💬 Suite 8: WhatsApp URL Builder & Emoji Encoding');
+const { buildWhatsAppUrl, cleanPhoneNumber } = await import('../src/utils/whatsapp.js');
+
+// Phone cleaning
+assert(cleanPhoneNumber('081234567890') === '6281234567890', 'cleanPhoneNumber normalizes leading 0 to 62');
+assert(cleanPhoneNumber('+62 812-3456-7890') === '6281234567890', 'cleanPhoneNumber strips non-digits from formatted phone');
+assert(cleanPhoneNumber('6281234567890') === '6281234567890', 'cleanPhoneNumber leaves international format intact');
+assert(cleanPhoneNumber('') === '', 'cleanPhoneNumber returns empty string for empty input');
+
+// WhatsApp URL generation without redirect
+const testEmojiMsg = 'Halo Admin 👋\n📋 DETAIL: 👤 Budi\nTerima kasih! 🙏';
+const waUrl = buildWhatsAppUrl('081234567890', testEmojiMsg);
+
+assert(waUrl.startsWith('https://api.whatsapp.com/send/?phone=6281234567890'), 'buildWhatsAppUrl targets direct api.whatsapp.com endpoint');
+assert(!waUrl.includes('wa.me/'), 'buildWhatsAppUrl does NOT use wa.me redirect domain');
+assert(waUrl.includes('%F0%9F%91%8B'), 'buildWhatsAppUrl properly encodes waving hand emoji 👋 (%F0%9F%91%8B)');
+assert(waUrl.includes('%F0%9F%93%8B'), 'buildWhatsAppUrl properly encodes clipboard emoji 📋 (%F0%9F%93%8B)');
+assert(waUrl.includes('%F0%9F%91%A4'), 'buildWhatsAppUrl properly encodes person emoji 👤 (%F0%9F%91%A4)');
+assert(waUrl.includes('%F0%9F%99%8F'), 'buildWhatsAppUrl properly encodes praying hands emoji 🙏 (%F0%9F%99%8F)');
+assert(!waUrl.includes('%EF%BF%BD'), 'buildWhatsAppUrl does not contain replacement character (%EF%BF%BD)');
+
+// Text only and empty fallbacks
+const textOnlyUrl = buildWhatsAppUrl('', 'Bagikan artikel');
+assert(textOnlyUrl === 'https://api.whatsapp.com/send/?text=Bagikan%20artikel', 'buildWhatsAppUrl supports text-only parameter');
+
+const emptyUrl = buildWhatsAppUrl('', '');
+assert(emptyUrl === '#', 'buildWhatsAppUrl returns # when phone and text are empty');
+
 console.log('\n==============================================');
 console.log(`TOTAL TESTS: ${passed + failed} | PASSED: ${passed} | FAILED: ${failed}`);
 if (failed > 0) {
   process.exit(1);
 }
+

@@ -4,6 +4,7 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { mockData } from '../data/seed.js';
 import { getProfilDesa, formatGoogleMapsEmbed } from '../utils/profile-store.js';
 import { t, getLanguage, getLocalizedField } from '../utils/i18n.js';
+import { buildWhatsAppUrl } from '../utils/whatsapp.js';
 
 export const renderKontak = async (queryParams) => {
   const selectedPaketId = queryParams ? queryParams.get('paket_id') : null;
@@ -270,7 +271,7 @@ Terima kasih 🙏
         return false;
       }
       const message = createWhatsAppMessage(reservationData);
-      const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+      const whatsappUrl = buildWhatsAppUrl(WHATSAPP_NUMBER, message);
       window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
       return true;
     };
