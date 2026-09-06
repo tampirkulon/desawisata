@@ -2,10 +2,11 @@ import { auth } from '../../utils/auth.js';
 import { renderAdminSidebar, initAdminSidebarEvents } from '../components/sidebar.js';
 import { renderAdminHeader } from '../components/header.js';
 import { renderDataTable, initTableSearch } from '../components/data-table.js';
-import { openAdminModal } from '../components/modal.js';
+import { openAdminModal, openConfirmModal } from '../components/modal.js';
 import { showToast } from '../../components/toast.js';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 import { mockData } from '../../data/seed.js';
+import { buildWhatsAppUrl } from '../../utils/whatsapp.js';
 
 export const renderAdminReservasi = async () => {
   const isAuthed = await auth.requireAuth();
@@ -99,13 +100,43 @@ export const renderAdminReservasi = async () => {
     }
   };
 
+  const handleDeleteReservasi = (item) => {
+    const pkt = paketList.find(p => p.id === item.paket_id);
+    const paketName = pkt ? pkt.nama : 'Kunjungan Mandiri';
+    const pemesanName = item.nama || item.nama_pemesan || 'Tamu';
+
+    openConfirmModal({
+      title: 'Konfirmasi Hapus Reservasi',
+      message: `Apakah Anda yakin ingin menghapus data reservasi atas nama "<strong>${pemesanName}</strong>" (${paketName})? Tindakan ini tidak dapat dibatalkan.`,
+      onConfirm: async () => {
+        if (isSupabaseConfigured() && supabase) {
+          try {
+            const { error } = await supabase.from('reservasi').delete().eq('id', item.id);
+            if (error) throw error;
+          } catch (err) {
+            showToast('Gagal menghapus reservasi: ' + err.message, 'error');
+            return;
+          }
+        } else {
+          reservasiList = reservasiList.filter(r => String(r.id) !== String(item.id));
+          const idx = mockData.reservasi.findIndex(r => String(r.id) === String(item.id));
+          if (idx !== -1) mockData.reservasi.splice(idx, 1);
+        }
+
+        showToast('Reservasi berhasil dihapus.', 'success');
+        await loadData();
+        renderPage();
+      }
+    });
+  };
+
   const bindEvents = (dataToRender) => {
     initAdminSidebarEvents();
     initTableSearch(container);
 
     container.querySelectorAll('.filter-rsv-btn').forEach(btn => {
-  btn.addEventListener('click', handleFilterClick);
-});
+      btn.addEventListener('click', handleFilterClick);
+    });
 
     const tbody = container.querySelector('#table-body-element');
     if (tbody && dataToRender.length > 0) {
@@ -123,8 +154,11 @@ export const renderAdminReservasi = async () => {
             <td>${item.jumlah_orang || item.jumlah_peserta || 1} Orang</td>
             <td>${pkt ? pkt.nama : 'Kunjungan Mandiri'}</td>
             <td><span class="badge ${badgeClass}">${item.status || 'baru'}</span></td>
-            <td style="text-align: right;">
-              <button class="btn btn-sm btn-primary action-detail-rsv" data-id="${item.id}">Detail & Status</button>
+            <td style="text-align: right; white-space: nowrap;">
+              <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                <button class="btn btn-sm btn-primary action-detail-rsv" data-id="${item.id}">Detail & Status</button>
+                <button class="btn btn-sm btn-outline action-delete-rsv" data-id="${item.id}" style="color: var(--status-error); border-color: var(--status-error);">Hapus</button>
+              </div>
             </td>
           </tr>
         `;
@@ -132,26 +166,38 @@ export const renderAdminReservasi = async () => {
     }
 
     container.querySelectorAll('.action-detail-rsv').forEach(btn => {
-  btn.addEventListener('click', handleDetailClick);
-});
+      btn.addEventListener('click', handleDetailClick);
+    });
+
+    container.querySelectorAll('.action-delete-rsv').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = e.currentTarget.dataset.id;
+        const item = reservasiList.find(r => String(r.id) === String(id));
+        if (item) {
+          handleDeleteReservasi(item);
+        }
+      });
+    });
   };
 
   const openDetailModal = (item) => {
     const pkt = paketList.find(p => p.id === item.paket_id);
 
+    const waHref = item.telepon ? buildWhatsAppUrl(item.telepon) : '#';
+
     const bodyHtml = `
       <div style="display: flex; flex-direction: column; gap: 16px;">
         <div style="background: var(--neutral-50); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--neutral-200);">
           <h4 style="margin-bottom: 8px; font-size: 1.1rem;">Detail Pemesan</h4>
-          <p><strong>Nama:</strong> ${item.nama}</p>
-          <p><strong>Email:</strong> ${item.email}</p>
-          <p><strong>Telepon / WA:</strong> <a href="https://wa.me/${item.telepon?.replace(/[^0-9]/g, '')}" target="_blank" style="color: var(--primary); font-weight: 600;">${item.telepon} (Chat WA)</a></p>
+          <p><strong>Nama:</strong> ${item.nama || item.nama_pemesan || 'Tamu'}</p>
+          <p><strong>Email:</strong> ${item.email || '-'}</p>
+          <p><strong>Telepon / WA:</strong> <a href="${waHref}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600;">${item.telepon || '-'} (Chat WA)</a></p>
         </div>
 
         <div style="background: var(--neutral-50); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--neutral-200);">
           <h4 style="margin-bottom: 8px; font-size: 1.1rem;">Informasi Kunjungan</h4>
-          <p><strong>Tanggal Kunjungan:</strong> ${item.tanggal_kunjungan}</p>
-          <p><strong>Jumlah Peserta:</strong> ${item.jumlah_orang} Orang</p>
+          <p><strong>Tanggal Kunjungan:</strong> ${item.tanggal_kunjungan || '-'}</p>
+          <p><strong>Jumlah Peserta:</strong> ${item.jumlah_orang || item.jumlah_peserta || 1} Orang</p>
           <p><strong>Paket Wisata:</strong> ${pkt ? pkt.nama : 'Kunjungan Mandiri'}</p>
           <p><strong>Pesan Tambahan:</strong> ${item.pesan || '-'}</p>
         </div>
@@ -165,13 +211,31 @@ export const renderAdminReservasi = async () => {
             <option value="dibatalkan" ${item.status === 'dibatalkan' ? 'selected' : ''}>Dibatalkan</option>
           </select>
         </div>
+
+        <div style="padding-top: 16px; margin-top: 8px; border-top: 1px solid var(--neutral-200); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <button type="button" id="btn-delete-from-modal" class="btn btn-sm btn-outline" style="color: var(--status-error); border-color: var(--status-error); display: flex; align-items: center; gap: 4px;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+            Hapus Reservasi Ini
+          </button>
+          <span style="font-size: 11px; color: var(--neutral-500);">Data yang dihapus tidak dapat dipulihkan</span>
+        </div>
       </div>
     `;
 
     openAdminModal({
-      title: `Detail Reservasi #${item.id.substring(0, 8)}`,
+      title: `Detail Reservasi #${String(item.id).substring(0, 8)}`,
       bodyHtml,
       saveText: 'Update Status Reservasi',
+      onOpen: () => {
+        const modalDeleteBtn = document.getElementById('btn-delete-from-modal');
+        if (modalDeleteBtn) {
+          modalDeleteBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('admin-modal-close')?.click();
+            handleDeleteReservasi(item);
+          });
+        }
+      },
       onSave: async () => {
         const newStatus = document.getElementById('update-rsv-status').value;
 

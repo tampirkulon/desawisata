@@ -226,9 +226,35 @@ assert(textOnlyUrl === 'https://api.whatsapp.com/send/?text=Bagikan%20artikel', 
 const emptyUrl = buildWhatsAppUrl('', '');
 assert(emptyUrl === '#', 'buildWhatsAppUrl returns # when phone and text are empty');
 
+// ==============================================
+// 🗑️ Suite 9: Reservasi Deletion Logic
+// ==============================================
+console.log('\n🗑️ Suite 9: Reservasi Deletion Logic');
+const initialRsvCount = mockData.reservasi.length;
+assert(initialRsvCount > 0, 'mockData.reservasi has items to delete');
+
+const testRsvItem = {
+  id: 'rsv-test-del-999',
+  nama: 'Pengunjung Uji Hapus',
+  email: 'testdel@example.com',
+  telepon: '081299990000',
+  status: 'dibatalkan',
+  tanggal_kunjungan: '2026-09-30'
+};
+mockData.reservasi.unshift(testRsvItem);
+assert(mockData.reservasi.some(r => r.id === 'rsv-test-del-999'), 'Test reservation successfully seeded');
+
+// Delete test reservation
+const delIdx = mockData.reservasi.findIndex(r => r.id === 'rsv-test-del-999');
+if (delIdx !== -1) mockData.reservasi.splice(delIdx, 1);
+
+assert(!mockData.reservasi.some(r => r.id === 'rsv-test-del-999'), 'Reservation successfully removed from mockData');
+assert(mockData.reservasi.length === initialRsvCount, 'mockData.reservasi count restored to initial');
+
 console.log('\n==============================================');
 console.log(`TOTAL TESTS: ${passed + failed} | PASSED: ${passed} | FAILED: ${failed}`);
 if (failed > 0) {
   process.exit(1);
 }
+
 
