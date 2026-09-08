@@ -1,6 +1,9 @@
 import { supabase, isSupabaseConfigured } from '../../lib/supabase.js';
 import { mockData } from '../../data/seed.js';
 
+/** Default fallback price per person when package is not specified */
+const DEFAULT_PRICE_PER_PAX = 70000;
+
 /** Formats a Date object to YYYY-MM-DD string in local timezone @private */
 const _formatLocalDate = (d) => {
   const year = d.getFullYear();
@@ -321,7 +324,7 @@ const _fetchFromMock = (stats, startDate, endDate) => {
     .reduce((sum, r) => {
       const pkt = mockData.paket_wisata.find(p => p.id === r.paket_id);
       const pax = r.jumlah_orang || r.jumlah_peserta || 1;
-      const price = pkt ? pkt.harga : 50000;
+      const price = pkt ? pkt.harga : DEFAULT_PRICE_PER_PAX;
       return sum + (pax * price);
     }, 0);
 
@@ -505,7 +508,7 @@ const _fetchFromSupabase = async (stats, startDate, endDate) => {
   if (revData) {
     stats.estimasiPendapatan = revData.reduce((sum, r) => {
       const pax = r.jumlah_orang || 1;
-      const price = r.paket_wisata?.harga || 50000;
+      const price = r.paket_wisata?.harga || DEFAULT_PRICE_PER_PAX;
       return sum + (pax * price);
     }, 0);
   }
@@ -809,7 +812,7 @@ const _fetchPreviousFromSupabase = async (prevStats, startDate, endDate) => {
   prevStats.reservasiPending = resPending.count || 0;
   prevStats.reservasiSelesai = resSelesai.count || 0;
   if (revData) {
-    prevStats.estimasiPendapatan = revData.reduce((sum, r) => sum + ((r.jumlah_orang || 1) * (r.paket_wisata?.harga || 50000)), 0);
+    prevStats.estimasiPendapatan = revData.reduce((sum, r) => sum + ((r.jumlah_orang || 1) * (r.paket_wisata?.harga || DEFAULT_PRICE_PER_PAX)), 0);
   }
   if (wisData) {
     prevStats.totalWisatawan = wisData
@@ -828,5 +831,5 @@ const _fetchPreviousFromMock = (prevStats, startDate, endDate) => {
     .reduce((sum, r) => sum + (r.jumlah_orang || r.jumlah_peserta || 1), 0);
   prevStats.estimasiPendapatan = filtered
     .filter(r => r.status === 'selesai' || r.status === 'dikonfirmasi')
-    .reduce((sum, r) => sum + ((r.jumlah_orang || 1) * 50000), 0);
+    .reduce((sum, r) => sum + ((r.jumlah_orang || 1) * DEFAULT_PRICE_PER_PAX), 0);
 };

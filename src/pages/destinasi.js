@@ -80,18 +80,10 @@ export const renderDestinasi = async (queryParams) => {
       const localizedNama = getLocalizedField(item, 'nama');
       const localizedDesc = getLocalizedField(item, 'deskripsi');
       const localizedLokasi = getLocalizedField(item, 'lokasi');
-      let displayTicket = item.harga_tiket || t('common.free');
-      if (displayTicket.toLowerCase() === 'gratis' && isEn) {
-        displayTicket = t('common.free');
-      }
-
       return `
             <div class="bg-surface-container-lowest rounded-xl shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden relative group cursor-pointer border border-outline-variant/30 destinasi-card-item" data-id="${item.id}">
               <div class="relative w-full aspect-[4/3] overflow-hidden">
                 <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${localizedNama}" loading="lazy" decoding="async" />
-                <span class="absolute top-4 left-4 bg-tertiary-fixed/90 text-primary font-label-caps text-xs px-3 py-1 rounded-full backdrop-blur-sm shadow-sm font-bold">
-                  ${displayTicket}
-                </span>
               </div>
               <div class="p-6 flex flex-col flex-grow">
                 <h3 class="font-display-lg text-xl font-bold text-primary mb-2 line-clamp-1">${localizedNama}</h3>

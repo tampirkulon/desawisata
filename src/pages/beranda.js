@@ -141,18 +141,10 @@ export const renderBeranda = async () => {
             const localizedNama = getLocalizedField(item, 'nama');
             const localizedDesc = getLocalizedField(item, 'deskripsi');
             const localizedLokasi = getLocalizedField(item, 'lokasi');
-            let displayTicket = item.harga_tiket || t('common.free');
-            if (displayTicket.toLowerCase() === 'gratis' && isEn) {
-              displayTicket = t('common.free');
-            }
-
             return `
             <div class="group bg-white/90 backdrop-blur-md rounded-2xl border border-outline-variant/40 overflow-hidden shadow-level-1 hover:shadow-xl hover:-translate-y-1.5 hover:border-secondary/60 transition-all duration-300 flex flex-col cursor-pointer beranda-destinasi-card" data-id="${item.id}">
               <div class="relative h-56 overflow-hidden bg-surface-container-low">
                 <img src="${item.gambar_url || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'}" alt="${localizedNama}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
-                <span class="absolute top-4 right-4 bg-[#123524]/85 backdrop-blur-md text-[#EFE3C2] text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider border border-white/20 shadow-md">
-                  ${displayTicket}
-                </span>
               </div>
               <div class="p-6 flex flex-col flex-grow">
                 <h3 class="font-display-lg text-xl font-bold text-primary mb-2 line-clamp-1 group-hover:text-secondary transition-colors">${localizedNama}</h3>
