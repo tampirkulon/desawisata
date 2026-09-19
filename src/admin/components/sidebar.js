@@ -10,6 +10,13 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
     { key: 'galeri', hash: '#/admin/galeri', label: 'Galeri Foto', icon: 'imagesmode' },
     { key: 'reservasi', hash: '#/admin/reservasi', label: 'Reservasi', icon: 'event_note' },
     { key: 'ulasan', hash: '#/admin/ulasan', label: 'Ulasan', icon: 'rate_review' },
+    {
+      key: 'formulir-kesehatan',
+      href: 'https://near.tl/wisatatampirkulon',
+      label: 'Formulir Kesehatan',
+      icon: 'medical_services',
+      external: true,
+    },
   ];
 
   const settingMenuItems = [
@@ -42,6 +49,17 @@ export const renderAdminSidebar = (activeRoute = 'overview') => {
           <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 font-label">MENU</p>
           <div class="flex flex-col gap-1">
             ${mainMenuItems.map(item => {
+              if (item.external) {
+                return `
+                  <a class="donezo-sidebar-item flex items-center justify-between" href="${item.href}" target="_blank" rel="noopener noreferrer">
+                    <div class="flex items-center gap-3">
+                      <span class="material-symbols-outlined text-xl text-slate-400">${item.icon}</span>
+                      <span>${item.label}</span>
+                    </div>
+                    <span class="material-symbols-outlined text-xs text-slate-400">open_in_new</span>
+                  </a>
+                `;
+              }
               const isActive = normalizedRoute === item.key || activeRoute === item.key || activeRoute === item.hash;
               return `
                 <a class="donezo-sidebar-item ${isActive ? 'active' : ''}" href="${item.hash}">
